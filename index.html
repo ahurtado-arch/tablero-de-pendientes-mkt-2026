@@ -610,7 +610,7 @@ html,body{min-height:100%;background:#F0F2F5;font-family:'DM Sans',sans-serif;co
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
 import { getFirestore,collection,onSnapshot,addDoc,updateDoc,deleteDoc,doc,serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
-import { getAuth,signInWithPopup,GoogleAuthProvider,signOut as fbSignOut,onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+import { getAuth,signInWithPopup,signInWithRedirect,getRedirectResult,GoogleAuthProvider,signOut as fbSignOut,onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 
 emailjs.init("4sxaN9AuFTFe2l0zK");
 const SVC="service_w9g32g7",TPL_NEW="template_4h4uxjh",TPL_REM="template_d8z2y4m";
@@ -627,9 +627,20 @@ const CATS=['Comunicación interna','Diseño','Audiovisual','Publicidad exterior
 const COLORS=['#D02B2B','#F59E0B','#10B981','#3B82F6','#8B5CF6','#EC4899','#14B8A6'];
 const DIAS={0:31,1:28,2:31,3:30,4:31,5:30,6:31,7:31,8:30,9:31,10:30,11:31};
 
-const fbApp=initializeApp({apiKey:"AIzaSyA2Lq6ht8FGiHKTpRwq1Eq0nQb1QcNZeZs",authDomain:"tablero-de-pendientes.firebaseapp.com",projectId:"tablero-de-pendientes",storageBucket:"tablero-de-pendientes.firebasestorage.app",messagingSenderId:"624099263633",appId:"1:624099263633:web:d19059addbb8c437876b30"});
+const fbApp=initializeApp({apiKey:"AIzaSyDb5rQYu5_Ukf5AQ77zz8O6Si1MUdGcz_w",authDomain:"tdc-calendario-av.firebaseapp.com",projectId:"tdc-calendario-av",storageBucket:"tdc-calendario-av.firebasestorage.app",messagingSenderId:"393165602286",appId:"1:393165602286:web:702df05a4a4aa6ef3662ff"});
 const db=getFirestore(fbApp);
 const auth=getAuth(fbApp);
+
+// Handle redirect result on page load
+getRedirectResult(auth).then(result=>{
+  if(result?.user){
+    // Login successful via redirect - onAuthStateChanged will handle it
+  }
+}).catch(e=>{
+  if(e.code!=='auth/no-current-user'){
+    console.error('Redirect error:',e);
+  }
+});
 const tasksCol=collection(db,"tareas_v2");
 const grabsCol=collection(db,"grabaciones");
 
@@ -669,12 +680,12 @@ window.signInWithGoogle=async()=>{
   try{
     $('loginScreen').style.display='none';
     $('loadingScreen').style.display='flex';
-    $('loadingText').textContent='Iniciando sesión...';
-    await signInWithPopup(auth,provider);
+    $('loadingText').textContent='Redirigiendo a Google...';
+    await signInWithRedirect(auth,provider);
   }catch(e){
     $('loginScreen').style.display='flex';
     $('loadingScreen').style.display='none';
-    showToast('Error al iniciar sesión','⚠️');
+    showToast('Error al iniciar sesión: '+e.message,'⚠️');
   }
 };
 
@@ -1176,4 +1187,3 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'){window.closeTaskMod
 </script>
 </body>
 </html>
-
