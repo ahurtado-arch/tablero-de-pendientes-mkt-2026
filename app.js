@@ -152,17 +152,16 @@ window.setMyFilter=v=>{
 };
 
 function filteredTasks(){
-  const fE=$('fMio').value,fM=$('fMes').value,fEs=$('fEst').value,fP=$('fPri').value,fC=$('fCat').value;
+  const fE=$('fMio').value,fM=$('fMes').value,fP=$('fPri').value,fC=$('fCat').value;
   return tasks.filter(t=>{
     if(fE&&!(t.encargados||[]).includes(fE))return false;
     if(fM!==''&&t.fechaSol){const d=new Date(t.fechaSol+'T00:00:00');if(d.getMonth()!==parseInt(fM))return false;}
-    if(fEs&&t.estado!==fEs)return false;
     if(fP&&t.prioridad!==fP)return false;
     if(fC&&t.categoria!==fC)return false;
     return true;
   });
 }
-window.clearF=()=>{['fMio','fMes','fEst','fPri','fCat'].forEach(id=>$(id).value='');myFilter='todos';$('btnTodos').className='my-filter-btn active';$('btnMios').className='my-filter-btn';renderBoard();};
+window.clearF=()=>{['fMio','fMes','fPri','fCat'].forEach(id=>$(id).value='');myFilter='todos';$('btnTodos').className='my-filter-btn active';$('btnMios').className='my-filter-btn';renderBoard();};
 
 function renderBoard(){
   const fevs=filteredTasks();
@@ -174,6 +173,7 @@ function renderBoard(){
   $('bPend').textContent=pend.length;$('bProc').textContent=proc.length;$('bComp').textContent=comp.length;
   renderCol('colPend',pend);renderCol('colProc',proc);renderCol('colComp',comp);
 }
+window.renderBoard=renderBoard;
 
 function renderCol(id,items){
   const col=$(id);col.innerHTML='';
@@ -325,6 +325,7 @@ function renderCal(){
   }
   renderGrabList();
 }
+window.renderCal=renderCal;
 window.changeMonth=dir=>{curM+=dir;if(curM>11){curM=0;curY++;}if(curM<0){curM=11;curY--;}renderCal();};
 
 function renderGrabList(){
