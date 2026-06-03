@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>TDC Marketing · Tablero de Pendientes</title>
 <meta name="theme-color" content="#1A2340"/>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet"/>
+<link rel="preconnect" href="https://api.fontshare.com"/>
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700,800&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <link rel="stylesheet" href="styles.css"/>
@@ -132,22 +133,22 @@
       </div>
     </div>
     <div class="counters">
-      <div class="counter"><div class="counter-dot" style="background:#EF4444"></div><span>Pendientes: <strong id="cPend">0</strong></span></div>
-      <div class="counter"><div class="counter-dot" style="background:#F59E0B"></div><span>En Proceso: <strong id="cProc">0</strong></span></div>
-      <div class="counter"><div class="counter-dot" style="background:#10B981"></div><span>Completadas: <strong id="cComp">0</strong></span></div>
+      <div class="counter"><div class="counter-dot" style="background:#E0322B"></div><span>Pendientes: <strong id="cPend">0</strong></span></div>
+      <div class="counter"><div class="counter-dot" style="background:#E8A93B"></div><span>En Proceso: <strong id="cProc">0</strong></span></div>
+      <div class="counter"><div class="counter-dot" style="background:#2EA56A"></div><span>Completadas: <strong id="cComp">0</strong></span></div>
       <div class="counter"><div class="counter-dot" style="background:#6B7280"></div><span>Canceladas: <strong id="cCanc">0</strong></span></div>
     </div>
     <div class="board">
       <div class="col">
-        <div class="col-hdr"><div class="col-title"><div class="col-dot" style="background:#EF4444"></div>Pendiente</div><span class="col-badge" style="background:#FEE2E2;color:#991B1B" id="bPend">0</span></div>
+        <div class="col-hdr"><div class="col-title"><div class="col-dot" style="background:#E0322B"></div>Pendiente</div><span class="col-badge" style="background:#FEE2E2;color:#991B1B" id="bPend">0</span></div>
         <div class="col-body" id="colPend"></div>
       </div>
       <div class="col">
-        <div class="col-hdr"><div class="col-title"><div class="col-dot" style="background:#F59E0B"></div>En Proceso</div><span class="col-badge" style="background:#FEF3C7;color:#92400E" id="bProc">0</span></div>
+        <div class="col-hdr"><div class="col-title"><div class="col-dot" style="background:#E8A93B"></div>En Proceso</div><span class="col-badge" style="background:#FEF3C7;color:#92400E" id="bProc">0</span></div>
         <div class="col-body" id="colProc"></div>
       </div>
       <div class="col">
-        <div class="col-hdr"><div class="col-title"><div class="col-dot" style="background:#10B981"></div>Completada / Cancelada</div><span class="col-badge" style="background:#D1FAE5;color:#065F46" id="bComp">0</span></div>
+        <div class="col-hdr"><div class="col-title"><div class="col-dot" style="background:#2EA56A"></div>Completada / Cancelada</div><span class="col-badge" style="background:#D1FAE5;color:#065F46" id="bComp">0</span></div>
         <div class="col-body" id="colComp"></div>
       </div>
     </div>
@@ -251,10 +252,10 @@
         </div>
       </div>
       <div class="stats-grid">
-        <div class="stat-card" style="--ac:#D02B2B"><div class="st-num" id="anTotal">0</div><div class="st-lbl">Tareas del período</div><div class="st-sub" id="anSub" style="color:var(--muted)"></div></div>
-        <div class="stat-card" style="--ac:#10B981"><div class="st-num" id="anComp">0</div><div class="st-lbl">Completadas</div><div class="st-sub" id="anEarly" style="color:var(--green)"></div></div>
-        <div class="stat-card" style="--ac:#F59E0B"><div class="st-num" id="anPend">0</div><div class="st-lbl">Sin resolver</div><div class="st-sub" style="color:var(--muted)">activas</div></div>
-        <div class="stat-card" style="--ac:#EF4444"><div class="st-num" id="anCanc">0</div><div class="st-lbl">Canceladas</div><div class="st-sub" style="color:var(--muted)">en el período</div></div>
+        <div class="stat-card" style="--ac:#E0322B"><div class="st-num" id="anTotal">0</div><div class="st-lbl">Tareas del período</div><div class="st-sub" id="anSub" style="color:var(--muted)"></div></div>
+        <div class="stat-card" style="--ac:#2EA56A"><div class="st-num" id="anComp">0</div><div class="st-lbl">Completadas</div><div class="st-sub" id="anEarly" style="color:var(--green)"></div></div>
+        <div class="stat-card" style="--ac:#E8A93B"><div class="st-num" id="anPend">0</div><div class="st-lbl">Sin resolver</div><div class="st-sub" style="color:var(--muted)">activas</div></div>
+        <div class="stat-card" style="--ac:#E0322B"><div class="st-num" id="anCanc">0</div><div class="st-lbl">Canceladas</div><div class="st-sub" style="color:var(--muted)">en el período</div></div>
       </div>
       <div class="charts-row">
         <div class="chart-card"><div class="chart-title" id="encChartTitle">👥 Tareas por encargado</div><div class="chart-wrap"><canvas id="chartEnc"></canvas></div></div>

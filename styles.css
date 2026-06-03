@@ -1,15 +1,19 @@
 *{box-sizing:border-box;margin:0;padding:0;}
 :root{
-  --red:#D02B2B;--red-dk:#A82020;--red-lt:#FEE2E2;
-  --navy:#1A2340;--gray:#F4F5F7;--gray2:#E8E9EC;--gray3:#D1D5DB;
-  --text:#1A2340;--muted:#6B7280;--white:#fff;
-  --green:#10B981;--green-lt:#D1FAE5;
-  --yellow:#F59E0B;--yellow-lt:#FEF3C7;
-  --blue:#3B82F6;--blue-lt:#DBEAFE;
+  --red:#E0322B;--red-dk:#B3251E;--red-lt:#FBDAD8;
+  --navy:#10243F;--navy-lt:#1B3557;--gray:#F4F6F9;--gray2:#E2E8F0;--gray3:#CBD5E1;
+  --text:#10243F;--muted:#5C6B7A;--white:#fff;
+  --green:#2EA56A;--green-lt:#DEF1E6;
+  --yellow:#E8A93B;--yellow-lt:#FBEFD4;
+  --blue:#5B8FC7;--blue-lt:#E7F0F9;
   --purple:#8B5CF6;--purple-lt:#EDE9FE;
-  --shadow:0 2px 12px rgba(26,35,64,.08);
+  --shadow:0 1px 2px rgba(16,36,63,.04),0 8px 24px rgba(16,36,63,.06);
 }
-html,body{min-height:100%;background:#F0F2F5;font-family:'DM Sans',sans-serif;color:var(--text);}
+html,body{min-height:100%;font-family:'General Sans','Helvetica Neue',Arial,sans-serif;color:var(--text);
+  background:
+    radial-gradient(1200px 500px at 80% -10%, rgba(91,143,199,.10), transparent 60%),
+    radial-gradient(900px 400px at -5% 0%, rgba(224,50,43,.06), transparent 55%),
+    #F7F9FC;}
 
 /* LOGIN */
 .login-screen{position:fixed;inset:0;background:var(--navy);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:1000;gap:24px;}

@@ -14,7 +14,7 @@ const TEAM_NAMES={"ahurtado@paraleloinmobiliaria.pe":"Ana Paula Hurtado","jgalve
 const TEAM=Object.keys(TEAM_EMAILS);
 const MESES=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 const CATS=['Comunicación interna','Diseño','Audiovisual','Publicidad exterior','Material impreso','Entrega/Minuta','Publicidad digital','Otros'];
-const COLORS=['#D02B2B','#F59E0B','#10B981','#3B82F6','#8B5CF6','#EC4899','#14B8A6'];
+const COLORS=['#E0322B','#E8A93B','#2EA56A','#5B8FC7','#8B5CF6','#EC4899','#14B8A6'];
 const DIAS={0:31,1:28,2:31,3:30,4:31,5:30,6:31,7:31,8:30,9:31,10:30,11:31};
 
 const fbApp=initializeApp({apiKey:"AIzaSyDb5rQYu5_Ukf5AQ77zz8O6Si1MUdGcz_w",authDomain:"tdc-calendario-av.firebaseapp.com",projectId:"tdc-calendario-av",storageBucket:"tdc-calendario-av.firebasestorage.app",messagingSenderId:"393165602286",appId:"1:393165602286:web:702df05a4a4aa6ef3662ff",measurementId:"G-9NGVTJVFDQ"});
@@ -540,17 +540,17 @@ window.renderAnalytics=()=>{
   const teamToShow=anView==='personal'?[viewName]:TEAM;
   if(anView==='personal'){
     const estados=['Pendiente','En Proceso','Completada','Cancelada'];
-    mkBar('chartEnc',estados,estados.map(e=>mt.filter(t=>t.estado===e).length),['#EF4444','#F59E0B','#10B981','#6B7280']);
+    mkBar('chartEnc',estados,estados.map(e=>mt.filter(t=>t.estado===e).length),['#E0322B','#E8A93B','#2EA56A','#6B7280']);
   } else {
     mkBar('chartEnc',TEAM.map(e=>e.split(' ')[0]),TEAM.map(e=>mt.filter(t=>(t.encargados||[]).includes(e)).length),COLORS);
   }
   mkDona('chartCat',CATS.map(c=>c.length>16?c.slice(0,16)+'…':c),CATS.map(c=>mt.filter(t=>t.categoria===c).length));
   const aMap={};mt.forEach(t=>{if(t.area)aMap[t.area]=(aMap[t.area]||0)+1;});
   const aKeys=Object.keys(aMap).sort((a,b)=>aMap[b]-aMap[a]).slice(0,6);
-  mkBar('chartArea',aKeys,aKeys.map(k=>aMap[k]),['#3B82F6']);
+  mkBar('chartArea',aKeys,aKeys.map(k=>aMap[k]),['#5B8FC7']);
   const sMap={};mt.forEach(t=>{if(t.solicita)sMap[t.solicita]=(sMap[t.solicita]||0)+1;});
   const sKeys=Object.keys(sMap).sort((a,b)=>sMap[b]-sMap[a]).slice(0,6);
-  mkBar('chartSol',sKeys,sKeys.map(k=>sMap[k]),['#10B981']);
+  mkBar('chartSol',sKeys,sKeys.map(k=>sMap[k]),['#2EA56A']);
 
   const rt=$('rankTime');rt.innerHTML='';
   teamToShow.forEach(enc=>{
