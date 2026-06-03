@@ -433,7 +433,7 @@ html,body{min-height:100%;background:#F0F2F5;font-family:'DM Sans',sans-serif;co
         <div class="cal-body" id="calBody"></div>
       </div>
       <div style="font-size:13px;font-weight:700;color:var(--navy);margin-bottom:10px;display:flex;align-items:center;gap:7px;">
-        <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="11" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M5 1v4M11 1v4M1 7h14" stroke="currentColor" stroke-width="1.5"/></svg>Lista de Grabaciones
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="1" y="3" width="14" height="11" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M5 1v4M11 1v4M1 7h14" stroke="currentColor" stroke-width="1.5"/></svg>Lista de Grabaciones<span id="grabListMonth" style="font-weight:500;color:var(--muted);margin-left:4px;"></span>
       </div>
       <div style="overflow-x:auto;background:var(--white);border:1px solid var(--gray2);border-radius:12px;box-shadow:var(--shadow);">
         <table style="width:100%;border-collapse:collapse;font-size:12px;min-width:900px;">
@@ -646,7 +646,7 @@ const grabsCol=collection(db,"grabaciones");
 
 let tasks=[],grabs=[],currentUser=null,anView='global',myFilter='mios',charts={};
 let editTaskId=null,editGrabId=null,prevTaskEstado=null;
-let curY=2026,curM=3;
+let curY=new Date().getFullYear(),curM=new Date().getMonth();
 let activeSection=1;
 
 const $=id=>document.getElementById(id);
@@ -908,6 +908,7 @@ function daysInMonth(y,m){if(m===1&&((y%4===0&&y%100!==0)||y%400===0))return 29;
 
 function renderCal(){
   $('monthLabel').textContent=MESES[curM]+' '+curY;
+  const ml=$('grabListMonth');if(ml)ml.textContent='· '+MESES[curM]+' '+curY;
   const body=$('calBody');body.innerHTML='';
   const first=new Date(curY,curM,1).getDay(),total=daysInMonth(curY,curM);
   const t=new Date();const tInfo={y:t.getFullYear(),m:t.getMonth(),d:t.getDate()};
@@ -938,8 +939,12 @@ window.changeMonth=dir=>{curM+=dir;if(curM>11){curM=0;curY++;}if(curM<0){curM=11
 
 function renderGrabList(){
   const tbody=$('grabList');tbody.innerHTML='';
-  const fg=filteredGrabs();
-  if(!fg.length){tbody.innerHTML='<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:2rem;font-size:12px;">No hay grabaciones</td></tr>';return;}
+  const fg=filteredGrabs().filter(g=>{
+    if(!g.fecha)return false;
+    const d=new Date(g.fecha+'T00:00:00');
+    return d.getFullYear()===curY&&d.getMonth()===curM;
+  });
+  if(!fg.length){tbody.innerHTML='<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:2rem;font-size:12px;">No hay grabaciones en '+MESES[curM]+' '+curY+'</td></tr>';return;}
   [...fg].sort((a,b)=>a.fecha>b.fecha?1:-1).forEach(g=>{
     const badges={pend:'background:#FEF3C7;color:#92400E',conf:'background:#D1FAE5;color:#065F46',prog:'background:#DBEAFE;color:#1E40AF',canc:'background:#FEE2E2;color:#991B1B'};
     const bstyle=badges[stKey(g.estado)]||badges.pend;
