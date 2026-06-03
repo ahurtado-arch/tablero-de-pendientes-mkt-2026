@@ -179,6 +179,9 @@ const fbApp=initializeApp({apiKey:"AIzaSyDb5rQYu5_Ukf5AQ77zz8O6Si1MUdGcz_w",auth
 const db=getFirestore(fbApp);
 const auth=getAuth(fbApp);
 const KPIS_COL="kpis_mkt";
+// Solo estos correos pueden editar los KPIs (Gabriela y Eduardo). El resto: solo lectura.
+const KPI_EDITORS=["gcurotto@paraleloinmobiliaria.pe","ecornejo@paraleloinmobiliaria.pe"];
+let canEdit=false;
 
 const CAD={SEM:"Semanal",QUI:"Quincenal",MEN:"Mensual"};
 const ROLES={
@@ -273,6 +276,7 @@ function mergeState(parsed){
 }
 let saveTimer=null;
 function scheduleSave(){
+  if(!canEdit) return;
   clearTimeout(saveTimer);
   saveTimer=setTimeout(async()=>{
     try{ await setDoc(doc(db,KPIS_COL,curMonth),{state,updatedAt:serverTimestamp()}); flashSaved(); }catch(e){}
@@ -379,7 +383,7 @@ function renderRole(role){
     for(let w=0;w<4;w++){
       const on=active.includes(w);
       const val=rec.s[w]===null?"":rec.s[w];
-      inputs+=`<td class="wcell"><input type="number" step="any" min="0" class="${on?"":"dim"}" data-role="${encodeURIComponent(role)}" data-i="${i}" data-w="${w}" value="${val}" placeholder="${on?"":"—"}"></td>`;
+      inputs+=`<td class="wcell"><input type="number" step="any" min="0" class="${on?"":"dim"}" data-role="${encodeURIComponent(role)}" data-i="${i}" data-w="${w}" value="${val}" placeholder="${on?"":"—"}" ${canEdit?"":"disabled"}></td>`;
     }
     const w=Math.min(c.cumpl,1)*100;
     const showCausa=(c.estado==="rojo"||c.estado==="ambar");
@@ -391,7 +395,7 @@ function renderRole(role){
       <td class="actual" id="act-${i}" style="color:${c.hasData?'var(--navy)':'#B6C0CC'}">${c.hasData?(+c.actual.toFixed(2)):"—"}</td>
       <td><div class="cumplwrap"><span class="pct" id="pct-${i}" style="color:${statusColor(c.estado)}">${c.hasData?(c.cumpl*100).toFixed(0)+"%":"—"}</span><div class="mini"><span id="bar-${i}" style="width:${w}%;background:${statusColor(c.estado)}"></span></div></div></td>
       <td id="est-${i}"><span class="chip ${c.estado}">${statusLabel(c.estado)}</span></td>
-      <td class="causa"><select id="causa-${i}" class="${showCausa?"":"hide"}" data-role="${encodeURIComponent(role)}" data-i="${i}">
+      <td class="causa"><select id="causa-${i}" class="${showCausa?"":"hide"}" data-role="${encodeURIComponent(role)}" data-i="${i}" ${canEdit?"":"disabled"}>
         <option ${rec.causa==="—"?"selected":""}>—</option>
         <option ${rec.causa==="Controlable"?"selected":""}>Controlable</option>
         <option ${rec.causa==="No controlable"?"selected":""}>No controlable</option>
@@ -425,7 +429,7 @@ function renderRole(role){
         <td></td>
       </tr></tbody>
     </table></div></div>
-    <div class="hint"><i></i> Las celdas azules (S1–S4) son las que registras. Según la cadencia se resaltan las semanas activas; el resto se calcula solo.</div>
+    <div class="hint"><i></i> ${canEdit?"Las celdas azules (S1–S4) son las que registras. Según la cadencia se resaltan las semanas activas; el resto se calcula solo.":"Vista de solo lectura. Solo Gabriela y Eduardo pueden registrar valores en este cuadro."}</div>
    </div>`;
   document.getElementById("back").onclick=()=>{curView="board";render();};
   bindInputs();
@@ -518,12 +522,23 @@ async function init(){
     curMonth=v; await loadMonth(v); renderMonthSel(); curView="board"; render();
   };
   document.getElementById("exportBtn").onclick=exportData;
+
+  // Modo solo lectura: oculta "+ Mes" y muestra distintivo
+  if(!canEdit){
+    const nm=document.getElementById("newMonth"); if(nm)nm.style.display="none";
+    const ctr=document.querySelector(".controls");
+    if(ctr&&!document.getElementById("roBadge")){
+      const ro=document.createElement("span"); ro.id="roBadge"; ro.textContent="Solo lectura";
+      ro.style.cssText="font-size:11px;font-weight:700;color:#A9781C;background:var(--ambar-soft);padding:6px 11px;border-radius:20px";
+      ctr.insertBefore(ro, document.getElementById("saved"));
+    }
+  }
 }
 
 /* Espera a la sesión de Firebase (compartida con la app principal, mismo origen) */
 let started=false;
 onAuthStateChanged(auth,user=>{
-  if(user&&!started){ started=true; init(); }
+  if(user&&!started){ started=true; canEdit=KPI_EDITORS.includes((user.email||"").toLowerCase()); init(); }
   else if(!user&&!started){ document.getElementById("view").innerHTML='<div class="empty">Inicia sesión en el tablero para ver los KPIs.</div>'; }
 });
 </script>
