@@ -138,8 +138,9 @@ function loadData(){
 // NAV
 window.switchSection=n=>{
   activeSection=n;
-  [1,2,3].forEach(i=>{$(`navTab${i}`).className='nav-tab'+(i===n?' active':'');$(`sec${i}`).className='section'+(i===n?' active':'');});
+  [1,2,3,4].forEach(i=>{$(`navTab${i}`).className='nav-tab'+(i===n?' active':'');$(`sec${i}`).className='section'+(i===n?' active':'');});
   if(n===3)renderAnalytics();
+  if(n===4){const f=$('kpisFrame');if(f&&!f.src)f.src=f.dataset.src;}
 };
 
 // BOARD FILTERS

@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard de KPIs · Marketing TDC</title>
+<link rel="preconnect" href="https://api.fontshare.com">
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700,800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --rojo:#E0322B; --rojo-dk:#B3251E;
+  --navy:#10243F; --navy2:#1B3557;
+  --azul:#5B8FC7; --azul-soft:#E7F0F9;
+  --gris:#5C6B7A; --gris-bg:#F4F6F9; --line:#E2E8F0;
+  --white:#FFFFFF;
+  --verde:#2EA56A; --verde-soft:#DEF1E6;
+  --ambar:#E8A93B; --ambar-soft:#FBEFD4;
+  --rojo-soft:#FBDAD8; --nodata:#E4E9EF; --nodata-tx:#8896A4;
+  --shadow:0 1px 2px rgba(16,36,63,.04), 0 8px 24px rgba(16,36,63,.06);
+  --shadow-sm:0 1px 2px rgba(16,36,63,.05);
+  --font:"General Sans","Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+  font-family:var(--font); color:var(--navy);
+  background:
+    radial-gradient(1200px 500px at 80% -10%, rgba(91,143,199,.10), transparent 60%),
+    radial-gradient(900px 400px at -5% 0%, rgba(224,50,43,.06), transparent 55%),
+    #F7F9FC;
+  -webkit-font-smoothing:antialiased; line-height:1.5; min-height:100vh;
+}
+.wrap{max-width:1180px;margin:0 auto;padding:22px 20px 60px}
+
+/* ---------- Topbar ---------- */
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+.brand{display:flex;align-items:center;gap:12px}
+.brand .mark{width:42px;height:42px;border-radius:11px;background:var(--rojo);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:15px;letter-spacing:.5px;box-shadow:0 6px 16px rgba(224,50,43,.28)}
+.brand h1{font-size:18px;font-weight:700;letter-spacing:-.2px}
+.brand small{display:block;font-size:10px;font-weight:600;color:var(--gris);text-transform:uppercase;letter-spacing:1.6px;margin-top:1px}
+.controls{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.monthbox{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:7px 10px;box-shadow:var(--shadow-sm)}
+.monthbox svg{color:var(--navy2)}
+.monthbox select{border:none;background:transparent;font-family:var(--font);font-weight:600;font-size:13px;color:var(--navy);outline:none;cursor:pointer}
+.btn{border:none;border-radius:11px;padding:9px 14px;font-family:var(--font);font-weight:600;font-size:12.5px;cursor:pointer;display:inline-flex;align-items:center;gap:7px;transition:transform .12s ease, box-shadow .12s ease, background .12s ease}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--navy);color:#fff;box-shadow:0 6px 16px rgba(16,36,63,.2)}
+.btn-primary:hover{background:var(--navy2)}
+.btn-ghost{background:#fff;color:var(--navy2);border:1px solid var(--line);box-shadow:var(--shadow-sm)}
+.btn-ghost:hover{border-color:var(--azul)}
+.saved{font-size:11px;color:var(--verde);font-weight:600;display:flex;align-items:center;gap:5px;opacity:0;transition:opacity .3s}
+.saved.show{opacity:1}
+.saved i{width:7px;height:7px;border-radius:50%;background:var(--verde);display:inline-block}
+
+/* ---------- Tabs ---------- */
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;background:#fff;padding:6px;border-radius:14px;border:1px solid var(--line);box-shadow:var(--shadow-sm)}
+.tab{border:none;background:transparent;font-family:var(--font);font-weight:600;font-size:12.5px;color:var(--gris);padding:9px 14px;border-radius:9px;cursor:pointer;white-space:nowrap;transition:all .14s ease}
+.tab:hover{color:var(--navy);background:var(--gris-bg)}
+.tab.active{background:var(--navy);color:#fff}
+.tab.active.t-board{background:var(--rojo)}
+
+/* ---------- Cards / panels ---------- */
+.panel{animation:rise .4s ease both}
+@keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+.hero{display:grid;grid-template-columns:1.1fr 2fr;gap:16px;margin-bottom:16px}
+@media(max-width:780px){.hero{grid-template-columns:1fr}}
+.scorecard{background:linear-gradient(150deg,var(--navy) 0%,var(--navy2) 100%);border-radius:18px;padding:22px 24px;color:#fff;position:relative;overflow:hidden;box-shadow:var(--shadow)}
+.scorecard:after{content:"";position:absolute;right:-50px;top:-50px;width:170px;height:170px;border:20px solid rgba(91,143,199,.18);border-radius:50%}
+.scorecard .lbl{font-size:10px;letter-spacing:1.6px;text-transform:uppercase;color:var(--azul);font-weight:700}
+.scorecard .big{font-size:46px;font-weight:800;line-height:1;margin:10px 0 4px;letter-spacing:-1px}
+.scorecard .sub{font-size:12px;opacity:.8}
+.scorecard .gbar{height:8px;border-radius:6px;background:rgba(255,255,255,.16);margin-top:16px;overflow:hidden}
+.scorecard .gbar span{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,var(--azul),#9CC2E6);transition:width .6s cubic-bezier(.2,.7,.2,1)}
+
+.legendcard{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px 20px;box-shadow:var(--shadow)}
+.legendcard h3{font-size:12px;text-transform:uppercase;letter-spacing:1.2px;color:var(--gris);font-weight:700;margin-bottom:12px}
+.casc{display:flex;gap:10px;flex-wrap:wrap}
+.casc .c{flex:1;min-width:120px;border:1px solid var(--line);border-radius:12px;padding:11px 12px}
+.casc .c .dot{width:9px;height:9px;border-radius:50%;display:inline-block;margin-right:6px}
+.casc .c .t{font-weight:700;font-size:12px}
+.casc .c .d{font-size:10.5px;color:var(--gris);margin-top:3px;line-height:1.4}
+
+/* role cards grid */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(225px,1fr));gap:14px}
+.rcard{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px 17px;box-shadow:var(--shadow);cursor:pointer;transition:transform .14s ease, box-shadow .14s ease, border-color .14s ease;position:relative;overflow:hidden}
+.rcard:hover{transform:translateY(-3px);box-shadow:0 12px 30px rgba(16,36,63,.12);border-color:var(--azul)}
+.rcard .role{font-size:13px;font-weight:700;color:var(--navy);line-height:1.25;min-height:32px}
+.rcard .scwrap{display:flex;align-items:flex-end;justify-content:space-between;margin-top:14px}
+.rcard .score{font-size:32px;font-weight:800;letter-spacing:-1px;line-height:1}
+.chip{font-size:10px;font-weight:700;padding:4px 9px;border-radius:20px;text-transform:uppercase;letter-spacing:.4px}
+.chip.verde{background:var(--verde-soft);color:var(--verde)}
+.chip.ambar{background:var(--ambar-soft);color:#A9781C}
+.chip.rojo{background:var(--rojo-soft);color:var(--rojo-dk)}
+.chip.nodata{background:var(--nodata);color:var(--nodata-tx)}
+.rcard .bar{height:7px;border-radius:5px;background:var(--gris-bg);margin-top:13px;overflow:hidden}
+.rcard .bar span{display:block;height:100%;border-radius:5px;transition:width .6s cubic-bezier(.2,.7,.2,1)}
+.rcard .meta{display:flex;gap:14px;margin-top:12px;font-size:10.5px;color:var(--gris)}
+.rcard .meta b{color:var(--navy)}
+.rcard .open{position:absolute;right:14px;top:16px;color:var(--azul);opacity:0;transition:opacity .14s}
+.rcard:hover .open{opacity:1}
+
+/* ---------- Role detail table ---------- */
+.rolehead{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.rolehead .left{display:flex;align-items:center;gap:12px}
+.rolehead .bk{background:#fff;border:1px solid var(--line);border-radius:10px;width:34px;height:34px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--navy2)}
+.rolehead .bk:hover{border-color:var(--azul)}
+.rolehead h2{font-size:17px;font-weight:700}
+.rolehead .rscore{text-align:right}
+.rolehead .rscore .n{font-size:24px;font-weight:800;letter-spacing:-.5px}
+.rolehead .rscore .l{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:var(--gris);font-weight:600}
+
+.tablecard{background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);overflow:hidden}
+.tscroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;min-width:860px}
+thead th{background:var(--navy2);color:#fff;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;padding:11px 10px;text-align:center;white-space:nowrap}
+thead th.ind{text-align:left;width:34%}
+tbody td{padding:10px;border-bottom:1px solid var(--line);font-size:12px;vertical-align:middle;text-align:center}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:#FBFCFE}
+td.ind{text-align:left}
+.indtxt{font-size:11.5px;color:var(--navy);font-weight:500;line-height:1.35;cursor:help}
+.cadtag{display:inline-block;font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:2px 8px;border-radius:20px;color:#fff;margin-top:5px}
+.cadtag.SEM{background:var(--azul)} .cadtag.QUI{background:var(--navy2)} .cadtag.MEN{background:var(--rojo)}
+.wcell input{width:46px;border:1px solid var(--line);border-radius:8px;padding:6px 4px;text-align:center;font-family:var(--font);font-size:12px;font-weight:600;color:var(--navy);background:var(--azul-soft);outline:none;transition:border-color .12s, box-shadow .12s}
+.wcell input:focus{border-color:var(--azul);box-shadow:0 0 0 3px rgba(91,143,199,.18);background:#fff}
+.wcell input.dim{background:#fff;color:#B6C0CC}
+.wcell input::-webkit-outer-spin-button,.wcell input::-webkit-inner-spin-button{-webkit-appearance:none;margin:0}
+.wcell input[type=number]{-moz-appearance:textfield}
+.peso,.meta{font-weight:600;color:var(--navy2)}
+.actual{font-weight:800;font-size:13px}
+.cumplwrap{display:flex;flex-direction:column;gap:4px;align-items:center;min-width:78px}
+.cumplwrap .pct{font-weight:700;font-size:12px}
+.cumplwrap .mini{width:70px;height:6px;border-radius:4px;background:var(--gris-bg);overflow:hidden}
+.cumplwrap .mini span{display:block;height:100%;border-radius:4px;transition:width .5s ease}
+.causa select{border:1px solid var(--line);border-radius:8px;padding:6px 8px;font-family:var(--font);font-size:11px;color:var(--navy2);background:#fff;outline:none;cursor:pointer;max-width:130px}
+.causa select.hide{visibility:hidden}
+tfoot td,.totalrow td{background:var(--navy);color:#fff;font-weight:700;padding:12px 10px}
+.totalrow .actual,.totalrow .pct{color:#fff}
+
+.hint{font-size:11px;color:var(--gris);margin-top:12px;display:flex;align-items:center;gap:7px}
+.hint i{width:13px;height:13px;border-radius:4px;background:var(--azul-soft);border:1px solid var(--azul);display:inline-block}
+
+.tooltip{position:fixed;z-index:60;background:var(--navy);color:#fff;font-size:11px;line-height:1.45;padding:10px 12px;border-radius:10px;max-width:320px;box-shadow:0 10px 30px rgba(0,0,0,.25);pointer-events:none;opacity:0;transform:translateY(4px);transition:opacity .15s, transform .15s}
+.tooltip.show{opacity:1;transform:none}
+.empty{padding:40px;text-align:center;color:var(--gris);font-size:13px}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topbar">
+    <div class="brand">
+      <div class="mark">TDC</div>
+      <div><h1>Dashboard de KPIs</h1><small>Marketing · Seguimiento en vivo</small></div>
+    </div>
+    <div class="controls">
+      <div class="monthbox">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="3"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>
+        <select id="monthSel"></select>
+      </div>
+      <button class="btn btn-ghost" id="newMonth">+ Mes</button>
+      <button class="btn btn-ghost" id="exportBtn">Exportar</button>
+      <span class="saved" id="saved"><i></i>Guardado</span>
+    </div>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+  <div id="view"><div class="empty">Cargando…</div></div>
+
+</div>
+<div class="tooltip" id="tip"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+import { getFirestore, collection, doc, getDoc, setDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+
+const fbApp=initializeApp({apiKey:"AIzaSyDb5rQYu5_Ukf5AQ77zz8O6Si1MUdGcz_w",authDomain:"tdc-calendario-av.firebaseapp.com",projectId:"tdc-calendario-av",storageBucket:"tdc-calendario-av.firebasestorage.app",messagingSenderId:"393165602286",appId:"1:393165602286:web:702df05a4a4aa6ef3662ff",measurementId:"G-9NGVTJVFDQ"});
+const db=getFirestore(fbApp);
+const auth=getAuth(fbApp);
+const KPIS_COL="kpis_mkt";
+
+const CAD={SEM:"Semanal",QUI:"Quincenal",MEN:"Mensual"};
+const ROLES={
+"JEFE DE PUBLICIDAD":[
+ ["Reuniones quincenales con subgerencia y jefatura para análisis del presupuesto mensual del área.",0.05,2,"QUI","Reuniones quincenales para definir el presupuesto necesario (pauta Meta, impresiones, manuales, regalos, movilidades)."],
+ ["Benchmark de BTL constructivo/inmobiliario nacional e internacional para piezas innovadoras en obra.",0.05,2,"QUI","Presentación quincenal de 2 propuestas para captar leads desde calle/obra. Incluye normativa municipal."],
+ ["Gestión del presupuesto del área (digital, OOH, impresos) con Finanzas.",0.1,4,"SEM","4 rendiciones puntuales (lunes antes de 11 a.m.) y seguimiento del depósito del presupuesto."],
+ ["Cumplimiento del cronograma de producción e implementación publicitaria / BTL (%).",0.1,0.8,"MEN","De 10 pedidos, al menos 8 cumplidos. Registrar como decimal (0.80 = 80%)."],
+ ["Organización de weeklys con Ventas y PyC para recibir pedidos, observaciones y fechas de entrega.",0.15,2,"QUI","Reuniones quincenales de indagación de necesidades. Involucra a diseño y audiovisual."],
+ ["Leads generados por publicidad OOH / BTL (cercos, banners, paneles, paletas) (unidades).",0.2,90,"MEN","Siempre que se cuente con el presupuesto adecuado y a tiempo para la implementación en obra."],
+ ["Ventas mensuales / firma de minuta y/o separaciones atribuibles a marketing (unidades).",0.25,2,"MEN","Siempre que se tenga el presupuesto adecuado y a tiempo para publicidad en obra."],
+ ["Cotización y elección de proveedores. Base de datos con semáforo de comportamiento.",0.05,48,"MEN","Meta ANUAL: 48 evaluaciones (~4/mes). Para seguimiento mensual considerar 4."],
+ ["Atención de pedidos de diseño para canales de calle cumpliendo branding (%).",0.05,0.8,"MEN","Reactivo. % de pedidos viables atendidos a tiempo y con branding. Registrar como decimal."],
+],
+"JEFE DE MARKETING":[
+ ["Organizar weeklys con el área comercial para mejorar campañas y solicitar data sustentada.",0.1,4,"SEM","4 weeklys mensuales (1 por semana)."],
+ ["Ventas / minuta / separaciones atribuibles a marketing desde canales digitales (unidades).",0.25,2,"MEN","Siempre que se cuente con un presupuesto de S/ 1,500 por proyecto."],
+ ["Supervisión y seguimiento semanal de KPIs del equipo.",0.25,4,"SEM","4 reuniones al mes (1 por semana)."],
+ ["Evaluación de canales digitales y campañas Meta (Ads, web, bot) y del CRM. Análisis de funnel.",0.1,4,"SEM","4 reuniones al mes (1 por semana)."],
+ ["Seguimiento, proyección y solicitud de presupuesto semanal para mantener activa la pauta Meta.",0.1,4,"SEM","Reporte de días con pauta vs. días sin pauta. 4 al mes."],
+ ["Investigación de inmobiliarias competidoras (benchmark, FODA, cliente incógnito).",0.05,4,"SEM","Base de datos histórica: velocidad de venta, precios, ubicación, diferenciales. 4 al mes."],
+ ["Aprobación de la parrilla y contenido mensual.",0.05,2,"QUI","2 revisiones al mes (1 quincenal)."],
+ ["Leads generados por campaña (unidades).",0.1,150,"MEN","Siempre que se cuente con un presupuesto de S/ 1,500 por proyecto."],
+],
+"COORDINADOR AUDIOVISUAL":[
+ ["Videos de Ronda de Obra (1 TDC + 1 terceros) + 2 de Avances de Obra.",0.2,4,"MEN","Total: 4 videos al mes."],
+ ["Sesiones de fotos del personal en obra/oficina (retrato / lifestyle).",0.1,2,"QUI","Sesiones documentales para banco de imágenes TDC. 2 al mes."],
+ ["Diseños para redes sociales (con aprobación del coordinador de marca).",0.2,8,"MEN","8 al mes. Cumplimiento del calendario aprobado."],
+ ["Propuestas creativas, investigación de competidores y banco de referencias.",0.2,2,"QUI","Presentaciones creativas quincenales, concretas y referenciadas."],
+ ["Organización y archivo de material audiovisual TDC.",0.1,4,"MEN","4 propuestas de snack/fast content a partir del archivo."],
+ ["Investigación y aplicación de herramientas de IA para contenido creativo.",0.2,1,"QUI","Presentación quincenal de herramientas, integrada a la presentación creativa."],
+],
+"COORDINADOR DE MARCA":[
+ ["Supervisión diaria de web TDC, CRM y automatizaciones SendPulse (bot, correos, WhatsApp).",0.25,4,"SEM","4 updates al mes con diagnóstico y mejoras."],
+ ["Investigación y ejecución de automatizaciones que mejoren la experiencia digital.",0.15,2,"QUI","2 propuestas mensuales en reuniones de área."],
+ ["Propuesta y diseño de nuevos productos: books, web, blog, bots.",0.15,2,"QUI","2 propuestas mensuales en reuniones de área."],
+ ["Soporte y estructura para prototipos y MVPs del Sistema de Inteligencia Operativa (SIO).",0.25,4,"SEM","4 reuniones al mes con la Asistente de Marketing."],
+ ["Diseño, supervisión y aprobación de la comunicación interna y externa de TDC (%).",0.2,100,"MEN","Aprobación/ajuste del 100% de contenidos del equipo. Registrar como % (ej. 100)."],
+],
+"ASISTENTE DE MARKETING":[
+ ["Soluciones con IA y software para optimizar procesos internos (SIO, Retorna, etc.).",0.25,4,"SEM","Reuniones semanales de revisión de avances y oportunidades."],
+ ["Gestión de redes sociales (FB, IG, LinkedIn) y propuestas de temas.",0.2,3,"SEM","3 publicaciones a la semana (tasa semanal). Para base mensual: 12."],
+ ["Propuesta y redacción de artículos para el blog TDC y LinkedIn.",0.1,4,"MEN","4 artículos al mes entre LinkedIn y el blog."],
+ ["Informe quincenal de análisis de contenido y performance de redes.",0.2,2,"QUI","2 informes al mes."],
+ ["Mantenimiento y supervisión de alianzas activas / estado BTL en tiendas.",0.1,2,"QUI","2 informes de estado al mes (1 cada 15 días)."],
+ ["Seguimiento y orden de facturas de compra del área (apoyo a jefatura de publicidad).",0.1,4,"SEM","4 apoyos al mes (1 por semana)."],
+ ["Apoyo en investigación, diseño, contenido, fotografía, eventos y tareas logísticas.",0.05,8,"MEN","Reactivo. 8 solicitudes atendidas al mes (si hay menos, se calcula sobre las requeridas)."],
+],
+};
+const ROLE_NAMES=Object.keys(ROLES);
+const ACTIVE_WEEKS={SEM:[0,1,2,3],QUI:[1,3],MEN:[3]};
+
+let state={};      // {role:[{s:[..],causa}]}
+let curMonth="";
+let curView="board";
+let months=[];
+
+function monthLabel(v){
+  const [y,m]=v.split("-");
+  const names=["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"];
+  return names[parseInt(m,10)-1]+" "+y;
+}
+function blankState(){
+  const s={};
+  ROLE_NAMES.forEach(r=>{ s[r]=ROLES[r].map(()=>({s:[null,null,null,null],causa:"—"})); });
+  return s;
+}
+
+/* ---------- persistencia (Firestore) ---------- */
+async function loadIndex(){
+  try{
+    const snap=await getDocs(collection(db,KPIS_COL));
+    months=snap.docs.map(d=>d.id).filter(id=>/^\d{4}-\d{2}$/.test(id));
+  }catch(e){ months=[]; }
+  if(months.length===0){
+    const now=new Date();
+    const def=now.getFullYear()+"-"+String(now.getMonth()+1).padStart(2,"0");
+    months=[def];
+  }
+}
+async function loadMonth(m){
+  try{
+    const r=await getDoc(doc(db,KPIS_COL,m));
+    if(r.exists()&&r.data().state){ state=mergeState(r.data().state); }
+    else { state=blankState(); }
+  }catch(e){ state=blankState(); }
+}
+function mergeState(parsed){
+  const s=blankState();
+  ROLE_NAMES.forEach(r=>{ if(parsed[r]) parsed[r].forEach((row,i)=>{ if(s[r][i]){ s[r][i].s=row.s||[null,null,null,null]; s[r][i].causa=row.causa||"—"; } }); });
+  return s;
+}
+let saveTimer=null;
+function scheduleSave(){
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(async()=>{
+    try{ await setDoc(doc(db,KPIS_COL,curMonth),{state,updatedAt:serverTimestamp()}); flashSaved(); }catch(e){}
+  },350);
+}
+function flashSaved(){ const el=document.getElementById("saved"); el.classList.add("show"); clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove("show"),1400); }
+
+/* ---------- cálculos ---------- */
+function calcRow(role,i){
+  const kpi=ROLES[role][i], rec=state[role][i];
+  const nums=rec.s.filter(v=>v!==null&&v!==""&&!isNaN(v)).map(Number);
+  const hasData=nums.length>0;
+  const actual=nums.reduce((a,b)=>a+b,0);
+  const meta=kpi[2];
+  const cumpl=meta>0?actual/meta:0;
+  const xpeso=cumpl*kpi[1];
+  let estado="nodata";
+  if(hasData) estado=cumpl>=1?"verde":cumpl>=0.8?"ambar":"rojo";
+  return {actual,cumpl,xpeso,estado,hasData,meta,peso:kpi[1]};
+}
+function calcRole(role){
+  let score=0,rojos=0,nod=0,amb=0,ver=0;
+  ROLES[role].forEach((_,i)=>{ const c=calcRow(role,i); score+=c.xpeso; if(c.estado==="rojo")rojos++; else if(c.estado==="nodata")nod++; else if(c.estado==="ambar")amb++; else if(c.estado==="verde")ver++; });
+  const any=ROLES[role].some((_,i)=>calcRow(role,i).hasData);
+  let estado="nodata";
+  if(any) estado=score>=1?"verde":score>=0.8?"ambar":"rojo";
+  return {score,rojos,nod,amb,ver,estado,any};
+}
+function statusColor(e){return e==="verde"?"var(--verde)":e==="ambar"?"var(--ambar)":e==="rojo"?"var(--rojo)":"var(--nodata-tx)";}
+function statusLabel(e){return e==="verde"?"Verde":e==="ambar"?"Ámbar":e==="rojo"?"Rojo":"Sin dato";}
+
+/* ---------- render: tabs ---------- */
+function renderTabs(){
+  const t=document.getElementById("tabs"); t.innerHTML="";
+  const board=mkTab("Tablero","board",true); t.appendChild(board);
+  ROLE_NAMES.forEach(r=>{ t.appendChild(mkTab(shortRole(r),r,false)); });
+}
+function shortRole(r){return r.replace("JEFE DE ","Jefe ").replace("COORDINADOR ","Coord. ").replace("ASISTENTE DE ","Asist. ").replace(/\b\w+/g,w=>w.charAt(0)+w.slice(1).toLowerCase()).replace("Jefe De","Jefe").replace("Coord. De","Coord.");}
+function mkTab(label,id,isBoard){
+  const b=document.createElement("button");
+  b.className="tab"+(curView===id?" active":"")+(isBoard?" t-board":"");
+  if(curView===id&&isBoard)b.classList.add("t-board");
+  b.textContent=label;
+  b.onclick=()=>{curView=id;render();};
+  return b;
+}
+
+/* ---------- render: board ---------- */
+function renderBoard(){
+  let totScore=0,withData=0;
+  ROLE_NAMES.forEach(r=>{const c=calcRole(r); if(c.any){totScore+=c.score;withData++;}});
+  const avg=withData>0?totScore/withData:0;
+  const gw=Math.min(avg,1)*100;
+  let cards="";
+  ROLE_NAMES.forEach(r=>{
+    const c=calcRole(r);
+    const pct=(c.score*100).toFixed(0);
+    const w=Math.min(c.score,1)*100;
+    cards+=`<div class="rcard" data-role="${r}">
+      <div class="open"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></div>
+      <div class="role">${r}</div>
+      <div class="scwrap">
+        <div class="score" style="color:${statusColor(c.estado)}">${c.any?pct+"%":"—"}</div>
+        <span class="chip ${c.estado}">${statusLabel(c.estado)}</span>
+      </div>
+      <div class="bar"><span style="width:${w}%;background:${statusColor(c.estado)}"></span></div>
+      <div class="meta"><span><b>${c.rojos}</b> en rojo</span><span><b>${c.amb}</b> en ámbar</span><span><b>${c.nod}</b> sin dato</span></div>
+    </div>`;
+  });
+  document.getElementById("view").innerHTML=`
+   <div class="panel">
+    <div class="hero">
+      <div class="scorecard">
+        <div class="lbl">Promedio del área</div>
+        <div class="big">${withData>0?(avg*100).toFixed(0)+"%":"—"}</div>
+        <div class="sub">${monthLabel(curMonth)} · ${withData}/${ROLE_NAMES.length} roles con registro</div>
+        <div class="gbar"><span style="width:${gw}%"></span></div>
+      </div>
+      <div class="legendcard">
+        <h3>El ritmo en cascada</h3>
+        <div class="casc">
+          <div class="c"><div><span class="dot" style="background:var(--azul)"></span><span class="t">Semanal</span></div><div class="d">Pulso de los lunes. Actividad y bloqueadores.</div></div>
+          <div class="c"><div><span class="dot" style="background:var(--navy2)"></span><span class="t">Quincenal</span></div><div class="d">Ajuste de rumbo. Propuestas y avance acumulado.</div></div>
+          <div class="c"><div><span class="dot" style="background:var(--rojo)"></span><span class="t">Mensual</span></div><div class="d">Cierre. Resultados y causa raíz de los rojos.</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="grid">${cards}</div>
+   </div>`;
+  document.querySelectorAll(".rcard").forEach(el=>el.onclick=()=>{curView=el.dataset.role;render();});
+}
+
+/* ---------- render: role ---------- */
+function renderRole(role){
+  const kpis=ROLES[role];
+  const rc=calcRole(role);
+  let rows="";
+  kpis.forEach((k,i)=>{
+    const [ind,peso,meta,cad,obs]=k;
+    const c=calcRow(role,i);
+    const rec=state[role][i];
+    const active=ACTIVE_WEEKS[cad];
+    let inputs="";
+    for(let w=0;w<4;w++){
+      const on=active.includes(w);
+      const val=rec.s[w]===null?"":rec.s[w];
+      inputs+=`<td class="wcell"><input type="number" step="any" min="0" class="${on?"":"dim"}" data-role="${encodeURIComponent(role)}" data-i="${i}" data-w="${w}" value="${val}" placeholder="${on?"":"—"}"></td>`;
+    }
+    const w=Math.min(c.cumpl,1)*100;
+    const showCausa=(c.estado==="rojo"||c.estado==="ambar");
+    rows+=`<tr>
+      <td class="ind"><div class="indtxt" data-tip="${obs.replace(/"/g,'&quot;')}">${ind}</div><span class="cadtag ${cad}">${CAD[cad]}</span></td>
+      <td class="peso">${(peso*100).toFixed(0)}%</td>
+      <td class="meta">${meta}</td>
+      ${inputs}
+      <td class="actual" id="act-${i}" style="color:${c.hasData?'var(--navy)':'#B6C0CC'}">${c.hasData?(+c.actual.toFixed(2)):"—"}</td>
+      <td><div class="cumplwrap"><span class="pct" id="pct-${i}" style="color:${statusColor(c.estado)}">${c.hasData?(c.cumpl*100).toFixed(0)+"%":"—"}</span><div class="mini"><span id="bar-${i}" style="width:${w}%;background:${statusColor(c.estado)}"></span></div></div></td>
+      <td id="est-${i}"><span class="chip ${c.estado}">${statusLabel(c.estado)}</span></td>
+      <td class="causa"><select id="causa-${i}" class="${showCausa?"":"hide"}" data-role="${encodeURIComponent(role)}" data-i="${i}">
+        <option ${rec.causa==="—"?"selected":""}>—</option>
+        <option ${rec.causa==="Controlable"?"selected":""}>Controlable</option>
+        <option ${rec.causa==="No controlable"?"selected":""}>No controlable</option>
+      </select></td>
+    </tr>`;
+  });
+  document.getElementById("view").innerHTML=`
+   <div class="panel">
+    <div class="rolehead">
+      <div class="left">
+        <div class="bk" id="back"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 18l-6-6 6-6"/></svg></div>
+        <h2>${role}</h2>
+        <span class="chip ${rc.estado}" id="rh-chip">${statusLabel(rc.estado)}</span>
+      </div>
+      <div class="rscore"><div class="n" id="rh-score" style="color:${statusColor(rc.estado)}">${rc.any?(rc.score*100).toFixed(0)+"%":"—"}</div><div class="l">Score ponderado · ${monthLabel(curMonth)}</div></div>
+    </div>
+    <div class="tablecard"><div class="tscroll"><table>
+      <thead><tr>
+        <th class="ind">Indicador</th><th>Peso</th><th>Meta</th>
+        <th>S1</th><th>S2</th><th>S3</th><th>S4</th>
+        <th>Actual</th><th>Cumpl.</th><th>Estado</th><th>Causa raíz</th>
+      </tr></thead>
+      <tbody>${rows}</tbody>
+      <tbody><tr class="totalrow">
+        <td style="text-align:right">TOTAL</td>
+        <td>${(kpis.reduce((a,k)=>a+k[1],0)*100).toFixed(0)}%</td>
+        <td></td><td></td><td></td><td></td><td></td>
+        <td class="actual"></td>
+        <td class="pct" id="tot-pct">${rc.any?(rc.score*100).toFixed(0)+"%":"—"}</td>
+        <td id="tot-est"><span class="chip ${rc.estado}">${statusLabel(rc.estado)}</span></td>
+        <td></td>
+      </tr></tbody>
+    </table></div></div>
+    <div class="hint"><i></i> Las celdas azules (S1–S4) son las que registras. Según la cadencia se resaltan las semanas activas; el resto se calcula solo.</div>
+   </div>`;
+  document.getElementById("back").onclick=()=>{curView="board";render();};
+  bindInputs();
+  bindTips();
+}
+
+function bindInputs(){
+  document.querySelectorAll(".wcell input").forEach(inp=>{
+    inp.oninput=()=>{
+      const role=decodeURIComponent(inp.dataset.role), i=+inp.dataset.i, w=+inp.dataset.w;
+      const v=inp.value===""?null:parseFloat(inp.value);
+      state[role][i].s[w]=v;
+      scheduleSave();
+      refreshCalc(role);
+    };
+  });
+  document.querySelectorAll(".causa select").forEach(sel=>{
+    sel.onchange=()=>{ const role=decodeURIComponent(sel.dataset.role), i=+sel.dataset.i; state[role][i].causa=sel.value; scheduleSave(); };
+  });
+}
+function refreshCalc(role){
+  ROLES[role].forEach((k,i)=>{
+    const c=calcRow(role,i), w=Math.min(c.cumpl,1)*100;
+    const act=document.getElementById("act-"+i);
+    if(act){act.textContent=c.hasData?(+c.actual.toFixed(2)):"—";act.style.color=c.hasData?'var(--navy)':'#B6C0CC';}
+    const pct=document.getElementById("pct-"+i);
+    if(pct){pct.textContent=c.hasData?(c.cumpl*100).toFixed(0)+"%":"—";pct.style.color=statusColor(c.estado);}
+    const bar=document.getElementById("bar-"+i);
+    if(bar){bar.style.width=w+"%";bar.style.background=statusColor(c.estado);}
+    const est=document.getElementById("est-"+i);
+    if(est){est.innerHTML='<span class="chip '+c.estado+'">'+statusLabel(c.estado)+'</span>';}
+    const ca=document.getElementById("causa-"+i);
+    if(ca){const show=(c.estado==="rojo"||c.estado==="ambar");ca.classList.toggle("hide",!show);}
+  });
+  const rc=calcRole(role);
+  const tp=document.getElementById("tot-pct"); if(tp)tp.textContent=rc.any?(rc.score*100).toFixed(0)+"%":"—";
+  const te=document.getElementById("tot-est"); if(te)te.innerHTML='<span class="chip '+rc.estado+'">'+statusLabel(rc.estado)+'</span>';
+  const rs=document.getElementById("rh-score"); if(rs){rs.textContent=rc.any?(rc.score*100).toFixed(0)+"%":"—";rs.style.color=statusColor(rc.estado);}
+  const rch=document.getElementById("rh-chip"); if(rch){rch.className="chip "+rc.estado;rch.textContent=statusLabel(rc.estado);}
+}
+
+/* tooltips */
+function bindTips(){
+  const tip=document.getElementById("tip");
+  document.querySelectorAll("[data-tip]").forEach(el=>{
+    el.onmouseenter=e=>{ tip.textContent=el.dataset.tip; tip.classList.add("show"); posTip(e); };
+    el.onmousemove=posTip;
+    el.onmouseleave=()=>tip.classList.remove("show");
+  });
+  function posTip(e){ const t=document.getElementById("tip"); let x=e.clientX+14,y=e.clientY+14; if(x+330>window.innerWidth)x=e.clientX-330; t.style.left=x+"px"; t.style.top=y+"px"; }
+}
+
+/* ---------- main render ---------- */
+function render(){
+  renderTabs();
+  if(curView==="board") renderBoard(); else renderRole(curView);
+}
+
+/* ---------- month selector ---------- */
+function renderMonthSel(){
+  const sel=document.getElementById("monthSel"); sel.innerHTML="";
+  months.slice().sort().reverse().forEach(m=>{ const o=document.createElement("option"); o.value=m; o.textContent=monthLabel(m); if(m===curMonth)o.selected=true; sel.appendChild(o); });
+}
+
+/* ---------- export ---------- */
+function exportData(){
+  const rows=[["Rol","Indicador","Cadencia","Peso","Meta","S1","S2","S3","S4","Actual","Cumplimiento","Estado","CausaRaiz"]];
+  ROLE_NAMES.forEach(r=>ROLES[r].forEach((k,i)=>{
+    const c=calcRow(r,i),rec=state[r][i];
+    rows.push([r,k[0],CAD[k[3]],k[1],k[2],...rec.s.map(v=>v==null?"":v),c.hasData?(+c.actual.toFixed(2)):"",c.hasData?(c.cumpl).toFixed(3):"",statusLabel(c.estado),rec.causa]);
+  }));
+  const csv=rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(",")).join("\n");
+  const blob=new Blob(["﻿"+csv],{type:"text/csv;charset=utf-8"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=`KPIs_MKT_TDC_${curMonth}.csv`; a.click();
+}
+
+/* ---------- init ---------- */
+async function init(){
+  await loadIndex();
+  curMonth=months.slice().sort().reverse()[0];
+  await loadMonth(curMonth);
+  renderMonthSel();
+  render();
+
+  document.getElementById("monthSel").onchange=async e=>{ curMonth=e.target.value; await loadMonth(curMonth); render(); };
+  document.getElementById("newMonth").onclick=async()=>{
+    const v=prompt("Nuevo mes (formato AAAA-MM, ej. 2026-07):",curMonth);
+    if(!v||!/^\d{4}-\d{2}$/.test(v)){ if(v)alert("Formato inválido. Usa AAAA-MM."); return; }
+    if(!months.includes(v)){ months.push(v); try{ await setDoc(doc(db,KPIS_COL,v),{state:blankState(),updatedAt:serverTimestamp()}); }catch(e){} }
+    curMonth=v; await loadMonth(v); renderMonthSel(); curView="board"; render();
+  };
+  document.getElementById("exportBtn").onclick=exportData;
+}
+
+/* Espera a la sesión de Firebase (compartida con la app principal, mismo origen) */
+let started=false;
+onAuthStateChanged(auth,user=>{
+  if(user&&!started){ started=true; init(); }
+  else if(!user&&!started){ document.getElementById("view").innerHTML='<div class="empty">Inicia sesión en el tablero para ver los KPIs.</div>'; }
+});
+</script>
+</body>
+</html>
