@@ -17,7 +17,7 @@ const CATS=['Comunicación interna','Diseño','Audiovisual','Publicidad exterior
 const COLORS=['#D02B2B','#F59E0B','#10B981','#3B82F6','#8B5CF6','#EC4899','#14B8A6'];
 const DIAS={0:31,1:28,2:31,3:30,4:31,5:30,6:31,7:31,8:30,9:31,10:30,11:31};
 
-const fbApp=initializeApp({apiKey:"AIzaSyA2Lq6ht8FGiHKTpRwq1Eq0nQb1QcNZeZs",authDomain:"tablero-de-pendientes.firebaseapp.com",projectId:"tablero-de-pendientes",storageBucket:"tablero-de-pendientes.firebasestorage.app",messagingSenderId:"624099263633",appId:"1:624099263633:web:d19059addbb8c437876b30",measurementId:"G-TNT52WE3L4"});
+const fbApp=initializeApp({apiKey:"AIzaSyDb5rQYu5_Ukf5AQ77zz8O6Si1MUdGcz_w",authDomain:"tdc-calendario-av.firebaseapp.com",projectId:"tdc-calendario-av",storageBucket:"tdc-calendario-av.firebasestorage.app",messagingSenderId:"393165602286",appId:"1:393165602286:web:702df05a4a4aa6ef3662ff",measurementId:"G-9NGVTJVFDQ"});
 const db=getFirestore(fbApp);
 const auth=getAuth(fbApp);
 
