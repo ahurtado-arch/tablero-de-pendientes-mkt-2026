@@ -137,6 +137,11 @@ function loadData(){
 }
 
 // NAV
+let sidebarCollapsed=false;
+window.toggleSidebar=()=>{
+  sidebarCollapsed=!sidebarCollapsed;
+  $('sidebar').classList.toggle('collapsed',sidebarCollapsed);
+};
 window.switchSection=n=>{
   activeSection=n;
   [1,2,3,4].forEach(i=>{$(`navTab${i}`).className='nav-tab'+(i===n?' active':'');$(`sec${i}`).className='section'+(i===n?' active':'');});
