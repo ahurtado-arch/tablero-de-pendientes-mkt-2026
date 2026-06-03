@@ -93,6 +93,7 @@
   <!-- SECTION 1: TABLERO -->
   <div class="section active" id="sec1">
     <div class="toolbar">
+      <div class="board-filters" id="boardFilters">
       <select id="fMio" onchange="renderBoard()">
         <option value="">Todos los encargados</option>
         <option>Ana Paula Hurtado</option><option>Johan Galvez</option><option>Pablo Caillahua</option>
@@ -116,6 +117,7 @@
         <option>Otros</option>
       </select>
       <button class="btn-clear" onclick="clearF()">✕ Limpiar</button>
+      </div>
       <div class="toolbar-right">
         <button class="btn-primary" onclick="openTaskModal()">
           <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Nueva tarea

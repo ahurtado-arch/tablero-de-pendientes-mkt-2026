@@ -111,6 +111,7 @@ function setupUser(user){
   if(isAdmin())$('adminBadge').style.display='flex';
   const myName=fullName;
   if(TEAM.includes(myName)){$('fMio').value=myName;myFilter='mios';}
+  applyFilterVisibility();
 }
 
 function getUserFullName(){
@@ -144,11 +145,15 @@ window.switchSection=n=>{
 };
 
 // BOARD FILTERS
+function applyFilterVisibility(){
+  const bf=$('boardFilters');if(bf)bf.style.display=myFilter==='mios'?'none':'contents';
+}
 window.setMyFilter=v=>{
   myFilter=v;
   $('btnTodos').className='my-filter-btn'+(v==='todos'?' active':'');
   $('btnMios').className='my-filter-btn'+(v==='mios'?' active':'');
   $('fMio').value=v==='mios'?getUserFullName():'';
+  applyFilterVisibility();
   renderBoard();
 };
 
@@ -162,7 +167,7 @@ function filteredTasks(){
     return true;
   });
 }
-window.clearF=()=>{['fMio','fMes','fPri','fCat'].forEach(id=>$(id).value='');myFilter='todos';$('btnTodos').className='my-filter-btn active';$('btnMios').className='my-filter-btn';renderBoard();};
+window.clearF=()=>{['fMio','fMes','fPri','fCat'].forEach(id=>$(id).value='');myFilter='todos';$('btnTodos').className='my-filter-btn active';$('btnMios').className='my-filter-btn';applyFilterVisibility();renderBoard();};
 
 function renderBoard(){
   const fevs=filteredTasks();
