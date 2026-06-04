@@ -50,27 +50,38 @@ html,body{min-height:100%;font-family:'General Sans','Helvetica Neue',Arial,sans
 .btn-logout{background:none;border:1px solid rgba(255,255,255,.2);border-radius:7px;padding:5px 10px;font-size:11px;color:rgba(255,255,255,.6);cursor:pointer;font-family:inherit;}
 .btn-logout:hover{background:rgba(255,255,255,.08);}
 
-/* SIDEBAR NAV */
-.shell{display:flex;align-items:flex-start;}
-.sidebar{position:sticky;top:62px;align-self:flex-start;height:calc(100vh - 62px);background:var(--white);border-right:1px solid var(--gray2);width:208px;flex-shrink:0;display:flex;flex-direction:column;gap:4px;padding:14px 12px;transition:width .18s ease,padding .18s ease;overflow:hidden;z-index:50;}
-.sidebar.collapsed{width:62px;padding:14px 9px;}
-.content{flex:1;min-width:0;}
-.side-toggle{background:var(--gray);border:1px solid var(--gray2);border-radius:9px;height:36px;min-width:36px;cursor:pointer;color:var(--navy);display:flex;align-items:center;justify-content:center;font-size:16px;font-family:inherit;margin-bottom:10px;flex-shrink:0;align-self:flex-start;}
-.side-toggle:hover{background:var(--gray2);}
-.sidebar.collapsed .side-toggle{align-self:center;}
+/* SIDEBAR NAV (fijo, contraido por defecto, se expande al hover) */
+.shell{display:block;}
+.sidebar{position:fixed;top:0;left:0;height:100vh;width:64px;background:var(--white);border-right:1px solid var(--gray2);display:flex;flex-direction:column;gap:4px;padding:14px 12px;overflow:hidden;z-index:200;transition:width .18s ease,box-shadow .18s ease;}
+.sidebar:hover{width:214px;box-shadow:10px 0 30px rgba(16,36,63,.12);}
+.content{margin-left:64px;min-width:0;}
+
+.side-logo{display:flex;align-items:center;gap:11px;margin-bottom:16px;padding:2px;}
+.side-brand{overflow:hidden;white-space:nowrap;}
+.side-brand h1{font-size:14px;font-weight:700;color:var(--navy);}
+.side-brand p{font-size:10px;color:var(--muted);margin-top:1px;}
+
 .side-nav{display:flex;flex-direction:column;gap:3px;}
-.nav-tab{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:10px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;white-space:nowrap;transition:background .14s,color .14s;}
+.nav-tab{display:flex;align-items:center;gap:13px;padding:11px 11px;border-radius:10px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;white-space:nowrap;transition:background .14s,color .14s;}
 .nav-tab:hover:not(.active){background:var(--gray);color:var(--text);}
 .nav-tab.active{background:var(--navy);color:#fff;}
 .nav-tab .ico{font-size:16px;width:22px;text-align:center;flex-shrink:0;}
-.sidebar.collapsed .nav-tab{justify-content:center;padding:11px 0;}
-.sidebar.collapsed .nav-tab .lbl{display:none;}
-@media(max-width:760px){
-  .sidebar{width:60px;padding:14px 9px;}
-  .sidebar .nav-tab{justify-content:center;padding:11px 0;}
-  .sidebar .nav-tab .lbl{display:none;}
-  .sidebar .side-toggle{display:none;}
-}
+
+.side-foot{margin-top:auto;display:flex;flex-direction:column;gap:7px;padding-top:12px;border-top:1px solid var(--gray2);}
+.side-foot .sync-chip{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted);background:none;padding:4px 7px;border-radius:8px;}
+.side-foot .user-chip{display:flex;align-items:center;gap:9px;background:none;padding:3px 7px;border-radius:8px;}
+.side-foot .user-name{font-size:12px;color:var(--text);font-weight:600;}
+.side-foot .admin-badge{font-size:10px;font-weight:700;color:#A9781C;background:var(--yellow-lt);border:none;padding:3px 9px;border-radius:20px;align-self:flex-start;}
+.side-foot .btn-logout{display:flex;align-items:center;gap:13px;background:none;border:none;border-radius:10px;padding:9px 11px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;font-family:inherit;white-space:nowrap;}
+.side-foot .btn-logout:hover{background:var(--red-lt);color:var(--red-dk);}
+.side-foot .btn-logout .ico{font-size:15px;width:22px;text-align:center;flex-shrink:0;}
+
+/* textos ocultos en contraido, visibles al hover */
+.sidebar .lbl,.sidebar .side-brand{display:none;}
+.sidebar:hover .lbl{display:inline;}
+.sidebar:hover .side-brand{display:block;}
+.sidebar:not(:hover) .admin-badge{display:none!important;}
+.sidebar:not(:hover) .sync-chip,.sidebar:not(:hover) .user-chip,.sidebar:not(:hover) .btn-logout{justify-content:center;padding-left:0;padding-right:0;}
 
 /* SECTIONS */
 .section{display:none;animation:fadeIn .2s ease;}
