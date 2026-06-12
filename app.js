@@ -148,6 +148,7 @@ window.switchSection=n=>{
 // BOARD FILTERS
 function applyFilterVisibility(){
   const bf=$('boardFilters');if(bf)bf.style.display=myFilter==='mios'?'none':'contents';
+  const tb=$('boardToolbar');if(tb)tb.style.display=myFilter==='mios'?'none':'flex';
 }
 window.setMyFilter=v=>{
   myFilter=v;

@@ -95,8 +95,11 @@
         <button class="my-filter-btn" id="btnTodos" onclick="setMyFilter('todos')">Ver todos</button>
         <button class="my-filter-btn active" id="btnMios" onclick="setMyFilter('mios')">Mis tareas</button>
       </div>
+      <button class="btn-primary" onclick="openTaskModal()">
+        <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Nueva tarea
+      </button>
     </div>
-    <div class="toolbar">
+    <div class="toolbar" id="boardToolbar">
       <div class="board-filters" id="boardFilters">
       <select id="fMio" onchange="renderBoard()">
         <option value="">Todos los encargados</option>
@@ -121,11 +124,6 @@
         <option>Otros</option>
       </select>
       <button class="btn-clear" onclick="clearF()">✕ Limpiar</button>
-      </div>
-      <div class="toolbar-right">
-        <button class="btn-primary" onclick="openTaskModal()">
-          <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Nueva tarea
-        </button>
       </div>
     </div>
     <div class="counters">
