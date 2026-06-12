@@ -75,7 +75,8 @@ html,body{min-height:100%;font-family:'General Sans','Segoe UI',system-ui,sans-s
 .sidebar:hover .lbl{display:inline;}
 .sidebar:hover .side-brand{display:block;}
 .sidebar:not(:hover) .admin-badge{display:none!important;}
-.sidebar:not(:hover) .sync-chip,.sidebar:not(:hover) .user-chip,.sidebar:not(:hover) .btn-logout{justify-content:center;padding-left:0;padding-right:0;}
+.sidebar:not(:hover) .nav-tab,.sidebar:not(:hover) .sync-chip,.sidebar:not(:hover) .user-chip,.sidebar:not(:hover) .btn-logout{justify-content:center;padding-left:0;padding-right:0;}
+.sidebar:not(:hover) .side-logo{justify-content:center;}
 
 /* SECTIONS (centradas, con ancho maximo como la plataforma de Contenido) */
 .section{display:none;animation:fadeIn .25s ease;max-width:1400px;margin:0 auto;}

@@ -25,17 +25,17 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 
 /* TOP BAR + TABS */
 .brandbar{background:var(--white);border-bottom:1px solid var(--line);padding:0 28px;display:flex;align-items:center;gap:30px;position:sticky;top:0;z-index:30}
-.logo{display:flex;align-items:center;gap:11px;padding:14px 0}
+.logo{display:flex;align-items:center;gap:11px;padding:14px 0;flex:1}
 .logo-mark{width:40px;height:40px;border-radius:11px;background:var(--grad-red);display:grid;place-items:center;font-weight:700;font-size:14px;color:#fff;letter-spacing:.5px;box-shadow:0 6px 16px rgba(232,38,28,.4)}
 .logo-txt b{font-size:14px;font-weight:600;display:block}
 .logo-txt span{font-size:10.5px;color:var(--muted)}
-.tabs{display:flex;gap:4px;flex:1;align-self:stretch}
+.tabs{display:flex;gap:4px;flex:0 1 auto;align-self:stretch;justify-content:center}
 .tab{padding:0 16px;font-size:13.5px;font-weight:500;color:var(--muted);display:flex;align-items:center;gap:8px;position:relative;transition:.15s}
 .tab svg{width:17px;height:17px;stroke-width:1.7}
 .tab:hover{color:var(--ink)}
 .tab.active{color:var(--steel);font-weight:600}
 .tab.active::after{content:"";position:absolute;bottom:0;left:12px;right:12px;height:3px;background:var(--steel);border-radius:3px 3px 0 0}
-.top-right{display:flex;align-items:center;gap:14px}
+.top-right{display:flex;align-items:center;gap:14px;flex:1;justify-content:flex-end}
 .month-pick{display:flex;align-items:center;gap:9px;background:var(--bg);border:1px solid var(--line);border-radius:11px;padding:8px 14px;font-size:13px;font-weight:600}
 .month-pick svg{width:16px;height:16px;color:var(--steel)}
 .avatar{width:36px;height:36px;border-radius:50%;background:var(--grad-navy);color:#fff;display:grid;place-items:center;font-size:13px;font-weight:600}
@@ -468,7 +468,7 @@ select.cell-input{cursor:pointer}
 </head>
 <body>
   <div class="brandbar">
-    <div class="logo"><div class="logo-mark">TDC</div><div class="logo-txt"><b>Contenido</b><span>Taller de Diseño Constructivo</span></div></div>
+    <div class="logo"><div class="logo-txt"><b>Contenido</b><span>Taller de Diseño Constructivo</span></div></div>
     <nav class="tabs">
       <button class="tab active" data-view="parrilla"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>Parrilla</button>
       <button class="tab" data-view="historias"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 010 18"/></svg>Historias</button>
