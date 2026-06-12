@@ -50,7 +50,7 @@ html,body{min-height:100%;font-family:'General Sans','Segoe UI',system-ui,sans-s
 .shell{display:block;}
 .sidebar{position:fixed;top:0;left:0;height:100vh;width:64px;background:var(--white);border-right:1px solid var(--gray2);display:flex;flex-direction:column;gap:4px;padding:14px 12px;overflow:hidden;z-index:200;transition:width .18s ease,box-shadow .18s ease;}
 .sidebar:hover{width:214px;box-shadow:10px 0 30px rgba(22,38,62,.12);}
-.content{margin-left:64px;min-width:0;padding-bottom:30px;}
+.content{margin-left:64px;min-width:0;}
 
 .side-logo{display:flex;align-items:center;gap:11px;margin-bottom:16px;padding:2px;}
 .side-brand{overflow:hidden;white-space:nowrap;}
@@ -81,6 +81,10 @@ html,body{min-height:100%;font-family:'General Sans','Segoe UI',system-ui,sans-s
 .section.active{display:block;}
 #sec2 .toolbar{padding-top:36px;}
 #sec3 .analytics-section{padding-top:36px;}
+/* secciones con iframe (KPIs y Contenido): ancho completo y alto exacto de ventana,
+   para que el scroll viva dentro del iframe y nada quede recortado */
+#sec4,#sec5{max-width:none;margin:0;animation:none;}
+#sec4 iframe,#sec5 iframe{height:100vh;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
 /* TOOLBAR (flotando sobre el fondo, como la plataforma de Contenido) */
