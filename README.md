@@ -10,6 +10,8 @@ Firebase (Firestore + Auth con Google) en tiempo real.
 | `index.html` | Estructura/markup de la app (login, tablero, grabaciones, seguimiento, modales). |
 | `styles.css` | Todos los estilos (paleta TDC: rojos + navy). |
 | `app.js` | Lógica: auth Google, Firestore en vivo, tablero, calendario y analytics. |
+| `kpis.html` | Dashboard de KPIs (iframe en la sección 4). Persiste en Firestore (`kpis_mkt`). |
+| `contenido.html` | Plataforma de contenido: parrilla, historias, rendimiento, tendencias y extras (iframe en la sección 5). Persiste en Firestore (`contenido_mkt`). |
 
 ## Secciones
 
@@ -20,6 +22,12 @@ Firebase (Firestore + Auth con Google) en tiempo real.
 3. **📊 Seguimiento** — dashboard con la **cantidad de pendientes por persona**, tareas por
    encargado, por categoría, área/persona que más solicita, días para completar y ranking de
    pendientes. Vista global o por persona (admins pueden ver a cualquiera).
+4. **📈 KPIs** — dashboard de indicadores por rol (`kpis.html`).
+5. **🗂️ Contenido** — plataforma de parrilla de contenido (`contenido.html`): parrilla mensual
+   de posts (pilar, copy, hashtags, estado por red FB/IG/LK), historias semanales con banco de
+   ideas, rendimiento (vista demo), tendencias del sector y módulos extra (banco de copys,
+   fechas clave, carga por responsable, reporte mensual en PDF). Todo lo editable se
+   autoguarda en Firestore.
 
 ## Firebase
 
@@ -27,6 +35,8 @@ Usa el proyecto `tablero-de-pendientes` (mismas credenciales que la referencia).
 
 - `tareas_v2` — tareas del tablero
 - `grabaciones` — grabaciones del calendario
+- `kpis_mkt` — estado mensual del dashboard de KPIs
+- `contenido_mkt` — estado de la plataforma de contenido (doc `principal`)
 
 > El acceso está restringido al dominio `paraleloinmobiliaria.pe` (login con Google).
 > Los emails admin están en `ADMINS` dentro de `app.js`.

@@ -1,0 +1,1317 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TDC · Plataforma de Contenido</title>
+<link rel="preconnect" href="https://api.fontshare.com">
+<link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#E8261C;--red-soft:#FFE9E6;
+  --navy:#16263E;--navy-2:#22344F;
+  --steel:#2E5B8A;--steel-soft:#EAF1F8;--steel-tint:#F3F7FB;
+  --ink:#16263E;--muted:#6B7A8D;--line:#E7ECF2;--bg:#F6F8FB;--white:#FFFFFF;
+  --green:#1BA572;--amber:#C8841F;--slate:#5B7088;
+  --grad-red:linear-gradient(135deg,#FF5446 0%,#E8261C 55%,#C4140C 100%);
+  --grad-navy:linear-gradient(150deg,#274163 0%,#16263E 100%);
+  --shadow:0 1px 2px rgba(22,38,62,.04),0 8px 24px rgba(22,38,62,.06);
+  --shadow-lg:0 12px 40px rgba(22,38,62,.12);
+  --p-barrio:#2E7DC4;--p-diseno:#7A5CC0;--p-historias:#E9A23B;--p-producto:#E8261C;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'General Sans','Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.45}
+button{font-family:inherit;cursor:pointer;border:none;background:none}
+
+/* TOP BAR + TABS */
+.brandbar{background:var(--white);border-bottom:1px solid var(--line);padding:0 28px;display:flex;align-items:center;gap:30px;position:sticky;top:0;z-index:30}
+.logo{display:flex;align-items:center;gap:11px;padding:14px 0}
+.logo-mark{width:40px;height:40px;border-radius:11px;background:var(--grad-red);display:grid;place-items:center;font-weight:700;font-size:14px;color:#fff;letter-spacing:.5px;box-shadow:0 6px 16px rgba(232,38,28,.4)}
+.logo-txt b{font-size:14px;font-weight:600;display:block}
+.logo-txt span{font-size:10.5px;color:var(--muted)}
+.tabs{display:flex;gap:4px;flex:1;align-self:stretch}
+.tab{padding:0 16px;font-size:13.5px;font-weight:500;color:var(--muted);display:flex;align-items:center;gap:8px;position:relative;transition:.15s}
+.tab svg{width:17px;height:17px;stroke-width:1.7}
+.tab:hover{color:var(--ink)}
+.tab.active{color:var(--steel);font-weight:600}
+.tab.active::after{content:"";position:absolute;bottom:0;left:12px;right:12px;height:3px;background:var(--steel);border-radius:3px 3px 0 0}
+.top-right{display:flex;align-items:center;gap:14px}
+.month-pick{display:flex;align-items:center;gap:9px;background:var(--bg);border:1px solid var(--line);border-radius:11px;padding:8px 14px;font-size:13px;font-weight:600}
+.month-pick svg{width:16px;height:16px;color:var(--steel)}
+.avatar{width:36px;height:36px;border-radius:50%;background:var(--grad-navy);color:#fff;display:grid;place-items:center;font-size:13px;font-weight:600}
+
+.content{padding:24px 28px;max-width:1600px;margin:0 auto;animation:fade .3s ease}
+@keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.view{display:none}.view.active{display:block}
+.section-title{font-size:14px;font-weight:600;margin-bottom:14px;display:flex;align-items:center;gap:9px}
+.section-title .dot{width:7px;height:17px;border-radius:4px;background:var(--grad-navy)}
+.subtitle{font-size:13px;color:var(--muted);margin-bottom:18px;max-width:680px;line-height:1.55}
+.card{background:var(--white);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:var(--shadow)}
+.tag-dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+
+/* OBJETIVOS POR PILAR — sutil */
+.goalbar{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:16px 20px;margin-bottom:18px}
+.goalbar-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;flex-wrap:wrap;gap:12px}
+.gh-left{display:flex;align-items:baseline;gap:9px}
+.gh-left b{font-size:13.5px;font-weight:600;color:var(--navy)}
+.gh-left span{font-size:12px;color:var(--muted)}
+.gh-right{display:flex;align-items:center;gap:9px;font-size:12px;color:var(--muted)}
+.stepper{display:flex;align-items:center;background:var(--bg);border-radius:9px;border:1px solid var(--line)}
+.stepper button{width:30px;height:34px;font-size:16px;font-weight:600;color:var(--steel)}
+.stepper input{width:42px;height:34px;border:none;background:none;text-align:center;font-size:15px;font-weight:700;font-family:inherit;color:var(--ink);outline:none}
+.goal-items{display:grid;grid-template-columns:repeat(4,1fr)}
+.goal-item{padding:4px 18px;border-left:1px solid var(--line)}
+.goal-item:first-child{padding-left:0;border-left:none}
+.gi-head{display:flex;align-items:center;gap:7px;font-size:12px;font-weight:500;color:var(--navy);margin-bottom:8px}
+.gi-head .gi-pct{margin-left:auto;font-size:11px;color:var(--muted)}
+.gi-count{font-size:13px;color:var(--muted);margin-bottom:8px}
+.gi-count b{font-size:19px;font-weight:700;color:var(--ink);letter-spacing:-.3px}
+.gi-track{height:5px;background:var(--bg);border-radius:6px;overflow:hidden;margin-bottom:8px}
+.gi-fill{height:100%;border-radius:6px;opacity:.75;transition:width .8s cubic-bezier(.2,.8,.2,1)}
+.gi-status{font-size:11px;font-weight:600;display:flex;align-items:center;gap:5px}
+.gi-status::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.s-ok{color:var(--green)}.s-falta{color:var(--slate)}.s-extra{color:var(--amber)}
+
+/* TOOLBAR */
+.toolbar{display:flex;align-items:center;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+.filter{display:flex;align-items:center;gap:7px;background:var(--white);border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:12.5px;font-weight:500;color:var(--muted)}
+.filter select{border:none;background:none;font-family:inherit;font-size:12.5px;font-weight:600;color:var(--ink);outline:none;cursor:pointer}
+.btn-primary{background:var(--grad-navy);color:#fff;font-size:13px;font-weight:600;padding:9px 16px;border-radius:10px;display:inline-flex;align-items:center;gap:7px;box-shadow:0 6px 16px rgba(22,38,62,.22);transition:.2s}
+.btn-primary:hover{transform:translateY(-1px);box-shadow:0 9px 22px rgba(22,38,62,.3)}
+.btn-primary svg{width:15px;height:15px}
+.btn-ghost{background:var(--white);border:1px solid var(--line);color:var(--ink);font-size:13px;font-weight:600;padding:9px 14px;border-radius:10px;display:inline-flex;align-items:center;gap:7px}
+.spacer{flex:1}
+
+/* PARRILLA TABLE (scroll horizontal) */
+.parrilla{background:var(--white);border:1px solid var(--line);border-radius:18px;overflow-x:auto;box-shadow:var(--shadow)}
+.gridcols{display:grid;grid-template-columns:70px 88px 168px minmax(260px,1.4fr) minmax(170px,1fr) 116px 126px 92px 92px 92px 42px;column-gap:10px;min-width:1416px}
+.ph{padding:0 18px;background:var(--bg);font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:600;border-bottom:1px solid var(--line);align-items:stretch}
+.ph>div{display:flex;align-items:flex-end;padding:11px 0}
+.ph-group{flex-direction:column;align-items:stretch;justify-content:flex-end;gap:7px;padding:8px 0!important}
+.ph-cap{font-size:9px;color:#8190A2;font-weight:600;text-transform:none;letter-spacing:0;text-align:center;white-space:nowrap;line-height:1}
+.subhead{display:grid;grid-template-columns:repeat(3,1fr);width:100%}
+.subhead span{text-align:center;font-size:10px;font-weight:700;color:var(--slate)}
+.week-band{padding:9px 18px;background:var(--steel-tint);font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--steel);text-transform:uppercase;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px;min-width:1416px}
+.week-band span{color:var(--muted);font-weight:500;letter-spacing:0;text-transform:none}
+.prow{padding:14px 18px;border-bottom:1px solid var(--line);align-items:start;transition:.15s}
+.prow:hover{background:#FBFCFE}
+.prow.editing{background:var(--steel-soft);box-shadow:inset 3px 0 0 var(--steel)}
+.pdate{font-size:13px;font-weight:600}
+.pdate small{display:block;font-size:10px;color:var(--muted);font-weight:500;text-transform:uppercase}
+.fmt{font-size:11.5px;font-weight:600;color:var(--navy)}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;padding:4px 9px;border-radius:20px}
+.ptitle{font-weight:600;font-size:13px}
+.ptitle small{display:block;font-weight:400;font-size:11px;color:var(--muted);margin-top:3px;line-height:1.5;white-space:pre-wrap}
+.htags{font-size:11px;color:var(--steel);font-weight:500;line-height:1.6;word-break:break-word}
+/* BADGE unificado de estado (mismo estilo, solo cambia el color) */
+.badge{display:inline-flex;align-items:center;justify-content:center;font-size:10.5px;font-weight:600;padding:5px 10px;border-radius:20px;white-space:nowrap}
+.b-green{background:#E7F6EF;color:var(--green)}
+.b-amber{background:#FCF3E3;color:#B07410}
+.b-blue{background:var(--steel-soft);color:var(--steel)}
+.b-gray{background:var(--bg);color:var(--muted)}
+.b-faint{background:#FAFBFC;color:#C8D2DC}
+/* redes asignadas — lectura */
+.reds{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;align-items:center;justify-items:center}
+.netchip{width:26px;text-align:center;font-size:9.5px;font-weight:700;padding:4px 0;border-radius:7px}
+.netchip.on{background:var(--navy);color:#fff}
+.netchip.off{background:#fff;border:1px dashed #D5DEE8;color:#C3CDD9}
+/* redes — edición (casillas) */
+.chk{width:20px;height:20px;border-radius:5px;border:1.5px solid #C3CDD9;background:#fff;display:grid;place-items:center;cursor:pointer;transition:.15s}
+.chk svg{width:12px;height:12px;color:#fff;stroke-width:3.2}
+.chk.on{background:var(--navy);border-color:var(--navy)}
+.chk.off svg{opacity:0}
+.chk:hover{border-color:var(--steel)}
+/* publicación por red — edición (selects) */
+.pubreds{display:grid;grid-template-columns:repeat(3,1fr);gap:5px;align-items:center}
+.pubsel{font-family:inherit;font-size:10px;font-weight:600;border:1px solid var(--line);border-radius:13px;padding:4px 14px 4px 7px;cursor:pointer;outline:none;width:100%;
+  appearance:none;-webkit-appearance:none;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 24 24' fill='none' stroke='%236B7A8D' stroke-width='3'><path d='M6 9l6 6 6-6'/></svg>");
+  background-repeat:no-repeat;background-position:right 6px center}
+.ps-pub{background-color:#E7F6EF;color:var(--green);border-color:#CDEBDD}
+.ps-no{background-color:var(--bg);color:var(--muted)}
+.ps-prog{background-color:var(--steel-soft);color:var(--steel);border-color:#D6E5F2}
+.ps-off{background-color:#FAFBFC;color:#C3CDD9;border-style:dashed;cursor:not-allowed}
+/* inputs de edición de celdas */
+.cell-input{width:100%;font-family:inherit;font-size:12px;border:1px solid var(--line);border-radius:7px;padding:5px 7px;outline:none;color:var(--ink);background:#fff}
+.cell-input:focus{border-color:var(--steel)}
+textarea.cell-input{resize:vertical;min-height:64px;line-height:1.4;margin-top:5px}
+select.cell-input{cursor:pointer}
+.resp{display:flex;align-items:center;gap:8px}
+.resp-av{width:26px;height:26px;border-radius:8px;background:var(--grad-navy);color:#fff;display:grid;place-items:center;font-size:11px;font-weight:600}
+.actions{display:flex;gap:4px}
+.act-btn{width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:var(--muted);transition:.15s}
+.act-btn svg{width:15px;height:15px;stroke-width:1.8}
+.act-btn.edit:hover{background:var(--steel-soft);color:var(--steel)}
+.act-btn.del:hover{background:var(--red-soft);color:var(--red)}
+.act-btn.save{color:var(--green)}
+.act-btn.save:hover{background:#E7F6EF;color:var(--green)}
+.add-row{padding:11px 18px;border-bottom:1px solid var(--line);font-size:12px;font-weight:500;color:var(--muted);display:flex;align-items:center;gap:7px;cursor:pointer;min-width:1416px}
+.add-row:hover{color:var(--steel);background:var(--steel-soft)}
+.add-row svg{width:14px;height:14px}
+.week-group.drop-over{box-shadow:inset 0 0 0 2px var(--steel)}
+.prow.dragging{opacity:.4}
+.pdate.drag-handle{cursor:grab}
+.pdate.drag-handle:active{cursor:grabbing}
+.pdate .grip{width:13px;height:13px;color:#C3CDD9;display:block;margin:0 auto 3px}
+.fecha-sel{padding:3px 2px!important;font-size:10px!important}
+.fecha-num{padding:3px!important;font-size:11px!important;text-align:center;margin-top:4px}
+.pdate-cell{display:flex;flex-direction:column;gap:3px}
+.grip-row{cursor:grab;display:flex;justify-content:center;color:#C3CDD9}
+.grip-row:active{cursor:grabbing}
+.grip-row .grip{width:16px;height:11px}
+.inl-sel{width:100%;font-family:inherit;font-size:11px;font-weight:600;border:1px solid var(--line);border-radius:8px;padding:5px 17px 5px 8px;outline:none;cursor:pointer;color:var(--ink);background-color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 24 24' fill='none' stroke='%236B7A8D' stroke-width='3'><path d='M6 9l6 6 6-6'/></svg>");background-repeat:no-repeat;background-position:right 6px center}
+.inl-sel:focus{border-color:var(--steel)!important}
+.inl-num{width:100%;font-family:inherit;font-size:12px;font-weight:600;text-align:center;border:1px solid var(--line);border-radius:7px;padding:4px;outline:none;color:var(--ink)}
+.inl-num:focus{border-color:var(--steel)}
+.inl-title{width:100%;font-family:inherit;font-size:13px;font-weight:600;color:var(--ink);border:1px solid transparent;border-radius:7px;padding:5px 24px 5px 7px;outline:none;background:transparent}
+.inl-title:hover{background:#FBFCFE}
+.inl-title:focus{background:#fff;border-color:var(--steel)}
+.inl-copy,.inl-tags{width:100%;font-family:inherit;border:1px solid transparent;border-radius:7px;padding:5px 7px;outline:none;background:transparent;resize:vertical;line-height:1.5}
+.inl-copy{font-size:11px;color:var(--muted);min-height:48px;margin-top:2px;white-space:pre-wrap}
+.inl-tags{font-size:11px;color:var(--steel);font-weight:500;min-height:46px;line-height:1.6}
+.inl-copy:hover,.inl-tags:hover{background:#FBFCFE}
+.inl-copy:focus,.inl-tags:focus{background:#fff;border-color:var(--steel);color:var(--ink)}
+.ph-c{justify-content:center}
+/* botón copiar en celda título/copy */
+.title-cell{position:relative}
+.title-cell .ptitle{padding-right:22px}
+.copy-cell{position:absolute;top:0;right:0;width:24px;height:24px;border-radius:7px;background:var(--bg);border:1px solid var(--line);display:grid;place-items:center;color:var(--muted);opacity:0;transition:.15s}
+.title-cell:hover .copy-cell{opacity:1}
+.copy-cell:hover{color:var(--steel);border-color:var(--steel)}
+.copy-cell.done{color:var(--green);border-color:#CDEBDD;background:#E7F6EF;opacity:1}
+.copy-cell svg{width:13px;height:13px;stroke-width:2}
+.htags-cell{position:relative}
+.htags-cell .htags{padding-right:22px}
+.htags-cell:hover .copy-cell{opacity:1}
+/* pop-up de edición */
+.modal-overlay{position:fixed;inset:0;background:rgba(22,38,62,.45);display:flex;align-items:flex-start;justify-content:center;padding:40px 16px;z-index:100;overflow-y:auto}
+.modal{background:#fff;border-radius:18px;width:100%;max-width:560px;box-shadow:var(--shadow-lg);animation:fade .2s ease}
+.modal-head{display:flex;align-items:center;justify-content:space-between;padding:17px 22px;border-bottom:1px solid var(--line)}
+.modal-head h3{font-size:16px;font-weight:600}
+.modal-close{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;color:var(--muted)}
+.modal-close:hover{background:var(--bg);color:var(--ink)}
+.modal-body{padding:20px 22px;display:flex;flex-direction:column;gap:14px;max-height:64vh;overflow-y:auto}
+.fld{display:flex;flex-direction:column;gap:6px}
+.fld label{font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.4px}
+.fld input,.fld select,.fld textarea{font-family:inherit;font-size:13px;border:1px solid var(--line);border-radius:9px;padding:9px 11px;outline:none;color:var(--ink);background:#fff;width:100%}
+.fld textarea{resize:vertical;min-height:120px;line-height:1.5}
+.fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--steel)}
+.fld-row{display:flex;gap:12px}
+.fld-row .fld{flex:1}
+.modal-chk{display:flex;gap:18px;flex-wrap:wrap}
+.modal-chk label{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--ink);font-weight:500;cursor:pointer}
+.modal-chk input{width:16px;height:16px;accent-color:var(--navy)}
+.modal-pub{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.mpub{display:flex;flex-direction:column;gap:5px}
+.mpub span{font-size:11px;color:var(--muted);font-weight:600}
+.mpub .pubsel{padding:7px 18px 7px 9px;font-size:11px}
+.modal-foot{display:flex;align-items:center;gap:10px;padding:16px 22px;border-top:1px solid var(--line)}
+.modal-del{margin-left:auto;color:var(--red);font-size:13px;font-weight:600;display:flex;align-items:center;gap:6px;padding:9px 12px;border-radius:10px}
+.modal-del:hover{background:var(--red-soft)}
+
+/* HISTORIAS */
+.stories-week{display:grid;grid-template-columns:repeat(7,1fr);gap:11px}
+.day-col{background:var(--white);border:1px solid var(--line);border-radius:15px;padding:11px;min-height:270px;display:flex;flex-direction:column;gap:8px}
+.day-head{font-size:12px;font-weight:600;text-align:center;padding-bottom:8px;border-bottom:1px solid var(--line);color:var(--navy)}
+.day-head small{display:block;font-size:10px;color:var(--muted);font-weight:500;text-transform:uppercase}
+.story-card{border-radius:10px;padding:9px;font-size:11px;color:#fff;font-weight:500;line-height:1.3}
+.story-card .stype{font-size:8.5px;text-transform:uppercase;letter-spacing:.5px;opacity:.85;font-weight:600;margin-bottom:3px}
+.sc-prod{background:var(--grad-red)}.sc-barrio{background:linear-gradient(135deg,#3D90D6,#2E7DC4)}
+.sc-bts{background:linear-gradient(135deg,#8B6BD0,#7A5CC0)}.sc-encuesta{background:linear-gradient(135deg,#F2B255,#E9A23B)}
+.sc-repost{background:var(--grad-navy)}
+.add-story{border:1.5px dashed #D5DEE8;border-radius:10px;padding:9px;font-size:11px;color:var(--muted);text-align:center;font-weight:500;display:flex;align-items:center;justify-content:center;min-height:40px;transition:.15s}
+.add-story:hover{border-color:var(--steel);color:var(--steel);background:var(--steel-soft)}
+.story-legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:18px;font-size:12px}
+.story-legend span{display:flex;align-items:center;gap:6px;color:var(--muted)}
+.story-legend i{width:12px;height:12px;border-radius:4px;display:inline-block}
+/* historias funcionales */
+.story-card{position:relative}
+.sc-foot{display:flex;align-items:center;gap:5px;margin-top:8px}
+.sc-foot .mini{font-size:8px;font-weight:700;background:rgba(255,255,255,.28);padding:2px 5px;border-radius:5px;letter-spacing:.3px}
+.sc-status{margin-left:auto;display:flex;align-items:center;gap:4px;font-size:8.5px;font-weight:600;opacity:.95}
+.sc-status .d{width:6px;height:6px;border-radius:50%}
+.sc-actions{position:absolute;top:6px;right:6px;display:none;gap:3px}
+.story-card:hover .sc-actions{display:flex}
+.sc-act{width:21px;height:21px;border-radius:6px;background:rgba(255,255,255,.25);display:grid;place-items:center;color:#fff}
+.sc-act svg{width:11px;height:11px;stroke-width:2}
+.sc-act:hover{background:rgba(255,255,255,.45)}
+.story-edit{background:#fff;border:1px solid var(--line);border-radius:11px;padding:9px;display:flex;flex-direction:column;gap:7px;box-shadow:var(--shadow)}
+.story-edit select,.story-edit input,.story-edit textarea{width:100%;font-family:inherit;font-size:11px;border:1px solid var(--line);border-radius:6px;padding:5px 6px;outline:none;color:var(--ink);background:#fff}
+.story-edit textarea{resize:vertical;min-height:44px;line-height:1.35}
+.story-edit *:focus{border-color:var(--steel)}
+.se-plats{display:flex;gap:9px;align-items:center;font-size:10.5px;color:var(--muted);flex-wrap:wrap}
+.se-plats label{display:flex;align-items:center;gap:4px;cursor:pointer}
+.se-plats select{width:auto;margin-left:auto;font-size:10px;padding:4px 5px}
+.se-row{display:flex;gap:6px}
+.se-save{flex:1;background:var(--grad-navy);color:#fff;font-size:11px;font-weight:600;border-radius:7px;padding:6px;display:flex;align-items:center;justify-content:center;gap:5px}
+.se-save svg{width:13px;height:13px;stroke-width:2.5}
+.se-del{width:32px;border-radius:7px;background:var(--red-soft);color:var(--red);display:grid;place-items:center}
+.se-del svg{width:14px;height:14px}
+.stories-summary{display:flex;align-items:center;gap:16px;background:var(--white);border:1px solid var(--line);border-radius:14px;padding:13px 18px;margin-bottom:16px;flex-wrap:wrap}
+.ss-total{font-size:12.5px;color:var(--muted)}
+.ss-total b{font-size:20px;font-weight:700;color:var(--ink);margin-right:5px}
+.ss-chips{display:flex;gap:12px;flex-wrap:wrap}
+.ss-chip{font-size:11.5px;font-weight:600;display:flex;align-items:center;gap:6px;color:var(--muted)}
+.ss-chip .d{width:9px;height:9px;border-radius:3px}
+.ss-note{margin-left:auto;font-size:11.5px;color:var(--muted)}
+/* drag & drop */
+.story-card[draggable="true"]{cursor:grab}
+.story-card.dragging{opacity:.35}
+.day-col.drop-over{background:var(--steel-soft);outline:2px dashed var(--steel);outline-offset:-4px}
+.idea-bank{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:16px 18px;margin-top:18px}
+.idea-bank .ib-head{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:600;color:var(--navy)}
+.idea-bank .ib-head svg{width:16px;height:16px;color:var(--steel)}
+.idea-bank .ib-sub{font-size:11.5px;color:var(--muted);margin-top:2px}
+.ideas{display:flex;flex-wrap:wrap;gap:8px;margin-top:13px}
+.idea-chip{display:inline-flex;align-items:center;gap:8px;font-size:11.5px;font-weight:500;padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:#fff;cursor:grab;transition:.15s;user-select:none}
+.idea-chip:hover{border-color:var(--steel);box-shadow:var(--shadow);transform:translateY(-1px)}
+.idea-chip:active{cursor:grabbing}
+.idea-chip.dragging{opacity:.35}
+.idea-chip .d{width:9px;height:9px;border-radius:3px;flex-shrink:0}
+
+/* RENDIMIENTO */
+.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px}
+.kpi{position:relative;overflow:hidden}
+.kpi .label{font-size:12px;color:var(--muted);font-weight:500}
+.kpi .num{font-size:30px;font-weight:700;margin-top:6px;letter-spacing:-.5px}
+.kpi .delta{font-size:11.5px;font-weight:600;margin-top:5px}
+.kpi .delta.up{color:var(--green)}.kpi .delta.down{color:var(--red)}
+.connect-banner{background:var(--grad-navy);color:#fff;border-radius:18px;padding:20px 24px;display:flex;align-items:center;gap:20px;margin-bottom:20px;position:relative;overflow:hidden}
+.connect-banner::after{content:"";position:absolute;right:-40px;top:-40px;width:200px;height:200px;background:radial-gradient(circle,rgba(58,108,160,.5),transparent 70%)}
+.connect-banner h3{font-size:16px;font-weight:600;position:relative}
+.connect-banner p{font-size:12.5px;color:#B6C5DA;margin-top:3px;position:relative;max-width:430px}
+.connect-btns{margin-left:auto;display:flex;gap:9px;position:relative}
+.cbtn{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:#fff;padding:9px 14px;border-radius:10px;font-size:12px;font-weight:600;display:flex;align-items:center;gap:7px;transition:.18s}
+.cbtn:hover{background:rgba(255,255,255,.22)}
+.cbtn .dot-live{width:7px;height:7px;border-radius:50%;background:#4ADE80;box-shadow:0 0 0 3px rgba(74,222,128,.25)}
+.rend-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:18px}
+.spark{display:flex;align-items:flex-end;gap:6px;height:120px;margin-top:8px}
+.spark .bar{flex:1;background:linear-gradient(180deg,#4E82B8,#2E5B8A);border-radius:5px 5px 0 0;position:relative}
+.spark .bar small{position:absolute;top:-18px;left:0;right:0;text-align:center;font-size:10px;font-weight:600;color:var(--ink)}
+.spark-x{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-top:8px;gap:4px}
+.spark-x span{flex:1;text-align:center;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.calc-note{font-size:12px;color:var(--muted);background:var(--steel-soft);border-radius:11px;padding:12px 14px;line-height:1.5;margin-top:16px}
+.byp-row{display:flex;align-items:center;gap:12px;margin-bottom:13px}
+.byp-row .pn{width:150px;font-size:12.5px;font-weight:500;display:flex;align-items:center;gap:8px}
+.byp-track{flex:1;height:9px;background:var(--bg);border-radius:10px;overflow:hidden}
+.byp-fill{height:100%;border-radius:10px;opacity:.8;transition:width .9s}
+.byp-val{width:60px;text-align:right;font-size:12px;font-weight:600}
+/* seguidores por plataforma */
+.rend-grid.heat-row{grid-template-columns:1.55fr 1fr}
+.rend-grid.two{grid-template-columns:1fr 1fr}
+.fol-row{display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.fol-row:last-child{border:none}
+.fol-ico{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;color:#fff;font-size:9.5px;font-weight:700;flex-shrink:0}
+.fol-info{flex:1;min-width:0}
+.fol-info b{font-size:16px;font-weight:700;display:block;letter-spacing:-.3px}
+.fol-info small{font-size:11px;color:var(--muted)}
+.fol-spark{display:flex;align-items:flex-end;gap:2px;height:26px;width:58px}
+.fol-spark span{flex:1;background:var(--steel);opacity:.65;border-radius:2px}
+.fol-delta{font-size:11.5px;font-weight:600;color:var(--green);min-width:46px;text-align:right}
+/* mapa de calor */
+.heat{display:grid;grid-template-columns:30px repeat(9,1fr);gap:3px;margin-top:12px}
+.heat .hh{font-size:8.5px;color:var(--muted);text-align:center;padding-bottom:2px}
+.heat .hd{font-size:9.5px;color:var(--muted);display:flex;align-items:center;justify-content:flex-end;padding-right:5px}
+.hcell{border-radius:4px;height:20px}
+.hcell.peak{box-shadow:0 0 0 2px var(--navy)}
+.heat-legend{display:flex;align-items:center;gap:8px;font-size:10.5px;color:var(--muted);margin-top:11px}
+.heat-legend .grad{height:8px;width:90px;border-radius:5px;background:linear-gradient(90deg,rgba(46,91,138,.1),rgba(46,91,138,1))}
+/* demografía */
+.demo-sub{font-size:10.5px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.6px;margin:4px 0 11px}
+.demo-sub.mt{margin-top:18px}
+.demo-row{display:flex;align-items:center;gap:10px;margin-bottom:9px}
+.demo-row .dn{width:118px;font-size:12px;color:var(--ink)}
+.demo-track{flex:1;height:8px;background:var(--bg);border-radius:8px;overflow:hidden}
+.demo-fill{height:100%;border-radius:8px;background:var(--steel);opacity:.8}
+.demo-val{width:40px;text-align:right;font-size:11.5px;font-weight:600}
+
+/* TENDENCIAS */
+.trend-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.trend-card{background:var(--white);border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:var(--shadow);transition:.2s}
+.trend-card:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg)}
+.tc-top{height:84px;display:flex;align-items:flex-end;padding:13px}
+.tc-cat{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.6px;background:rgba(255,255,255,.9);color:var(--navy);padding:4px 9px;border-radius:14px}
+.tc-body{padding:15px}
+.tc-body h4{font-size:14px;font-weight:600;line-height:1.3}
+.tc-body p{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.5}
+.tc-foot{display:flex;flex-direction:column;align-items:stretch;gap:9px;margin-top:14px;padding-top:13px;border-top:1px solid var(--line)}
+.tc-foot-btns{display:flex;gap:7px;align-items:center}
+.tc-link{font-size:11px;font-weight:600;color:var(--navy);background:var(--bg);border:1px solid var(--line);padding:6px 10px;border-radius:8px;display:inline-flex;align-items:center;gap:5px;text-decoration:none;transition:.15s;white-space:nowrap}
+.tc-link svg{width:12px;height:12px;stroke-width:2}
+.tc-link:hover{border-color:var(--steel);color:var(--steel)}
+.tc-foot-btns .tc-send{margin-left:0;flex:1;justify-content:center}
+.tc-src{font-size:11px;color:var(--muted)}
+.save-idea{margin-left:auto;font-size:11.5px;font-weight:600;color:var(--steel);display:flex;align-items:center;gap:5px}
+.save-idea svg{width:14px;height:14px}
+.tc-top{position:relative}
+.tc-act{position:absolute;top:10px;width:28px;height:28px;border-radius:8px;background:rgba(255,255,255,.9);display:grid;place-items:center;color:var(--navy);transition:.15s}
+.tc-act svg{width:15px;height:15px;stroke-width:2;fill:none}
+.tc-act:hover{background:#fff}
+.tc-act.on{color:var(--steel)}
+.tc-act.on svg{fill:var(--steel)}
+.tc-act.del:hover{color:var(--red)}
+.tc-act.edit:hover{color:var(--steel)}
+.trend-card.saved{box-shadow:0 0 0 2px var(--steel),var(--shadow)}
+.tc-send{margin-left:auto;font-size:11px;font-weight:600;color:var(--steel);display:flex;align-items:center;gap:5px;background:var(--steel-soft);padding:6px 10px;border-radius:8px;transition:.15s}
+.tc-send:hover{filter:brightness(.97)}
+.tc-send.sent{background:#E7F6EF;color:var(--green);cursor:default}
+.tc-send svg{width:13px;height:13px;stroke-width:2.2}
+.trend-edit{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:15px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:8px}
+.trend-edit input,.trend-edit textarea,.trend-edit select{width:100%;font-family:inherit;font-size:12px;border:1px solid var(--line);border-radius:7px;padding:6px 8px;outline:none;color:var(--ink);background:#fff}
+.trend-edit textarea{resize:vertical;min-height:50px;line-height:1.4}
+.trend-edit *:focus{border-color:var(--steel)}
+.te-actions{display:flex;gap:7px;margin-top:2px}
+.btn-ghost.active{background:var(--steel-soft);color:var(--steel);border-color:#D6E5F2}
+
+/* EXTRAS */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.feat{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:var(--shadow);transition:.2s}
+.feat:hover{transform:translateY(-3px);box-shadow:var(--shadow-lg);border-color:#C9D8E8}
+.feat-ico{width:46px;height:46px;border-radius:13px;background:var(--steel-soft);color:var(--steel);display:grid;place-items:center;margin-bottom:14px}
+.feat-ico svg{width:22px;height:22px;stroke-width:1.7}
+.feat h4{font-size:14.5px;font-weight:600}
+.feat p{font-size:12.5px;color:var(--muted);margin-top:7px;line-height:1.55}
+.feat .badge{font-size:10px;font-weight:600;color:var(--steel);background:var(--steel-soft);padding:3px 9px;border-radius:12px;display:inline-block;margin-top:12px}
+.feat-foot .badge{margin-top:0}
+.feat-top{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:13px}
+.feat-top .feat-ico{margin-bottom:0}
+.feat-interes{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;color:var(--muted);background:var(--bg);border:1px solid var(--line);padding:5px 9px;border-radius:20px;transition:.15s}
+.feat-interes svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2}
+.feat-interes.on{background:#FFF6E6;color:var(--amber);border-color:#F0DBB2}
+.feat-interes.on svg{fill:var(--amber)}
+.feat-foot{display:flex;align-items:center;gap:8px;margin-top:14px;flex-wrap:wrap}
+.feat-estado{font-family:inherit;font-size:10.5px;font-weight:600;border:1px solid var(--line);border-radius:14px;padding:4px 18px 4px 9px;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 24 24' fill='none' stroke='%236B7A8D' stroke-width='3'><path d='M6 9l6 6 6-6'/></svg>");background-repeat:no-repeat;background-position:right 6px center}
+.es-gray{background-color:var(--bg);color:var(--muted)}
+.es-blue{background-color:var(--steel-soft);color:var(--steel);border-color:#D6E5F2}
+.es-amber{background-color:#FCF3E3;color:#B07410;border-color:#F0DBB2}
+.es-green{background-color:#E7F6EF;color:var(--green);border-color:#CDEBDD}
+.es-red{background-color:var(--red-soft);color:var(--red);border-color:#F3C9C5}
+.feat-more{margin-left:auto;font-size:11.5px;font-weight:600;color:var(--steel);display:inline-flex;align-items:center;gap:4px}
+.feat-more svg{width:13px;height:13px;stroke-width:2.4;transition:.2s}
+.feat-more.open svg{transform:rotate(180deg)}
+.feat-detail{font-size:12px;color:var(--muted);line-height:1.55;background:var(--bg);border-radius:10px;padding:12px 14px;margin-top:13px}
+.feat-detail b{color:var(--ink);font-weight:600}
+.extras-summary{font-size:12.5px;color:var(--muted);margin-bottom:16px}
+.extras-summary b{color:var(--ink);font-weight:700}
+.feat-open{background:var(--grad-navy);color:#fff;font-size:11.5px;font-weight:600;padding:6px 12px;border-radius:8px;display:inline-flex;align-items:center;gap:5px}
+.feat-open svg{width:13px;height:13px;stroke-width:2.2}
+.mod-head{display:flex;align-items:center;gap:13px;margin-bottom:18px}
+.mod-back{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:600;color:var(--steel);background:var(--white);border:1px solid var(--line);padding:8px 13px;border-radius:10px}
+.mod-back svg{width:15px;height:15px;stroke-width:2}
+.mod-title{font-size:16px;font-weight:600}
+.mod-title small{display:block;font-size:11.5px;color:var(--muted);font-weight:400}
+/* carga */
+.load-row{display:flex;align-items:center;gap:12px;margin-bottom:13px}
+.load-av{width:32px;height:32px;border-radius:9px;background:var(--grad-navy);color:#fff;display:grid;place-items:center;font-size:12px;font-weight:600;flex-shrink:0}
+.load-info{width:130px}
+.load-info b{font-size:13px;font-weight:600;display:block}
+.load-info small{font-size:11px;color:var(--muted)}
+.load-track{flex:1;height:10px;background:var(--bg);border-radius:8px;overflow:hidden}
+.load-fill{height:100%;border-radius:8px;background:var(--steel);opacity:.85;transition:width .8s}
+.load-fill.over{background:var(--red)}
+.load-val{min-width:96px;text-align:right;font-size:12px;font-weight:600}
+.load-flag{font-size:9.5px;font-weight:600;color:var(--red);background:var(--red-soft);padding:2px 7px;border-radius:10px;margin-left:6px;white-space:nowrap}
+/* banco de copys */
+.lib-section-title{font-size:13px;font-weight:600;margin:6px 0 12px;display:flex;align-items:center;gap:8px}
+.lib-section-title:not(:first-child){margin-top:22px}
+.lib-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px}
+.lib-card{border:1px solid var(--line);border-radius:12px;padding:13px;background:#fff}
+.lib-card .ll{font-size:10.5px;font-weight:600;color:var(--steel);text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px}
+.lib-card .lt{font-size:12.5px;color:var(--ink);line-height:1.5;white-space:pre-wrap}
+.lib-acts{display:flex;gap:6px;margin-top:11px;align-items:center}
+.lib-btn{font-size:11px;font-weight:600;padding:5px 10px;border-radius:8px;border:1px solid var(--line);background:#fff;color:var(--ink);display:inline-flex;align-items:center;gap:5px}
+.lib-btn svg{width:13px;height:13px;stroke-width:2}
+.lib-btn.copy{background:var(--steel-soft);color:var(--steel);border-color:#D6E5F2}
+.lib-btn.copy.done{background:#E7F6EF;color:var(--green);border-color:#CDEBDD}
+.lib-btn.del{margin-left:auto;color:var(--muted);border-color:transparent}
+.lib-btn.del:hover{color:var(--red);background:var(--red-soft)}
+/* fechas */
+.date-row{display:flex;align-items:center;gap:13px;padding:12px 0;border-bottom:1px solid var(--line)}
+.date-row:last-of-type{border:none}
+.date-chip{width:48px;text-align:center;flex-shrink:0}
+.date-chip b{font-size:18px;font-weight:700;display:block;line-height:1;color:var(--steel)}
+.date-chip small{font-size:10px;color:var(--muted);text-transform:uppercase}
+.date-info{flex:1}
+.date-info b{font-size:13.5px;font-weight:600;display:block}
+.date-info small{font-size:11.5px;color:var(--muted)}
+/* reporte mensual */
+.report-sheet{background:#fff;border:1px solid var(--line);border-radius:14px;padding:34px 38px;max-width:840px;margin:0 auto;box-shadow:var(--shadow)}
+.rep-head{display:flex;align-items:center;gap:14px;border-bottom:2px solid var(--navy);padding-bottom:18px;margin-bottom:22px}
+.rep-logo{width:46px;height:46px;border-radius:11px;background:var(--grad-red);display:grid;place-items:center;color:#fff;font-weight:700;font-size:15px}
+.rep-head h2{font-size:20px;font-weight:700}
+.rep-head small{color:var(--muted);font-size:12.5px}
+.rep-sec{margin-bottom:22px}
+.rep-sec h3{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.6px;color:var(--steel);margin-bottom:13px}
+.rep-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:13px}
+.rep-kpi{border:1px solid var(--line);border-radius:11px;padding:13px}
+.rep-kpi .n{font-size:22px;font-weight:700;letter-spacing:-.4px}
+.rep-kpi .l{font-size:11px;color:var(--muted);margin-top:2px}
+.rep-pill-row{display:flex;align-items:center;gap:12px;margin-bottom:10px}
+@media print{
+  body{background:#fff}
+  body *{visibility:hidden}
+  .brandbar,#extras-board,.mod-head,.btn-primary{display:none!important}
+  #report-sheet,#report-sheet *{visibility:visible}
+  #report-sheet{position:absolute;left:0;top:0;width:100%;border:none;box-shadow:none;margin:0;border-radius:0;padding:10px 0}
+}
+
+@media(max-width:1080px){
+  .brandbar{flex-wrap:wrap;gap:12px;padding:10px 18px}
+  .tabs{order:3;width:100%;overflow-x:auto}
+  .goal-items{grid-template-columns:1fr 1fr;gap:14px}
+  .goal-item{border-left:none;padding:4px 0}
+  .kpis,.feat-grid,.trend-grid{grid-template-columns:1fr 1fr}
+  .rend-grid{grid-template-columns:1fr}
+  .stories-week{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+<body>
+  <div class="brandbar">
+    <div class="logo"><div class="logo-mark">TDC</div><div class="logo-txt"><b>Contenido</b><span>Taller de Diseño Constructivo</span></div></div>
+    <nav class="tabs">
+      <button class="tab active" data-view="parrilla"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>Parrilla</button>
+      <button class="tab" data-view="historias"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 010 18"/></svg>Historias</button>
+      <button class="tab" data-view="rendimiento"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 14l3-4 3 3 5-7"/></svg>Rendimiento</button>
+      <button class="tab" data-view="tendencias"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z"/></svg>Tendencias</button>
+      <button class="tab" data-view="extras"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 2a7 7 0 00-4 12.7V17h8v-2.3A7 7 0 0012 2zM9 21h6"/></svg>Extras</button>
+    </nav>
+    <div class="top-right">
+      <span id="save-ind" style="font-size:11px;color:var(--green);font-weight:600;opacity:0;transition:opacity .3s">● Guardado</span>
+      <div class="month-pick"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>Mayo 2026<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+      <div class="avatar" id="avatar">—</div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- PARRILLA -->
+    <section class="view active" id="parrilla">
+      <div class="goalbar">
+        <div class="goalbar-head">
+          <div class="gh-left"><b>Objetivos por pilar</b><span id="goal-summary"></span></div>
+          <div class="gh-right">Posts proyectados<div class="stepper"><button onclick="stepGoal(-1)">−</button><input id="goal-total" type="number" value="20" min="1" oninput="renderGoals()"><button onclick="stepGoal(1)">+</button></div></div>
+        </div>
+        <div class="goal-items" id="goal-items"></div>
+      </div>
+
+      <div class="toolbar">
+        <div class="filter">Pilar <select><option>Todos</option><option>El proyecto, desde la vida</option><option>Vida de barrio</option><option>Cómo construimos</option><option>Asesoría que da confianza</option></select></div>
+        <div class="filter">Estado <select><option>Todos</option><option>Publicado</option><option>En proceso</option><option>Pendiente</option></select></div>
+        <div class="filter">Responsable <select><option>Todos</option><option>Pablo</option><option>Johan</option><option>Ana Paula</option><option>Gabriela</option><option>Diego</option><option>Eduardo</option></select></div>
+        <div class="spacer"></div>
+        <button class="btn-ghost"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="15" height="15"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>Exportar</button>
+        <button class="btn-primary" onclick="addPiece(0)"><svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Nueva pieza</button>
+      </div>
+
+      <div class="parrilla">
+        <div class="ph gridcols">
+          <div>Fecha</div>
+          <div>Formato</div>
+          <div>Pilar</div>
+          <div>Título / Copy</div>
+          <div>Hashtags</div>
+          <div>Estado</div>
+          <div>Responsable</div>
+          <div class="ph-c">FB</div>
+          <div class="ph-c">IG</div>
+          <div class="ph-c">LK</div>
+          <div></div>
+        </div>
+        <div id="parrilla-body"></div>
+      </div>
+      <p class="subtitle" style="margin-top:14px">Edición directa: todo se cambia en la misma tabla. Fecha, formato, pilar, estado, responsable y FB/IG/LK son desplegables; el título, copy y hashtags se editan al hacer clic en el texto. Cada estado por red (FB/IG/LK) puede ser No va, Pendiente, Programado o Publicado. Arrastra desde los puntos de la fecha para mover una pieza de semana, y usa el ícono de copiar para llevar el texto al portapapeles.</p>
+    </section>
+
+    <!-- HISTORIAS -->
+    <section class="view" id="historias">
+      <p class="subtitle">Planificación semanal de historias, en paralelo a la parrilla de posts. Mantienen presencia diaria liviana (encuestas, behind-the-scenes, reposts) sin saturar el feed. Se cuentan aparte de los posts.</p>
+      <div class="toolbar">
+        <div class="filter">Semana <select><option>Semana 1 (1–7 May)</option><option>Semana 2</option><option>Semana 3</option><option>Semana 4</option></select></div>
+        <div class="spacer"></div>
+        <button class="btn-primary" onclick="addStory(0)"><svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Nueva historia</button>
+      </div>
+      <div class="stories-summary" id="stories-summary"></div>
+      <div class="stories-week" id="stories-week"></div>
+      <div class="story-legend">
+        <span><i style="background:var(--red)"></i>Producto</span>
+        <span><i style="background:#2E7DC4"></i>Vida en el barrio</span>
+        <span><i style="background:#7A5CC0"></i>Behind the scenes</span>
+        <span><i style="background:#E9A23B"></i>Encuesta / interacción</span>
+        <span><i style="background:var(--navy)"></i>Repost / testimonio</span>
+      </div>
+      <div class="idea-bank">
+        <div class="ib-head"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 2a7 7 0 00-4 12.7V17h8v-2.3A7 7 0 0012 2zM9 21h6M10 17v4M14 17v4"/></svg>Banco de ideas</div>
+        <div class="ib-sub">Arrastra cualquier idea a un día para crear la historia al instante. También puedes arrastrar tarjetas ya creadas de un día a otro.</div>
+        <div class="ideas" id="ideas"></div>
+      </div>
+    </section>
+
+    <!-- RENDIMIENTO -->
+    <section class="view" id="rendimiento">
+      <div class="connect-banner">
+        <div><h3>Conecta tus redes para medir en automático</h3><p>Vincula Instagram, Facebook y LinkedIn para traer alcance, interacción y guardados de cada pieza publicada, cruzados con su pilar.</p></div>
+        <div class="connect-btns"><button class="cbtn"><span class="dot-live"></span>Instagram</button><button class="cbtn">+ Facebook</button><button class="cbtn">+ LinkedIn</button></div>
+      </div>
+      <p class="subtitle" style="margin-top:-4px">⚙️ Vista demostrativa con datos de ejemplo. Al conectar las cuentas, estas métricas se llenan solas por pieza y por pilar.</p>
+      <div class="kpis">
+        <div class="card kpi"><div class="label">Seguidores totales</div><div class="num">12,550</div><div class="delta up">▲ +323 este mes</div></div>
+        <div class="card kpi"><div class="label">Alcance del mes</div><div class="num">48.2K</div><div class="delta up">▲ 12% vs. abril</div></div>
+        <div class="card kpi"><div class="label">Interacciones</div><div class="num">3,910</div><div class="delta up">▲ 8%</div></div>
+        <div class="card kpi"><div class="label">Tasa de engagement</div><div class="num">5.4%</div><div class="delta up">▲ 0.6 pts</div></div>
+      </div>
+
+      <div class="rend-grid heat-row">
+        <div class="card">
+          <div class="section-title"><span class="dot"></span>Mejor horario para publicar</div>
+          <p style="font-size:12px;color:var(--muted)">Actividad promedio de tus seguidores por día y franja horaria.</p>
+          <div class="heat" id="heatmap"></div>
+          <div class="heat-legend">Menos actividad <span class="grad"></span> Más actividad</div>
+          <div class="calc-note">📌 Tus seguidores están más activos los <b>jueves y martes, entre 6 y 9 p.m.</b> Programa ahí tus reels e historias clave. La franja más floja es la mañana del fin de semana.</div>
+        </div>
+        <div class="card">
+          <div class="section-title"><span class="dot"></span>Seguidores por plataforma</div>
+          <div class="fol-row"><div class="fol-ico" style="background:linear-gradient(45deg,#F58529,#DD2A7B,#8134AF)">IG</div><div class="fol-info"><b>8,420</b><small>Instagram</small></div><div class="fol-spark"><span style="height:40%"></span><span style="height:52%"></span><span style="height:48%"></span><span style="height:68%"></span><span style="height:84%"></span><span style="height:100%"></span></div><div class="fol-delta">+260</div></div>
+          <div class="fol-row"><div class="fol-ico" style="background:#1877F2">FB</div><div class="fol-info"><b>3,150</b><small>Facebook</small></div><div class="fol-spark"><span style="height:60%"></span><span style="height:58%"></span><span style="height:62%"></span><span style="height:64%"></span><span style="height:66%"></span><span style="height:70%"></span></div><div class="fol-delta">+45</div></div>
+          <div class="fol-row"><div class="fol-ico" style="background:#0A66C2">in</div><div class="fol-info"><b>980</b><small>LinkedIn</small></div><div class="fol-spark"><span style="height:30%"></span><span style="height:40%"></span><span style="height:45%"></span><span style="height:55%"></span><span style="height:70%"></span><span style="height:88%"></span></div><div class="fol-delta">+18</div></div>
+          <div class="calc-note">Instagram es tu motor de crecimiento. LinkedIn crece lento pero es clave para inversores y prensa.</div>
+        </div>
+      </div>
+
+      <div class="rend-grid two">
+        <div class="card">
+          <div class="section-title"><span class="dot"></span>Alcance por plataforma</div>
+          <div class="byp-row"><div class="pn"><span class="fol-ico" style="width:18px;height:18px;font-size:7px;background:linear-gradient(45deg,#F58529,#DD2A7B,#8134AF)">IG</span>Instagram</div><div class="byp-track"><div class="byp-fill" style="width:100%;background:var(--steel)"></div></div><div class="byp-val">31.2K</div></div>
+          <div class="byp-row"><div class="pn"><span class="fol-ico" style="width:18px;height:18px;font-size:7px;background:#1877F2">FB</span>Facebook</div><div class="byp-track"><div class="byp-fill" style="width:41%;background:var(--steel)"></div></div><div class="byp-val">12.8K</div></div>
+          <div class="byp-row"><div class="pn"><span class="fol-ico" style="width:18px;height:18px;font-size:7px;background:#0A66C2">in</span>LinkedIn</div><div class="byp-track"><div class="byp-fill" style="width:13%;background:var(--steel)"></div></div><div class="byp-val">4.2K</div></div>
+          <div class="calc-note">Instagram concentra ~65% de tu alcance. Vale la pena adaptar formatos (reels verticales) priorizando esa red.</div>
+        </div>
+        <div class="card">
+          <div class="section-title"><span class="dot"></span>Rendimiento por pilar</div>
+          <div class="byp-row"><div class="pn"><span class="tag-dot" style="background:var(--p-diseno)"></span>Cómo construimos</div><div class="byp-track"><div class="byp-fill" style="width:100%;background:var(--p-diseno)"></div></div><div class="byp-val">1,240</div></div>
+          <div class="byp-row"><div class="pn"><span class="tag-dot" style="background:var(--p-historias)"></span>Asesoría</div><div class="byp-track"><div class="byp-fill" style="width:64%;background:var(--p-historias)"></div></div><div class="byp-val">795</div></div>
+          <div class="byp-row"><div class="pn"><span class="tag-dot" style="background:var(--p-producto)"></span>El proyecto</div><div class="byp-track"><div class="byp-fill" style="width:61%;background:var(--p-producto)"></div></div><div class="byp-val">760</div></div>
+          <div class="byp-row"><div class="pn"><span class="tag-dot" style="background:var(--p-barrio)"></span>Vida de barrio</div><div class="byp-track"><div class="byp-fill" style="width:0%;background:var(--p-barrio)"></div></div><div class="byp-val" style="color:var(--muted)">—</div></div>
+          <div class="calc-note">Promedio de interacción por pieza. El contenido de obra (Cómo construimos) rinde el doble del promedio.</div>
+        </div>
+      </div>
+
+      <div class="rend-grid two">
+        <div class="card">
+          <div class="section-title"><span class="dot"></span>Interacción por pieza publicada</div>
+          <div class="spark">
+            <div class="bar" style="height:50%"><small>610</small></div>
+            <div class="bar" style="height:80%"><small>980</small></div>
+            <div class="bar" style="height:62%"><small>760</small></div>
+            <div class="bar" style="height:100%"><small>1240</small></div>
+          </div>
+          <div class="spark-x"><span>Día trab.</span><span>Día madre</span><span>Intriga LM3</span><span>Avance LM2</span></div>
+          <div class="calc-note">🏆 Tu pieza top del mes fue <b>"Avance de obra LM2"</b>. Reforzar el contenido de proceso constructivo es una apuesta segura.</div>
+        </div>
+        <div class="card">
+          <div class="section-title"><span class="dot"></span>Tu audiencia</div>
+          <div class="demo-sub">Dónde viven</div>
+          <div class="demo-row"><div class="dn">Miraflores</div><div class="demo-track"><div class="demo-fill" style="width:100%"></div></div><div class="demo-val">28%</div></div>
+          <div class="demo-row"><div class="dn">Otros de Lima</div><div class="demo-track"><div class="demo-fill" style="width:86%"></div></div><div class="demo-val">24%</div></div>
+          <div class="demo-row"><div class="dn">Surco</div><div class="demo-track"><div class="demo-fill" style="width:57%"></div></div><div class="demo-val">16%</div></div>
+          <div class="demo-row"><div class="dn">San Isidro</div><div class="demo-track"><div class="demo-fill" style="width:43%"></div></div><div class="demo-val">12%</div></div>
+          <div class="demo-row"><div class="dn">Fuera de Lima</div><div class="demo-track"><div class="demo-fill" style="width:39%"></div></div><div class="demo-val">11%</div></div>
+          <div class="demo-sub mt">Edad</div>
+          <div class="demo-row"><div class="dn">25 – 34</div><div class="demo-track"><div class="demo-fill" style="width:100%"></div></div><div class="demo-val">42%</div></div>
+          <div class="demo-row"><div class="dn">35 – 44</div><div class="demo-track"><div class="demo-fill" style="width:64%"></div></div><div class="demo-val">27%</div></div>
+          <div class="demo-row"><div class="dn">18 – 24</div><div class="demo-track"><div class="demo-fill" style="width:38%"></div></div><div class="demo-val">16%</div></div>
+          <div class="calc-note">El 40% de tu audiencia vive en Miraflores y alrededores, en edad de primera compra (25–44): tu mensaje de barrio está bien dirigido.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TENDENCIAS -->
+    <section class="view" id="tendencias">
+      <p class="subtitle">Tendencias reales del sector inmobiliario (2026), tomadas de referentes y publicaciones del rubro. Guárdalas, súmales tus propias observaciones y mándalas directo a la parrilla. Nota: el contenido específico de la competencia no se puede leer por API; esa parte se nutre de curaduría del equipo y fuentes públicas.</p>
+      <div class="toolbar">
+        <div class="filter">Fuente <select onchange="setTrendFilter(this.value)"><option value="all">Todas</option><option value="competencia">Competencia local</option><option value="global">Inmobiliarias globales</option><option value="formato">Tendencias de formato</option></select></div>
+        <div class="spacer"></div>
+        <button class="btn-ghost" id="saved-toggle" onclick="toggleSavedOnly()"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="15" height="15"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>Guardadas (0)</button>
+        <button class="btn-primary" onclick="addTrend()"><svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Nueva idea</button>
+      </div>
+      <div class="trend-grid" id="trend-grid"></div>
+    </section>
+
+    <!-- EXTRAS -->
+    <section class="view" id="extras">
+      <div id="extras-board">
+        <p class="subtitle">Las marcadas como <b>Hecho</b> ya funcionan: ábrelas con "Abrir". El resto son propuestas — marca tu interés (★), cambia el estado y abre el detalle. Así el equipo prioriza qué construir después.</p>
+        <div class="extras-summary" id="extras-summary"></div>
+        <div class="toolbar">
+          <div class="filter">Estado <select onchange="setExtraFilter(this.value)"><option value="all">Todos</option><option value="evaluar">Por evaluar</option><option value="aprobado">Aprobado</option><option value="desarrollo">En desarrollo</option><option value="hecho">Hecho</option><option value="descartado">Descartado</option></select></div>
+          <div class="spacer"></div>
+          <button class="btn-ghost" id="sort-interes" onclick="toggleSortInteres()"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="15" height="15"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.8 1.6 7L12 17.3 5.8 21l1.6-7L2 9.2l7.1-.6z"/></svg>Ordenar por interés</button>
+        </div>
+        <div class="feat-grid" id="feat-grid"></div>
+      </div>
+      <div id="extras-module" style="display:none"></div>
+    </section>
+
+  </div>
+
+<div id="edit-modal"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+document.querySelectorAll('.tab').forEach(b=>{
+  b.onclick=()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
+    const sec=document.getElementById(b.dataset.view);
+    sec.classList.add('active');
+    sec.style.animation='none';void sec.offsetWidth;sec.style.animation='fade .3s ease';
+    window.scrollTo({top:0,behavior:'smooth'});
+  };
+});
+
+const pColor={"El proyecto, desde la vida":"var(--p-producto)","Vida de barrio":"var(--p-barrio)","Cómo construimos":"var(--p-diseno)","Asesoría que da confianza":"var(--p-historias)"};
+
+/* plat = redes asignadas [fb,ig,lk]; pub = estado por red ['pub'|'no'|'prog'] */
+let rid=0;
+const weeks=[
+  {label:"Semana 1",range:"1 – 7 May",rows:[
+    {id:++rid,dia:"Vie",num:"1",fmt:"Reel",pilar:"Asesoría que da confianza",t:"Día del trabajador",c:"Detrás de cada proyecto hay personas que cuidan cada detalle, que entienden que hacer las cosas con criterio toma tiempo, y vale la pena.\n\nSon ellos los que convierten una idea en un hogar. Los que ponen oficio donde otros solo verían trabajo. Los que construyen, con sus manos y su tiempo, los espacios donde otros empiezan nuevas historias.\n\nHoy es su día. Y queremos agradecerles.\n\nFeliz Día del Trabajador.",h:"#DíaDelTrabajador #TDC #TuLugarEnElMundo #FelizDíaDelTrabajador",red:['pub','pub','pub'],st:"publicado",r:"Pablo"}
+  ]},
+  {label:"Semana 2",range:"8 – 14 May",rows:[
+    {id:++rid,dia:"Dom",num:"10",fmt:"Diseño",pilar:"Asesoría que da confianza",t:"Día de la madre",c:"Gracias mamá, por construir hogar, recuerdos y esa sensación de tranquilidad que nos acompaña incluso cuando estamos lejos.\n\nPorque más allá de cualquier espacio, eres tú quien hace que un lugar se sienta cálido, cercano y lleno de vida.\n\n¡Feliz día!",h:"#DíaDeLaMadre #TDC #TuLugarEnElMundo",red:['pub','pub','pub'],st:"publicado",r:"Pablo"}
+  ]},
+  {label:"Semana 3",range:"15 – 21 May",rows:[]},
+  {label:"Semana 4",range:"22 – 28 May",rows:[
+    {id:++rid,dia:"Vie",num:"22",fmt:"Reel",pilar:"El proyecto, desde la vida",t:"Intriga LM3",c:"Tu nuevo lugar en el mundo está por comenzar a construirse en Miraflores.\n\nMuy pronto, más detalles.",h:"#TDC #TuLugarEnElMundo #Miraflores",red:['pub','pub','pub'],st:"publicado",r:"Pablo"}
+  ]},
+  {label:"Semana 5",range:"25 – 31 May",rows:[
+    {id:++rid,dia:"Lun",num:"25",fmt:"Reel",pilar:"Cómo construimos",t:"Avance de obra LM2",c:"Las Moras continúa avanzando y tomando forma desde sus primeras etapas de construcción.\n\nActualmente, los trabajos de obra avanzan en la base estructural del edificio, consolidando los espacios que darán vida a este nuevo proyecto y marcando el inicio de una nueva etapa en su construcción.\n\nDetrás de cada avance hay planificación, coordinación y un equipo comprometido con construir espacios pensados para perdurar en el tiempo, cuidando cada detalle desde el inicio del proyecto.\n\nAsí comienza una nueva historia en la ciudad.",h:"#TDCInmobiliaria #LasMoras #AvanceDeObra #Miraflores #ConstruimosConfianza",red:['pub','pub','pub'],st:"publicado",r:"Pablo"},
+    {id:++rid,dia:"Mar",num:"26",fmt:"Reel",pilar:"Cómo construimos",t:"Proyectos EDGE",c:"Hoy, construir también significa pensar en el futuro.\n\nEDGE es una certificación internacional que reconoce proyectos diseñados para ser más eficientes y sostenibles, optimizando el uso de energía, agua y recursos durante su funcionamiento.\n\nEn TDC, esa visión se refleja en Cochrane 366 y Boloña 675, nuestros proyectos EDGE en Miraflores.\n\nPorque el futuro de la ciudad también se construye a través de espacios más responsables.",h:"#TDCInmobiliaria #EDGE #Cochrane366 #Boloña675 #Miraflores #Sostenibilidad",red:['pend','pend','na'],st:"proceso",r:"Pablo"},
+    {id:++rid,dia:"Vie",num:"29",fmt:"Reel",pilar:"Vida de barrio",t:"Entrevista a Híbrido",c:"(Copy en redacción)",h:"#TDC #VidaEnElBarrio #Miraflores",red:['pend','pend','na'],st:"proceso",r:"Pablo"}
+  ]}
+];
+function findRow(id){for(const w of weeks){const r=w.rows.find(x=>x.id===id);if(r)return{r,w};}return null;}
+
+const stMap={publicado:'Publicado',proceso:'En proceso',pendiente:'Pendiente'};
+const stBadge={publicado:'b-green',proceso:'b-amber',pendiente:'b-gray'};
+const pubMap={pub:'Publicado',no:'Sin publicar',prog:'Programado'};
+const pubBadge={pub:'b-green',no:'b-gray',prog:'b-blue'};
+const NET=['FB','IG','LK'];
+const fmtList=['Reel','Diseño','Foto','Carrusel','GIF','Video'];
+const respList=['Pablo','Johan','Ana Paula','Gabriela','Diego','Eduardo'];
+const respColor={'Pablo':['#EAF1F8','#2E5B8A'],'Johan':['#EEE9F8','#7A5CC0'],'Ana Paula':['#E7F6EF','#1BA572'],'Gabriela':['#FCF3E3','#B07410'],'Diego':['#FBEAEE','#C43B63'],'Eduardo':['#E2F1F0','#1E8A7A']};
+function respBadge(name){const c=respColor[name]||['var(--bg)','var(--muted)'];return `<span class="badge" style="background:${c[0]};color:${c[1]}">${name}</span>`;}
+const stList=[['publicado','Publicado'],['proceso','En proceso'],['pendiente','Pendiente']];
+const pubList=[['pub','Publicado'],['no','Sin publicar'],['prog','Programado']];
+function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;');}
+function escT(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function optn(v,l,sel){return `<option value="${esc(v)}" ${sel?'selected':''}>${l}</option>`;}
+
+/* ---- MODO LECTURA: todo como badges del mismo estilo ---- */
+const dias=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+const redList=[['na','No va'],['pend','Pendiente'],['prog','Programado'],['pub','Publicado']];
+const redSoft={na:['#FAFBFC','#9AA8B8'],pend:['#F1F4F8','#6B7A8D'],prog:['#EAF1F8','#2E5B8A'],pub:['#E7F6EF','#1BA572']};
+const stSoft={publicado:['#E7F6EF','#1BA572'],proceso:['#FCF3E3','#B07410'],pendiente:['#F1F4F8','#6B7A8D']};
+const pilarSoft={'El proyecto, desde la vida':['#FDEAE9','#C4140C'],'Vida de barrio':['#E7F0FA','#2E5B8A'],'Cómo construimos':['#EFEAF8','#6A4FB0'],'Asesoría que da confianza':['#FCF1DF','#B07410']};
+function selOpts(list,val){return list.map(o=>optn(o[0],o[1],o[0]===val)).join('');}
+function rowHTML(p){return rowRead(p);}
+function rowRead(p){
+  const ps=pilarSoft[p.pilar]||['#fff','var(--ink)'];
+  const ss=stSoft[p.st]||['#fff','var(--ink)'];
+  const rs=respColor[p.r]||['#fff','var(--ink)'];
+  return `<div class="prow gridcols">
+    <div class="pdate-cell">
+      <div class="grip-row" draggable="true" ondragstart="dragRow(event,${p.id})" ondragend="dragRowEnd(event)" title="Arrastrar para mover de semana"><svg class="grip" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="7" r="1.3"/><circle cx="9" cy="12" r="1.3"/><circle cx="9" cy="17" r="1.3"/><circle cx="15" cy="7" r="1.3"/><circle cx="15" cy="12" r="1.3"/><circle cx="15" cy="17" r="1.3"/></svg></div>
+      <select class="inl-sel" onchange="setField(${p.id},'dia',this.value)">${dias.map(d=>optn(d,d,d===p.dia)).join('')}</select>
+      <input class="inl-num" value="${esc(p.num)}" oninput="setField(${p.id},'num',this.value)" placeholder="#">
+    </div>
+    <div><select class="inl-sel" onchange="setField(${p.id},'fmt',this.value)">${fmtList.map(x=>optn(x,x,x===p.fmt)).join('')}</select></div>
+    <div><select class="inl-sel" style="background-color:${ps[0]};color:${ps[1]};border-color:transparent" onchange="setField(${p.id},'pilar',this.value);stylePilar(this);renderGoals()">${Object.keys(pColor).map(x=>optn(x,x,x===p.pilar)).join('')}</select></div>
+    <div class="title-cell"><button class="copy-cell" onclick="copyCell(${p.id},this)" title="Copiar título y copy"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg></button><input class="inl-title" value="${esc(p.t)}" oninput="setField(${p.id},'t',this.value)" placeholder="Título…"><textarea class="inl-copy" oninput="setField(${p.id},'c',this.value)" placeholder="Escribe el copy…">${escT(p.c)}</textarea></div>
+    <div class="htags-cell"><button class="copy-cell" onclick="copyHash(${p.id},this)" title="Copiar hashtags"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg></button><textarea class="inl-tags" oninput="setField(${p.id},'h',this.value)" placeholder="#Hashtags…">${escT(p.h)}</textarea></div>
+    <div><select class="inl-sel" style="background-color:${ss[0]};color:${ss[1]};border-color:transparent" onchange="setField(${p.id},'st',this.value);styleSt(this)">${selOpts(stList,p.st)}</select></div>
+    <div><select class="inl-sel" style="background-color:${rs[0]};color:${rs[1]};border-color:transparent" onchange="setField(${p.id},'r',this.value);styleResp(this)">${respList.map(x=>optn(x,x,x===p.r)).join('')}</select></div>
+    ${[0,1,2].map(i=>{const c=redSoft[p.red[i]]||['#fff','var(--ink)'];return `<div><select class="inl-sel" style="background-color:${c[0]};color:${c[1]};border-color:transparent" onchange="setRed(${p.id},${i},this)">${selOpts(redList,p.red[i])}</select></div>`;}).join('')}
+    <div class="actions"><button class="act-btn del" onclick="delRow(${p.id})" title="Eliminar"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></button></div>
+  </div>`;
+}
+function stylePilar(el){const c=pilarSoft[el.value]||['#fff','var(--ink)'];el.style.backgroundColor=c[0];el.style.color=c[1];}
+function styleSt(el){const c=stSoft[el.value]||['#fff','var(--ink)'];el.style.backgroundColor=c[0];el.style.color=c[1];}
+function styleResp(el){const c=respColor[el.value]||['#fff','var(--ink)'];el.style.backgroundColor=c[0];el.style.color=c[1];}
+function setRed(id,i,el){const f=findRow(id);if(f)f.r.red[i]=el.value;const c=redSoft[el.value]||['#fff','var(--ink)'];el.style.backgroundColor=c[0];el.style.color=c[1];}
+function renderParrilla(){
+  const c=document.querySelector('.parrilla');const sx=c?c.scrollLeft:0;
+  document.getElementById('parrilla-body').innerHTML=weeks.map((w,wi)=>{
+    let html=`<div class="week-band">${w.label} <span>· ${w.range}</span></div>`;
+    if(w.rows.length===0){
+      html+=`<div class="add-row" onclick="addPiece(${wi})"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Sin contenido planificado · agregar pieza</div>`;
+    }else{
+      html+=w.rows.map(rowHTML).join('');
+      html+=`<div class="add-row" onclick="addPiece(${wi})"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Agregar pieza en ${w.label.toLowerCase()}</div>`;
+    }
+    return `<div class="week-group" ondragover="allowRowDrop(event,this)" ondragleave="leaveRowDrop(this)" ondrop="dropRow(event,${wi})">${html}</div>`;
+  }).join('');
+  if(c)c.scrollLeft=sx;
+}
+function toggleAssign(id,i){const f=findRow(id);if(!f)return;f.r.plat[i]=f.r.plat[i]?0:1;renderParrilla();}
+function setPub(id,i,v){const f=findRow(id);if(!f)return;f.r.pub[i]=v;}
+function setField(id,fld,v){const f=findRow(id);if(!f)return;f.r[fld]=v;if(fld==='pilar')renderGoals();}
+let editId=null,editSnap=null;
+function editRow(id){openEdit(id);}
+function openEdit(id){const f=findRow(id);if(!f)return;editId=id;editSnap=JSON.parse(JSON.stringify(f.r));renderEditModal();}
+function closeEdit(){editId=null;editSnap=null;document.getElementById('edit-modal').innerHTML='';}
+function saveEdit(){document.getElementById('edit-modal').innerHTML='';editId=null;editSnap=null;renderParrilla();renderGoals();}
+function cancelEdit(){if(editId!=null&&editSnap){const f=findRow(editId);if(f)Object.assign(f.r,editSnap);}document.getElementById('edit-modal').innerHTML='';editId=null;editSnap=null;renderParrilla();renderGoals();}
+function delFromModal(id){closeEdit();delRow(id);}
+function toggleAssignModal(id,i){const f=findRow(id);if(!f)return;f.r.plat[i]=f.r.plat[i]?0:1;renderEditModal();}
+function renderEditModal(){
+  const f=findRow(editId);if(!f){closeEdit();return;}
+  const p=f.r;const dias=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+  const pubsel=(i)=>{const on=p.plat[i];const v=on?p.pub[i]:'no';const dis=on?'':'disabled';return `<select class="pubsel ${on?('ps-'+v):'ps-off'}" ${dis} onchange="setPub(${p.id},${i},this.value);this.className='pubsel ps-'+this.value">${pubList.map(o=>optn(o[0],o[1],o[0]===v)).join('')}</select>`;};
+  document.getElementById('edit-modal').innerHTML=`<div class="modal-overlay" onclick="if(event.target===this)cancelEdit()"><div class="modal">
+    <div class="modal-head"><h3>Editar pieza</h3><button class="modal-close" onclick="cancelEdit()"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="18" height="18"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+    <div class="modal-body">
+      <div class="fld-row">
+        <div class="fld"><label>Día</label><select onchange="setField(${p.id},'dia',this.value)">${dias.map(d=>optn(d,d,d===p.dia)).join('')}</select></div>
+        <div class="fld"><label>Fecha</label><input value="${esc(p.num)}" oninput="setField(${p.id},'num',this.value)"></div>
+        <div class="fld"><label>Formato</label><select onchange="setField(${p.id},'fmt',this.value)">${fmtList.map(x=>optn(x,x,x===p.fmt)).join('')}</select></div>
+      </div>
+      <div class="fld"><label>Pilar</label><select onchange="setField(${p.id},'pilar',this.value)">${Object.keys(pColor).map(x=>optn(x,x,x===p.pilar)).join('')}</select></div>
+      <div class="fld"><label>Se publicará en</label><div class="modal-chk">
+        <label><input type="checkbox" ${p.plat[0]?'checked':''} onchange="toggleAssignModal(${p.id},0)">Facebook</label>
+        <label><input type="checkbox" ${p.plat[1]?'checked':''} onchange="toggleAssignModal(${p.id},1)">Instagram</label>
+        <label><input type="checkbox" ${p.plat[2]?'checked':''} onchange="toggleAssignModal(${p.id},2)">LinkedIn</label>
+      </div></div>
+      <div class="fld"><label>Título</label><input value="${esc(p.t)}" oninput="setField(${p.id},'t',this.value)"></div>
+      <div class="fld"><label>Copy</label><textarea oninput="setField(${p.id},'c',this.value)">${escT(p.c)}</textarea></div>
+      <div class="fld"><label>Hashtags</label><textarea style="min-height:60px" oninput="setField(${p.id},'h',this.value)">${escT(p.h)}</textarea></div>
+      <div class="fld-row">
+        <div class="fld"><label>Estado</label><select onchange="setField(${p.id},'st',this.value)">${stList.map(o=>optn(o[0],o[1],o[0]===p.st)).join('')}</select></div>
+        <div class="fld"><label>Responsable</label><select onchange="setField(${p.id},'r',this.value)">${respList.map(x=>optn(x,x,x===p.r)).join('')}</select></div>
+      </div>
+      <div class="fld"><label>¿Se publicó? · estado por red</label><div class="modal-pub">
+        <div class="mpub"><span>Facebook</span>${pubsel(0)}</div>
+        <div class="mpub"><span>Instagram</span>${pubsel(1)}</div>
+        <div class="mpub"><span>LinkedIn</span>${pubsel(2)}</div>
+      </div></div>
+    </div>
+    <div class="modal-foot"><button class="btn-primary" onclick="saveEdit()">Guardar cambios</button><button class="btn-ghost" onclick="cancelEdit()">Cancelar</button><button class="modal-del" onclick="delFromModal(${p.id})"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="15" height="15"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>Eliminar</button></div>
+  </div></div>`;
+}
+function copyMini(txt,btn){
+  const ok=()=>{const o=btn.innerHTML;btn.classList.add('done');btn.innerHTML='<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>';setTimeout(()=>{btn.classList.remove('done');btn.innerHTML=o;},1200);};
+  try{navigator.clipboard.writeText(txt).then(ok,fb);}catch(e){fb();}
+  function fb(){const ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(e){}document.body.removeChild(ta);ok();}
+}
+function copyCell(id,btn){const f=findRow(id);if(!f)return;copyMini(f.r.t+'\n\n'+f.r.c,btn);}
+function copyHash(id,btn){const f=findRow(id);if(!f)return;copyMini(f.r.h||'',btn);}
+function delRow(id){const f=findRow(id);if(!f)return;f.w.rows=f.w.rows.filter(x=>x.id!==id);renderParrilla();renderGoals();}
+function addPiece(wi){weeks[wi].rows.push({id:++rid,dia:"Lun",num:"",fmt:"Reel",pilar:"El proyecto, desde la vida",t:"",c:"",h:"",red:["pend","pend","na"],st:"pendiente",r:"Pablo"});renderParrilla();renderGoals();}
+function dragRow(e,id){dragData={type:'prow',id};e.dataTransfer.effectAllowed='move';const r=e.currentTarget.closest('.prow');if(r)r.classList.add('dragging');}
+function dragRowEnd(e){const r=e.currentTarget.closest('.prow');if(r)r.classList.remove('dragging');}
+function allowRowDrop(e,g){if(dragData&&dragData.type==='prow'){e.preventDefault();g.classList.add('drop-over');}}
+function leaveRowDrop(g){g.classList.remove('drop-over');}
+function dropRow(e,wi){const g=e.currentTarget;g.classList.remove('drop-over');if(!dragData||dragData.type!=='prow')return;const f=findRow(dragData.id);if(!f)return;const row=f.r;f.w.rows=f.w.rows.filter(x=>x.id!==row.id);weeks[wi].rows.push(row);dragData=null;renderParrilla();}
+
+/* OBJETIVOS POR PILAR */
+const pillars=[
+  {name:"El proyecto, desde la vida",short:"El proyecto",pct:30,color:"var(--p-producto)"},
+  {name:"Vida de barrio",short:"Vida de barrio",pct:25,color:"var(--p-barrio)"},
+  {name:"Cómo construimos",short:"Cómo construimos",pct:25,color:"var(--p-diseno)"},
+  {name:"Asesoría que da confianza",short:"Asesoría",pct:20,color:"var(--p-historias)"}
+];
+function planned(name){let n=0;weeks.forEach(w=>w.rows.forEach(r=>{if(r.pilar===name)n++;}));return n;}
+function stepGoal(n){const i=document.getElementById('goal-total');i.value=Math.max(1,(+i.value||0)+n);renderGoals();}
+function renderGoals(){
+  const total=Math.max(1,+document.getElementById('goal-total').value||1);
+  const totalPlanned=pillars.reduce((a,p)=>a+planned(p.name),0);
+  document.getElementById('goal-summary').textContent=`· ${totalPlanned} de ${total} piezas planificadas (${Math.round(totalPlanned/total*100)}%)`;
+  document.getElementById('goal-items').innerHTML=pillars.map(p=>{
+    const have=planned(p.name);
+    const target=Math.round(total*p.pct/100);
+    const w=Math.min(100,Math.round(have/Math.max(target,1)*100));
+    let status,cls;
+    if(have>target){status=`+${have-target} sobre la meta`;cls='s-extra';}
+    else if(have>=target){status='Meta cumplida';cls='s-ok';}
+    else{status=`Faltan ${target-have}`;cls='s-falta';}
+    return `<div class="goal-item">
+      <div class="gi-head"><span class="tag-dot" style="background:${p.color}"></span>${p.short}<span class="gi-pct">${p.pct}%</span></div>
+      <div class="gi-count"><b>${have}</b> / ${target}</div>
+      <div class="gi-track"><div class="gi-fill" style="width:${w}%;background:${p.color}"></div></div>
+      <div class="gi-status ${cls}">${status}</div>
+    </div>`;
+  }).join('');
+}
+/* ====== HISTORIAS ====== */
+let sid=0;
+const sTypes={
+  prod:{label:'Producto',cls:'sc-prod',color:'var(--red)'},
+  barrio:{label:'Vida en el barrio',cls:'sc-barrio',color:'#2E7DC4'},
+  bts:{label:'Behind the scenes',cls:'sc-bts',color:'#7A5CC0'},
+  encuesta:{label:'Encuesta',cls:'sc-encuesta',color:'#E9A23B'},
+  repost:{label:'Repost / testimonio',cls:'sc-repost',color:'var(--navy)'}
+};
+const sDays=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+const sNums=['1','2','3','4','5','6','7'];
+let stories=[
+  {id:++sid,day:0,tipo:'prod',titulo:'Render 3D · Las Viñas',plats:[1,0],estado:'pub',editing:false},
+  {id:++sid,day:0,tipo:'encuesta',titulo:'¿Flat o dúplex?',plats:[1,0],estado:'pub',editing:false},
+  {id:++sid,day:1,tipo:'bts',titulo:'Visita de obra LM2',plats:[1,1],estado:'plan',editing:false},
+  {id:++sid,day:2,tipo:'barrio',titulo:'Café de la semana en Miraflores',plats:[1,0],estado:'plan',editing:false},
+  {id:++sid,day:3,tipo:'repost',titulo:'Testimonio cliente Aurora',plats:[1,0],estado:'plan',editing:false},
+  {id:++sid,day:3,tipo:'prod',titulo:'Link "Calcula tu plan de vida"',plats:[1,1],estado:'plan',editing:false},
+  {id:++sid,day:4,tipo:'encuesta',titulo:'Quiz: ¿conoces EDGE?',plats:[1,0],estado:'plan',editing:false},
+  {id:++sid,day:6,tipo:'barrio',titulo:'Plan de domingo cerca',plats:[1,0],estado:'plan',editing:false}
+];
+function findStory(id){return stories.find(s=>s.id===id);}
+function storyCardRead(s){
+  const t=sTypes[s.tipo];
+  return `<div class="story-card ${t.cls}" draggable="true" ondragstart="dragStory(event,${s.id})" ondragend="dragEnd(event)">
+    <div class="sc-actions">
+      <button class="sc-act" onclick="editStory(${s.id})" title="Editar"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></button>
+      <button class="sc-act" onclick="delStory(${s.id})" title="Eliminar"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    </div>
+    <div class="stype">${t.label}</div>
+    ${escT(s.titulo)||'<span style="opacity:.6">Sin título…</span>'}
+    <div class="sc-foot">
+      ${s.plats[0]?'<span class="mini">IG</span>':''}${s.plats[1]?'<span class="mini">FB</span>':''}
+      <span class="sc-status"><span class="d" style="background:${s.estado==='pub'?'#7CF2B0':'rgba(255,255,255,.65)'}"></span>${s.estado==='pub'?'Publicada':'Planificada'}</span>
+    </div>
+  </div>`;
+}
+function storyCardEdit(s){
+  return `<div class="story-edit">
+    <select onchange="setStory(${s.id},'tipo',this.value)">${Object.keys(sTypes).map(k=>`<option value="${k}" ${k===s.tipo?'selected':''}>${sTypes[k].label}</option>`).join('')}</select>
+    <textarea oninput="setStory(${s.id},'titulo',this.value)" placeholder="Idea / título de la historia">${escT(s.titulo)}</textarea>
+    <div class="se-plats">
+      <label><input type="checkbox" ${s.plats[0]?'checked':''} onchange="toggleStoryPlat(${s.id},0)">IG</label>
+      <label><input type="checkbox" ${s.plats[1]?'checked':''} onchange="toggleStoryPlat(${s.id},1)">FB</label>
+      <select onchange="setStory(${s.id},'estado',this.value)"><option value="plan" ${s.estado==='plan'?'selected':''}>Planificada</option><option value="pub" ${s.estado==='pub'?'selected':''}>Publicada</option></select>
+    </div>
+    <div class="se-row">
+      <button class="se-save" onclick="saveStory(${s.id})"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>Guardar</button>
+      <button class="se-del" onclick="delStory(${s.id})"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></button>
+    </div>
+  </div>`;
+}
+function renderStories(){
+  const wk=document.getElementById('stories-week');if(!wk)return;
+  wk.innerHTML=sDays.map((d,di)=>{
+    const items=stories.filter(s=>s.day===di);
+    return `<div class="day-col" ondragover="allowDrop(event,this)" ondragleave="leaveDrop(this)" ondrop="dropDay(event,${di},this)">
+      <div class="day-head">${d}<small>${sNums[di]}</small></div>
+      ${items.map(s=>s.editing?storyCardEdit(s):storyCardRead(s)).join('')}
+      <button class="add-story" onclick="addStory(${di})">+ Agregar</button>
+    </div>`;
+  }).join('');
+  const counts={};Object.keys(sTypes).forEach(k=>counts[k]=0);
+  stories.forEach(s=>counts[s.tipo]++);
+  document.getElementById('stories-summary').innerHTML=
+    `<div class="ss-total"><b>${stories.length}</b>historias esta semana</div>
+     <div class="ss-chips">${Object.keys(sTypes).map(k=>`<span class="ss-chip"><span class="d" style="background:${sTypes[k].color}"></span>${sTypes[k].label.split(' ')[0]} ${counts[k]}</span>`).join('')}</div>
+     <div class="ss-note">Solo IG y FB tienen historias · meta sugerida: al menos 1 por día</div>`;
+}
+function addStory(day){stories.push({id:++sid,day,tipo:'prod',titulo:'',plats:[1,0],estado:'plan',editing:true});renderStories();}
+function editStory(id){const s=findStory(id);if(s){s.editing=true;renderStories();}}
+function saveStory(id){const s=findStory(id);if(s){s.editing=false;renderStories();}}
+function delStory(id){stories=stories.filter(s=>s.id!==id);renderStories();}
+function setStory(id,f,v){const s=findStory(id);if(s)s[f]=v;}
+function toggleStoryPlat(id,i){const s=findStory(id);if(s)s.plats[i]=s.plats[i]?0:1;}
+
+/* banco de ideas preestablecidas */
+const ideaBank=[
+  {tipo:'prod',titulo:'Render del departamento'},
+  {tipo:'prod',titulo:'Recorrido 3D del proyecto'},
+  {tipo:'prod',titulo:'Promo / precio del mes'},
+  {tipo:'barrio',titulo:'Café o restaurante cercano'},
+  {tipo:'barrio',titulo:'Parque y áreas verdes'},
+  {tipo:'barrio',titulo:'Cómo llegar / movilidad'},
+  {tipo:'bts',titulo:'Avance de obra'},
+  {tipo:'bts',titulo:'Detalle de acabados'},
+  {tipo:'encuesta',titulo:'Caja de preguntas'},
+  {tipo:'encuesta',titulo:'Encuesta: A vs B'},
+  {tipo:'repost',titulo:'Testimonio de cliente'},
+  {tipo:'repost',titulo:'Mención en prensa'}
+];
+function renderIdeas(){
+  const el=document.getElementById('ideas');if(!el)return;
+  el.innerHTML=ideaBank.map((it,i)=>`<div class="idea-chip" draggable="true" ondragstart="dragIdea(event,${i})" ondragend="dragEnd(event)"><span class="d" style="background:${sTypes[it.tipo].color}"></span>${it.titulo}</div>`).join('');
+}
+
+/* drag & drop */
+let dragData=null;
+function dragStory(e,id){dragData={type:'story',id};e.dataTransfer.effectAllowed='move';e.currentTarget.classList.add('dragging');}
+function dragIdea(e,i){dragData={type:'idea',i};e.dataTransfer.effectAllowed='copy';e.currentTarget.classList.add('dragging');}
+function dragEnd(e){if(e.currentTarget&&e.currentTarget.classList)e.currentTarget.classList.remove('dragging');}
+function allowDrop(e,col){e.preventDefault();col.classList.add('drop-over');}
+function leaveDrop(col){col.classList.remove('drop-over');}
+function dropDay(e,di,col){
+  e.preventDefault();col.classList.remove('drop-over');
+  if(!dragData)return;
+  if(dragData.type==='story'){const s=findStory(dragData.id);if(s)s.day=di;}
+  else if(dragData.type==='idea'){const it=ideaBank[dragData.i];stories.push({id:++sid,day:di,tipo:it.tipo,titulo:it.titulo,plats:[1,0],estado:'plan',editing:false});}
+  dragData=null;renderStories();
+}
+
+/* ====== RENDIMIENTO: mapa de calor ====== */
+function renderHeat(){
+  const el=document.getElementById('heatmap');if(!el)return;
+  const hours=['6a','8a','10a','12p','2p','4p','6p','8p','10p'];
+  const days=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+  const hw=[.2,.45,.5,.6,.45,.5,.8,1,.7];
+  const dw=[.7,.9,.75,.95,.8,.6,.65];
+  let html='<div class="hd"></div>'+hours.map(h=>`<div class="hh">${h}</div>`).join('');
+  let peak=0,pd=-1,ph=-1;const v=[];
+  for(let d=0;d<7;d++){v[d]=[];for(let h=0;h<9;h++){const x=hw[h]*dw[d];v[d][h]=x;if(x>peak){peak=x;pd=d;ph=h;}}}
+  for(let d=0;d<7;d++){
+    html+=`<div class="hd">${days[d]}</div>`;
+    for(let h=0;h<9;h++){
+      const a=(.08+v[d][h]*.92).toFixed(2);
+      html+=`<div class="hcell ${(d===pd&&h===ph)?'peak':''}" style="background:rgba(46,91,138,${a})" title="${days[d]} ${hours[h]}"></div>`;
+    }
+  }
+  el.innerHTML=html;
+}
+
+/* ====== TENDENCIAS ====== */
+let tid=0;
+const pilarGrad={"El proyecto, desde la vida":"var(--grad-red)","Vida de barrio":"linear-gradient(135deg,#3D90D6,#2E7DC4)","Cómo construimos":"linear-gradient(135deg,#8B6BD0,#7A5CC0)","Asesoría que da confianza":"linear-gradient(135deg,#F2B255,#E9A23B)"};
+let trends=[
+  {id:++tid,fuente:'formato',cat:'Formato · Reels',color:'var(--grad-red)',title:'Recorridos POV en primera persona',desc:'Caminar por el inmueble grabando a la altura del pecho, sin hablar, con música de fondo. Es el formato de mayor engagement (≈3.7%) y casi no requiere edición.',src:'Reel-E · Jamil Academy',url:'https://www.reel-e.ai/blog/real-estate-instagram-reels',pilar:'El proyecto, desde la vida',saved:true,sent:false,own:false},
+  {id:++tid,fuente:'global',cat:'Contenido lifestyle',color:'linear-gradient(135deg,#3D90D6,#2E7DC4)',title:'Mostrar el barrio, no solo el depa',desc:'Contar cómo se vive la zona: el café cercano, qué tan cerca está la oficina o la universidad. Conecta más que una ficha técnica y lo reparte el propio negocio etiquetado.',src:'Ciencuadras · Luxury Presence',url:'https://www.ciencuadras.com/blog/consejos/marketing-inmobiliario-en-2026-publicar-inmuebles-una-experiencia-digital',pilar:'Vida de barrio',saved:true,sent:false,own:false},
+  {id:++tid,fuente:'global',cat:'Tecnología',color:'var(--grad-red)',title:'Recorridos virtuales 360° y RA',desc:'Tours inmersivos y realidad aumentada para visitar la propiedad desde casa. Acelera el ciclo de venta y llega a quien no puede ir en persona.',src:'Wasi · Inmogesco',url:'https://blog.wasi.co/tendencias-inmobiliarias-2026/',pilar:'El proyecto, desde la vida',saved:false,sent:false,own:false},
+  {id:++tid,fuente:'formato',cat:'Formato · educativo',color:'linear-gradient(135deg,#8B6BD0,#7A5CC0)',title:'Reels educativos de un solo tip',desc:'Clips cortos con una idea útil ("2 cosas que revisar antes de comprar"). Fáciles de grabar en lote y el algoritmo los distribuye bien.',src:'Postful · Propphy',url:'https://blog.postful.ai/instagram-reel-trends/',pilar:'Cómo construimos',saved:false,sent:false,own:false},
+  {id:++tid,fuente:'formato',cat:'Conversión',color:'var(--grad-red)',title:'Micro-CTA y medir guardados',desc:'Cada post con una acción clara (guárdalo, escríbeme tu distrito). Guardados, compartidos y visitas al perfil pesan más que los likes, para el algoritmo y para vender.',src:'Luxury Presence',url:'https://www.luxurypresence.com/blogs/50-real-estate-instagram-post-ideas/',pilar:'El proyecto, desde la vida',saved:false,sent:false,own:false},
+  {id:++tid,fuente:'global',cat:'Historias humanas',color:'linear-gradient(135deg,#F2B255,#E9A23B)',title:'Testimonios de clientes en video',desc:'Un cliente contando su experiencia genera mucha más confianza que un texto. Basta un smartphone; transmite cercanía y prueba social.',src:'FlippingBook',url:'https://flippingbook.com/blog/marketing-tips/real-estate-marketing-trends',pilar:'Asesoría que da confianza',saved:false,sent:false,own:false},
+  {id:++tid,fuente:'global',cat:'Estrategia',color:'var(--grad-red)',title:'Hipersegmentación por comprador',desc:'Mensajes distintos según el perfil (primera vivienda, inversor, familia) en lugar de una comunicación genérica para todos.',src:'Tinsa',url:'https://www.tinsamexico.mx/4-tendencias-de-marketing-inmobiliario-para-poner-atencion-en-el-2026/',pilar:'El proyecto, desde la vida',saved:false,sent:false,own:false},
+  {id:++tid,fuente:'global',cat:'Conversión',color:'var(--grad-red)',title:'Información autónoma: planos, precios, recorridos',desc:'El comprador 2026 quiere todo a la mano antes de contactar: planos, precios estimados, videos. Si no los encuentra, descarta el proyecto.',src:'Lima Digital · Óptima',url:'https://limadigital.pe/marketing-inmobiliario/',pilar:'El proyecto, desde la vida',saved:false,sent:false,own:false},
+  {id:++tid,fuente:'global',cat:'Sostenibilidad',color:'linear-gradient(135deg,#8B6BD0,#7A5CC0)',title:'Sostenibilidad como argumento de venta',desc:'Eficiencia, ahorro y certificaciones se vuelven tema de contenido. Encaja directo con tus proyectos EDGE (Cochrane 366, Boloña 675).',src:'Wasi',url:'https://blog.wasi.co/tendencias-inmobiliarias-2026/',pilar:'Cómo construimos',saved:false,sent:false,own:false}
+];
+let trendFilter='all',savedOnly=false;
+function findTrend(id){return trends.find(t=>t.id===id);}
+function trendCardRead(t){
+  return `<div class="trend-card ${t.saved?'saved':''}">
+    <div class="tc-top" style="background:${t.color}">
+      <span class="tc-cat">${escT(t.cat)}</span>
+      ${t.own?`<button class="tc-act edit" style="right:80px" onclick="editTrend(${t.id})" title="Editar"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></button><button class="tc-act del" style="right:46px" onclick="delTrend(${t.id})" title="Eliminar"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12"/></svg></button>`:''}
+      <button class="tc-act ${t.saved?'on':''}" style="right:12px" onclick="toggleSave(${t.id})" title="Guardar"><svg viewBox="0 0 24 24" stroke="currentColor"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg></button>
+    </div>
+    <div class="tc-body"><h4>${escT(t.title)}</h4><p>${escT(t.desc)}</p>
+      <div class="tc-foot"><span class="tc-src">${escT(t.src)}</span>
+        <div class="tc-foot-btns">
+          ${t.url?`<a class="tc-link" href="${esc(t.url)}" target="_blank" rel="noopener"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M7 17L17 7M8 7h9v9"/></svg>Ver fuente</a>`:''}
+          <button class="tc-send ${t.sent?'sent':''}" onclick="sendToParrilla(${t.id})">${t.sent?'<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>En parrilla':'Enviar a parrilla'}</button>
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+function trendCardEdit(t){
+  const fu=[['competencia','Competencia local'],['global','Inmobiliarias globales'],['formato','Tendencia de formato']];
+  return `<div class="trend-edit">
+    <input value="${esc(t.title)}" oninput="setTrend(${t.id},'title',this.value)" placeholder="Título de la idea">
+    <textarea oninput="setTrend(${t.id},'desc',this.value)" placeholder="¿En qué consiste? ¿por qué funciona?">${escT(t.desc)}</textarea>
+    <select onchange="setTrend(${t.id},'pilar',this.value)">${Object.keys(pColor).map(x=>optn(x,x,x===t.pilar)).join('')}</select>
+    <select onchange="setTrend(${t.id},'fuente',this.value)">${fu.map(o=>optn(o[0],o[1],o[0]===t.fuente)).join('')}</select>
+    <input value="${esc(t.src)}" oninput="setTrend(${t.id},'src',this.value)" placeholder="Fuente / dónde lo viste">
+    <input value="${esc(t.url||'')}" oninput="setTrend(${t.id},'url',this.value)" placeholder="Enlace al contenido (opcional)">
+    <div class="te-actions"><button class="se-save" onclick="saveTrend(${t.id})"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>Guardar</button><button class="se-del" onclick="delTrend(${t.id})"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></button></div>
+  </div>`;
+}
+function renderTrends(){
+  const el=document.getElementById('trend-grid');if(!el)return;
+  const list=trends.filter(t=>t.editing||((trendFilter==='all'||t.fuente===trendFilter)&&(!savedOnly||t.saved)));
+  el.innerHTML=list.length?list.map(t=>t.editing?trendCardEdit(t):trendCardRead(t)).join(''):`<div style="grid-column:1/-1;color:var(--muted);font-size:13px;padding:20px 4px">No hay ideas en este filtro todavía.</div>`;
+  const n=trends.filter(t=>t.saved).length;
+  const btn=document.getElementById('saved-toggle');
+  btn.innerHTML=`<svg fill="${savedOnly?'currentColor':'none'}" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="15" height="15"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>Guardadas (${n})`;
+  btn.classList.toggle('active',savedOnly);
+}
+function setTrendFilter(v){trendFilter=v;renderTrends();}
+function toggleSavedOnly(){savedOnly=!savedOnly;renderTrends();}
+function toggleSave(id){const t=findTrend(id);if(t){t.saved=!t.saved;renderTrends();}}
+function setTrend(id,f,v){const t=findTrend(id);if(t){t[f]=v;if(f==='pilar')t.color=pilarGrad[v];}}
+function addTrend(){trends.unshift({id:++tid,fuente:'formato',cat:'Idea del equipo',color:'var(--grad-navy)',title:'',desc:'',src:'',pilar:'El proyecto, desde la vida',saved:false,sent:false,own:true,editing:true});renderTrends();}
+function editTrend(id){const t=findTrend(id);if(t){t.editing=true;renderTrends();}}
+function saveTrend(id){const t=findTrend(id);if(t){t.editing=false;t.cat=t.cat||'Idea del equipo';renderTrends();}}
+function delTrend(id){trends=trends.filter(t=>t.id!==id);renderTrends();}
+function sendToParrilla(id){
+  const t=findTrend(id);if(!t||t.sent)return;
+  weeks[2].rows.push({id:++rid,dia:'Lun',num:'15',fmt:'Reel',pilar:t.pilar,t:t.title||'Idea de Tendencias',c:'(Idea traída del banco de Tendencias — pendiente de desarrollar)',h:'',red:['pend','pend','na'],st:'pendiente',r:'Pablo'});
+  t.sent=true;renderTrends();renderParrilla();renderGoals();
+}
+
+/* ====== EXTRAS (tablero de priorización) ====== */
+const exIcons={
+  cal:'<rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/><circle cx="16" cy="15" r="2"/>',
+  copys:'<path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/>',
+  carga:'<path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2M9 11a4 4 0 100-8 4 4 0 000 8zM23 21v-2a4 4 0 00-3-3.87"/>',
+  reporte:'<path d="M12 20h9M3 20h2M3 4h18M3 12h18"/>',
+  ia:'<circle cx="12" cy="12" r="3"/><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4"/>',
+  compara:'<path d="M3 3v18h18"/><path d="M18 9l-5 5-3-3-4 4"/>'
+};
+const exEstados=[['evaluar','Por evaluar','es-gray'],['aprobado','Aprobado','es-blue'],['desarrollo','En desarrollo','es-amber'],['hecho','Hecho','es-green'],['descartado','Descartado','es-red']];
+let eid=0;
+let extras=[
+  {id:++eid,ico:'cal',funcional:true,title:'Calendario de fechas clave',desc:'Efemérides y feriados precargados para no improvisar contenido de fecha.',effort:'Rápido',detail:'<b>Qué hace:</b> marca feriados y efemérides (Día de la madre, Fiestas Patrias, aniversario de Miraflores) sobre la parrilla como sugerencias. <b>Qué necesita:</b> un calendario base; cero integraciones externas.',estado:'hecho',interes:5,interesado:false,expanded:false},
+  {id:++eid,ico:'copys',funcional:true,title:'Banco de copys y hashtags',desc:'Biblioteca reutilizable con tu tono y sets de hashtags por proyecto.',effort:'Rápido',detail:'<b>Qué hace:</b> guarda frases de marca ("Tu lugar en el mundo") y hashtags por proyecto para copiarlos con un clic al crear una pieza. <b>Qué necesita:</b> una base de textos; se monta sobre la parrilla.',estado:'hecho',interes:4,interesado:false,expanded:false},
+  {id:++eid,ico:'carga',funcional:true,title:'Carga por responsable',desc:'Reparte piezas entre el equipo y alerta cuando alguien está sobrecargado.',effort:'Medio',detail:'<b>Qué hace:</b> muestra cuántas piezas tiene cada persona (Pablo, Johan, Ana Paula…) y avisa sobrecarga. <b>Qué necesita:</b> usar el campo Responsable que ya existe + una vista de equipo.',estado:'hecho',interes:3,interesado:false,expanded:false},
+  {id:++eid,ico:'reporte',funcional:true,title:'Reporte mensual automático',desc:'Resumen de cierre de mes con cumplimiento y rendimiento, descargable como PDF.',effort:'Medio',detail:'<b>Qué hace:</b> arma el resumen del mes (pilares, rendimiento, equipo, aprendizajes) y lo descargas como PDF con la impresión del navegador. <b>Versión backend:</b> generarlo automático y 100% en tu línea gráfica.',estado:'hecho',interes:2,interesado:false,expanded:false},
+  {id:++eid,ico:'ia',funcional:false,title:'Asistente de copy con IA',desc:'Propone variantes de copy en tu tono y sugiere pilar y hashtags.',effort:'Avanzado',detail:'<b>Qué hace:</b> a partir del título propone 2-3 variantes de copy en tu tono y sugiere el pilar y los hashtags. <b>Qué necesita:</b> conexión a un modelo de IA con backend (costo por uso); no puede vivir solo en el navegador.',estado:'evaluar',interes:6,interesado:false,expanded:false},
+  {id:++eid,ico:'compara',funcional:false,title:'Comparativa mes a mes',desc:'Histórico de cumplimiento y rendimiento para ver la evolución del trimestre.',effort:'Avanzado',detail:'<b>Qué hace:</b> guarda el histórico y muestra la evolución (qué pilar rinde mejor, si sube el engagement). <b>Qué necesita:</b> base propia que copie las métricas mes a mes (clave por el límite de 90 días de las APIs).',estado:'evaluar',interes:2,interesado:false,expanded:false}
+];
+let exFilter='all',exSort=false,openMod=null;
+function findExtra(id){return extras.find(e=>e.id===id);}
+function renderExtras(){
+  const el=document.getElementById('feat-grid');if(!el)return;
+  let list=extras.filter(e=>exFilter==='all'||e.estado===exFilter);
+  if(exSort)list=[...list].sort((a,b)=>b.interes-a.interes);
+  el.innerHTML=list.map(e=>{
+    const est=exEstados.find(x=>x[0]===e.estado);
+    return `<div class="feat">
+      <div class="feat-top">
+        <div class="feat-ico"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24">${exIcons[e.ico]}</svg></div>
+        <button class="feat-interes ${e.interesado?'on':''}" onclick="toggleInteres(${e.id})" title="Me interesa"><svg viewBox="0 0 24 24"><path d="M12 2l2.9 6.6 7.1.6-5.4 4.8 1.6 7L12 17.3 5.8 21l1.6-7L2 9.2l7.1-.6z"/></svg>${e.interes}</button>
+      </div>
+      <h4>${e.title}</h4>
+      <p>${e.desc}</p>
+      ${e.expanded?`<div class="feat-detail">${e.detail}</div>`:''}
+      <div class="feat-foot">
+        <span class="badge">${e.effort}</span>
+        ${e.funcional?`<button class="feat-open" onclick="openExtraModule('${e.ico}')"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>Abrir</button>`:''}
+        <select class="feat-estado ${est[2]}" onchange="setExtraEstado(${e.id},this.value)">${exEstados.map(o=>`<option value="${o[0]}" ${o[0]===e.estado?'selected':''}>${o[1]}</option>`).join('')}</select>
+        <button class="feat-more ${e.expanded?'open':''}" onclick="toggleExtra(${e.id})">${e.expanded?'Ocultar':'Ver detalle'}<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button>
+      </div>
+    </div>`;
+  }).join('');
+  const ap=extras.filter(e=>e.estado==='aprobado').length;
+  const de=extras.filter(e=>e.estado==='desarrollo').length;
+  const he=extras.filter(e=>e.estado==='hecho').length;
+  document.getElementById('extras-summary').innerHTML=`<b>${extras.length}</b> módulos · <b>${he}</b> funcionando · <b>${ap}</b> aprobados · <b>${de}</b> en desarrollo`;
+  document.getElementById('sort-interes').classList.toggle('active',exSort);
+}
+function setExtraFilter(v){exFilter=v;renderExtras();}
+function toggleSortInteres(){exSort=!exSort;renderExtras();}
+function toggleInteres(id){const e=findExtra(id);if(e){e.interesado=!e.interesado;e.interes+=e.interesado?1:-1;renderExtras();}}
+function setExtraEstado(id,v){const e=findExtra(id);if(e){e.estado=v;renderExtras();}}
+function toggleExtra(id){const e=findExtra(id);if(e){e.expanded=!e.expanded;renderExtras();}}
+
+/* ---- módulos funcionales ---- */
+function modHead(t,s){return `<div class="mod-head"><button class="mod-back" onclick="backToBoard()"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>Volver</button><div class="mod-title">${t}<small>${s}</small></div></div>`;}
+function openExtraModule(key){
+  openMod=key;
+  document.getElementById('extras-board').style.display='none';
+  const m=document.getElementById('extras-module');m.style.display='block';
+  if(key==='carga')m.innerHTML=modHead('Carga por responsable','Piezas asignadas este mes · calculado desde la parrilla')+moduleCargaBody();
+  if(key==='copys'){m.innerHTML=modHead('Banco de copys y hashtags','Textos y etiquetas reutilizables · copia con un clic')+'<div id="banco-body"></div>';renderBanco();}
+  if(key==='cal'){m.innerHTML=modHead('Calendario de fechas clave','Fechas del sector · envíalas a la parrilla')+'<div id="fechas-body"></div>';renderFechas();}
+  if(key==='reporte')m.innerHTML=modHead('Reporte mensual','Resumen del mes · descárgalo como PDF')+moduleReporteBody();
+}
+function backToBoard(){openMod=null;document.getElementById('extras-module').style.display='none';document.getElementById('extras-board').style.display='block';renderExtras();}
+
+/* carga (calculada desde la parrilla) */
+function moduleCargaBody(){
+  const people=['Pablo','Johan','Ana Paula','Gabriela','Diego','Eduardo'];
+  const counts={};people.forEach(p=>counts[p]=0);
+  weeks.forEach(w=>w.rows.forEach(r=>{if(counts[r.r]!=null)counts[r.r]++;}));
+  const total=Object.values(counts).reduce((a,b)=>a+b,0);
+  const max=Math.max(...Object.values(counts),1);
+  const rows=people.map(p=>{
+    const c=counts[p];const over=total>0&&c/total>0.4&&c>=2;
+    return `<div class="load-row"><div class="load-av">${p[0]}</div><div class="load-info"><b>${p}</b><small>${total?Math.round(c/total*100):0}% del mes</small></div><div class="load-track"><div class="load-fill ${over?'over':''}" style="width:${Math.round(c/max*100)}%"></div></div><div class="load-val">${c} pieza${c===1?'':'s'}${over?'<span class="load-flag">Sobrecargado</span>':''}</div></div>`;
+  }).join('');
+  const note=total?`Hay <b>${total}</b> piezas asignadas este mes. ${counts['Pablo']/total>0.4?'<b>Pablo</b> concentra la mayoría — conviene repartir entre el equipo.':'El reparto se ve equilibrado.'} Reasigna desde la parrilla (lápiz) y este conteo se actualiza solo.`:'Aún no hay piezas asignadas este mes.';
+  return `<div class="card">${rows}<div class="calc-note">${note}</div></div>`;
+}
+
+/* reporte mensual (imprimible a PDF) */
+function moduleReporteBody(){
+  const total=Math.max(1,+document.getElementById('goal-total').value||20);
+  const pub=weeks.reduce((a,w)=>a+w.rows.filter(r=>r.st==='publicado').length,0);
+  const planTot=pillars.reduce((a,p)=>a+planned(p.name),0);
+  const pillarRows=pillars.map(p=>{const have=planned(p.name);const target=Math.round(total*p.pct/100);const w=Math.min(100,Math.round(have/Math.max(target,1)*100));return `<div class="rep-pill-row"><div style="width:160px;font-size:12.5px;display:flex;align-items:center;gap:7px"><span class="tag-dot" style="background:${p.color}"></span>${p.short}</div><div style="flex:1;height:8px;background:var(--bg);border-radius:8px;overflow:hidden"><div style="height:100%;width:${w}%;background:${p.color};opacity:.8;border-radius:8px"></div></div><div style="width:84px;text-align:right;font-size:12px;font-weight:600">${have} / ${target}</div></div>`;}).join('');
+  const people=['Pablo','Johan','Ana Paula','Gabriela','Diego','Eduardo'];const cc={};people.forEach(p=>cc[p]=0);weeks.forEach(w=>w.rows.forEach(r=>{if(cc[r.r]!=null)cc[r.r]++;}));
+  const cargaTxt=Object.entries(cc).filter(([k,v])=>v>0).map(([k,v])=>`${k} (${v})`).join(' · ')||'sin asignaciones';
+  return `<div style="margin-bottom:16px;display:flex;gap:8px"><button class="btn-primary" id="pdf-btn" onclick="generatePDF()"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>Descargar PDF</button><button class="btn-ghost" onclick="window.print()"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="15" height="15"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6z"/></svg>Imprimir</button></div>
+  <div class="report-sheet" id="report-sheet">
+    <div class="rep-head"><div class="rep-logo">TDC</div><div><h2>Reporte de contenido</h2><small>Taller de Diseño Constructivo · Mayo 2026</small></div></div>
+    <div class="rep-sec"><h3>Resumen del mes</h3><div class="rep-kpis">
+      <div class="rep-kpi"><div class="n">${planTot}</div><div class="l">Piezas planificadas</div></div>
+      <div class="rep-kpi"><div class="n">${pub}</div><div class="l">Publicadas</div></div>
+      <div class="rep-kpi"><div class="n">48.2K</div><div class="l">Alcance</div></div>
+      <div class="rep-kpi"><div class="n">5.4%</div><div class="l">Engagement</div></div>
+    </div></div>
+    <div class="rep-sec"><h3>Cumplimiento por pilar</h3>${pillarRows}</div>
+    <div class="rep-sec"><h3>Rendimiento destacado</h3><p style="font-size:13px;line-height:1.65;color:var(--ink)">Pieza top del mes: <b>Avance de obra LM2</b> (Cómo construimos), con ~2× la interacción promedio. Mejor franja para publicar: <b>jueves y martes, 6–9 p.m.</b> Seguidores: <b>12,550</b> (+323 en el mes), con Instagram como principal motor de crecimiento.</p></div>
+    <div class="rep-sec"><h3>Equipo</h3><p style="font-size:13px;color:var(--ink)">Reparto de piezas — ${cargaTxt}.</p></div>
+    <div class="rep-sec"><h3>Aprendizajes y próximos pasos</h3><div style="font-size:13px;line-height:1.75;color:var(--ink)">• Reforzar el contenido de obra y proceso (Cómo construimos), que rinde por encima del promedio.<br>• Subir la producción de El proyecto, desde la vida para alcanzar el 30% objetivo.<br>• Repartir mejor la carga del equipo.<br>• Programar reels e historias clave entre semana, de 6 a 9 p.m.</div></div>
+    <div style="border-top:1px solid var(--line);padding-top:14px;font-size:11px;color:var(--muted)">Generado desde la plataforma de contenido TDC · Tu lugar en el mundo.</div>
+  </div>`;
+}
+function generatePDF(){
+  const el=document.getElementById('report-sheet');if(!el)return;
+  if(!window.html2canvas||!window.jspdf){window.print();return;}
+  const btn=document.getElementById('pdf-btn');const orig=btn.innerHTML;btn.innerHTML='Generando…';btn.disabled=true;
+  window.html2canvas(el,{scale:2,backgroundColor:'#ffffff'}).then(canvas=>{
+    const {jsPDF}=window.jspdf;const pdf=new jsPDF('p','mm','a4');
+    const pw=pdf.internal.pageSize.getWidth(),ph=pdf.internal.pageSize.getHeight();
+    const m=8,iw=pw-m*2,ih=canvas.height*iw/canvas.width;const img=canvas.toDataURL('image/png');
+    let pos=m,hLeft=ih;
+    pdf.addImage(img,'PNG',m,pos,iw,ih);hLeft-=(ph-m*2);
+    while(hLeft>0){pos=m-(ih-hLeft);pdf.addPage();pdf.addImage(img,'PNG',m,pos,iw,ih);hLeft-=(ph-m*2);}
+    pdf.save('Reporte-Contenido-TDC-Mayo-2026.pdf');
+    btn.innerHTML=orig;btn.disabled=false;
+  }).catch(()=>{btn.innerHTML=orig;btn.disabled=false;window.print();});
+}
+
+/* banco de copys y hashtags */
+let bid=0;
+let banco=[
+  {id:++bid,kind:'copy',label:'Cierre de marca',text:'Tu lugar en el mundo.',editing:false},
+  {id:++bid,kind:'copy',label:'Bienvenida de proyecto',text:'Encontramos tu lugar en el mundo.',editing:false},
+  {id:++bid,kind:'copy',label:'Avance de obra',text:'Detrás de cada avance hay planificación, coordinación y un equipo comprometido con construir espacios pensados para perdurar en el tiempo.',editing:false},
+  {id:++bid,kind:'tags',label:'Generales TDC',text:'#TDC #TDCInmobiliaria #TuLugarEnElMundo #Miraflores',editing:false},
+  {id:++bid,kind:'tags',label:'Las Moras',text:'#LasMoras #AuroraLasMoras #Miraflores #ConstruimosConfianza',editing:false},
+  {id:++bid,kind:'tags',label:'EDGE / Sostenibilidad',text:'#EDGE #Sostenibilidad #Cochrane366 #Boloña675',editing:false}
+];
+function renderBanco(){
+  const el=document.getElementById('banco-body');if(!el)return;
+  const sec=(kind,title)=>{
+    const items=banco.filter(b=>b.kind===kind);
+    return `<div class="lib-section-title"><span style="width:7px;height:16px;border-radius:4px;background:var(--grad-navy);display:inline-block"></span>${title}<button class="lib-btn" style="margin-left:auto" onclick="addBanco('${kind}')">+ Nuevo</button></div>
+    <div class="lib-grid">${items.length?items.map(bancoCard).join(''):'<span style="color:var(--muted);font-size:12px">Vacío</span>'}</div>`;
+  };
+  el.innerHTML=sec('copy','Copys')+sec('tags','Sets de hashtags');
+}
+function bancoCard(b){
+  if(b.editing)return `<div class="lib-card"><input class="cell-input" value="${esc(b.label)}" oninput="setBanco(${b.id},'label',this.value)" placeholder="Nombre"><textarea class="cell-input" style="margin-top:7px" oninput="setBanco(${b.id},'text',this.value)" placeholder="Texto">${escT(b.text)}</textarea><div class="lib-acts"><button class="lib-btn copy" onclick="saveBanco(${b.id})">Guardar</button><button class="lib-btn del" onclick="delBanco(${b.id})">Eliminar</button></div></div>`;
+  return `<div class="lib-card"><div class="ll">${escT(b.label)}</div><div class="lt">${escT(b.text)}</div><div class="lib-acts"><button class="lib-btn copy" onclick="copyItem(${b.id},this)"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg>Copiar</button><button class="lib-btn" onclick="editBanco(${b.id})">Editar</button><button class="lib-btn del" onclick="delBanco(${b.id})"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></button></div></div>`;
+}
+function addBanco(kind){banco.push({id:++bid,kind,label:'',text:'',editing:true});renderBanco();}
+function setBanco(id,f,v){const b=banco.find(x=>x.id===id);if(b)b[f]=v;}
+function editBanco(id){const b=banco.find(x=>x.id===id);if(b){b.editing=true;renderBanco();}}
+function saveBanco(id){const b=banco.find(x=>x.id===id);if(b){b.editing=false;renderBanco();}}
+function delBanco(id){banco=banco.filter(x=>x.id!==id);renderBanco();}
+function copyItem(id,btn){const b=banco.find(x=>x.id===id);if(b)copyText(b.text,btn);}
+function copyText(txt,btn){
+  const ok=()=>{const o=btn.innerHTML;btn.classList.add('done');btn.innerHTML='<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>Copiado';setTimeout(()=>{btn.classList.remove('done');btn.innerHTML=o;},1400);};
+  try{navigator.clipboard.writeText(txt).then(ok,()=>fb());}catch(e){fb();}
+  function fb(){const ta=document.createElement('textarea');ta.value=txt;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy');}catch(e){}document.body.removeChild(ta);ok();}
+}
+
+/* calendario de fechas clave */
+let fid=0;
+let fechas=[
+  {id:++fid,d:'01',m:'May',name:'Día del Trabajador',pilar:'Asesoría que da confianza',sent:false},
+  {id:++fid,d:'10',m:'May',name:'Día de la Madre',pilar:'Asesoría que da confianza',sent:false},
+  {id:++fid,d:'21',m:'Jun',name:'Día del Padre',pilar:'Asesoría que da confianza',sent:false},
+  {id:++fid,d:'28',m:'Jul',name:'Fiestas Patrias',pilar:'Vida de barrio',sent:false},
+  {id:++fid,d:'25',m:'Oct',name:'Día del Trabajador de Construcción Civil',pilar:'Asesoría que da confianza',sent:false},
+  {id:++fid,d:'02',m:'Ene',name:'Aniversario de Miraflores',pilar:'Vida de barrio',sent:false}
+];
+function renderFechas(){
+  const el=document.getElementById('fechas-body');if(!el)return;
+  el.innerHTML=`<div class="card">${fechas.map(f=>`<div class="date-row"><div class="date-chip"><b>${f.d}</b><small>${f.m}</small></div><div class="date-info"><b>${escT(f.name)}</b><small>Sugerido: ${f.pilar}</small></div><button class="tc-send ${f.sent?'sent':''}" onclick="sendFecha(${f.id})">${f.sent?'<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>En parrilla':'Enviar a parrilla'}</button></div>`).join('')}<div class="calc-note">Son sugerencias: confírmalas con tu calendario y agrega las de tus campañas. Al enviar una, se crea una pieza pendiente en la parrilla con su pilar.</div></div>`;
+}
+function sendFecha(id){const f=fechas.find(x=>x.id===id);if(!f||f.sent)return;weeks[2].rows.push({id:++rid,dia:f.m,num:f.d,fmt:'Diseño',pilar:f.pilar,t:f.name,c:'(Contenido de fecha clave — pendiente de desarrollar)',h:'',red:['pend','pend','na'],st:'pendiente',r:'Pablo'});f.sent=true;renderFechas();renderParrilla();renderGoals();}
+
+/* ====== PUENTE DE ESTADO (persistencia en Firestore, ver script de abajo) ====== */
+window.PLAT={
+  getState(){
+    const s=JSON.parse(JSON.stringify({weeks,stories,trends,extras,banco,fechas}));
+    s.stories.forEach(x=>x.editing=false);
+    s.trends.forEach(x=>{delete x.editing;});
+    s.banco.forEach(x=>x.editing=false);
+    s.goalTotal=+document.getElementById('goal-total').value||20;
+    return s;
+  },
+  setState(s){
+    if(!s)return;
+    if(Array.isArray(s.weeks)){weeks.length=0;s.weeks.forEach(w=>weeks.push(w));}
+    if(Array.isArray(s.stories))stories=s.stories;
+    if(Array.isArray(s.trends))trends=s.trends;
+    if(Array.isArray(s.extras))extras=s.extras;
+    if(Array.isArray(s.banco))banco=s.banco;
+    if(Array.isArray(s.fechas))fechas=s.fechas;
+    if(s.goalTotal)document.getElementById('goal-total').value=s.goalTotal;
+    // counters: evitar colisiones de id con datos guardados
+    rid=Math.max(0,...weeks.flatMap(w=>w.rows.map(r=>+r.id||0)));
+    sid=Math.max(0,...stories.map(x=>+x.id||0));
+    tid=Math.max(0,...trends.map(x=>+x.id||0));
+    eid=Math.max(0,...extras.map(x=>+x.id||0));
+    bid=Math.max(0,...banco.map(x=>+x.id||0));
+    fid=Math.max(0,...fechas.map(x=>+x.id||0));
+    if(openMod)backToBoard();
+    renderExtras();renderTrends();renderStories();renderParrilla();renderGoals();
+  }
+};
+
+renderExtras();
+renderTrends();
+renderIdeas();
+renderStories();
+renderHeat();
+renderParrilla();
+renderGoals();
+</script>
+
+<script type="module">
+/* ====== PERSISTENCIA (Firestore, sesión compartida con la app principal) ====== */
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+
+const fbApp=initializeApp({apiKey:"AIzaSyDb5rQYu5_Ukf5AQ77zz8O6Si1MUdGcz_w",authDomain:"tdc-calendario-av.firebaseapp.com",projectId:"tdc-calendario-av",storageBucket:"tdc-calendario-av.firebasestorage.app",messagingSenderId:"393165602286",appId:"1:393165602286:web:702df05a4a4aa6ef3662ff",measurementId:"G-9NGVTJVFDQ"});
+const db=getFirestore(fbApp);
+const auth=getAuth(fbApp);
+const REF=doc(db,"contenido_mkt","principal");
+
+let ready=false,lastSaved="",saveTimer=null,flashTimer=null;
+function flashSaved(){
+  const el=document.getElementById('save-ind');if(!el)return;
+  el.textContent='● Guardado';el.style.color='var(--green)';el.style.opacity='1';
+  clearTimeout(flashTimer);flashTimer=setTimeout(()=>el.style.opacity='0',1500);
+}
+function flashError(){
+  const el=document.getElementById('save-ind');if(!el)return;
+  el.textContent='● Error al guardar';el.style.color='var(--red)';el.style.opacity='1';
+}
+function scheduleSave(){
+  if(!ready)return;
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(async()=>{
+    const json=JSON.stringify(window.PLAT.getState());
+    if(json===lastSaved)return;
+    try{
+      await setDoc(REF,{json,updatedAt:serverTimestamp(),updatedBy:auth.currentUser?auth.currentUser.email:''});
+      lastSaved=json;flashSaved();
+    }catch(e){console.error('Error guardando:',e);flashError();}
+  },700);
+}
+
+let started=false;
+onAuthStateChanged(auth,async user=>{
+  if(!user){
+    if(!started){
+      const el=document.getElementById('save-ind');
+      if(el){el.textContent='● Inicia sesión en el tablero para guardar';el.style.color='var(--amber)';el.style.opacity='1';}
+    }
+    return;
+  }
+  if(started)return;
+  started=true;
+  const av=document.getElementById('avatar');
+  if(av){const n=(user.displayName||user.email||'?').split(/[\s@.]+/);av.textContent=((n[0]||'')[0]||'').toUpperCase()+((n[1]||'')[0]||'').toUpperCase();}
+  try{
+    const snap=await getDoc(REF);
+    if(snap.exists()&&snap.data().json)window.PLAT.setState(JSON.parse(snap.data().json));
+  }catch(e){console.error('Error cargando:',e);}
+  lastSaved=JSON.stringify(window.PLAT.getState());
+  ready=true;
+  // cualquier interacción que cambie el estado dispara un guardado (con comparación previa)
+  ['input','change','click','drop'].forEach(ev=>document.addEventListener(ev,scheduleSave,true));
+});
+</script>
+</body>
+</html>
