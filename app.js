@@ -14,7 +14,7 @@ const TEAM_NAMES={"ahurtado@paraleloinmobiliaria.pe":"Ana Paula Hurtado","jgalve
 const TEAM=Object.keys(TEAM_EMAILS);
 const MESES=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 const CATS=['Comunicación interna','Diseño','Audiovisual','Publicidad exterior','Material impreso','Entrega/Minuta','Publicidad digital','Otros'];
-const COLORS=['#E0322B','#E8A93B','#2EA56A','#5B8FC7','#8B5CF6','#EC4899','#14B8A6'];
+const COLORS=['#E8261C','#E9A23B','#1BA572','#2E7DC4','#7A5CC0','#EC4899','#14B8A6'];
 const DIAS={0:31,1:28,2:31,3:30,4:31,5:30,6:31,7:31,8:30,9:31,10:30,11:31};
 
 const fbApp=initializeApp({apiKey:"AIzaSyDb5rQYu5_Ukf5AQ77zz8O6Si1MUdGcz_w",authDomain:"tdc-calendario-av.firebaseapp.com",projectId:"tdc-calendario-av",storageBucket:"tdc-calendario-av.firebasestorage.app",messagingSenderId:"393165602286",appId:"1:393165602286:web:702df05a4a4aa6ef3662ff",measurementId:"G-9NGVTJVFDQ"});
@@ -344,9 +344,9 @@ function renderGrabList(){
   });
   if(!fg.length){tbody.innerHTML='<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:2rem;font-size:12px;">No hay grabaciones en '+MESES[curM]+' '+curY+'</td></tr>';return;}
   [...fg].sort((a,b)=>a.fecha>b.fecha?1:-1).forEach(g=>{
-    const badges={pend:'background:#FEF3C7;color:#92400E',conf:'background:#D1FAE5;color:#065F46',prog:'background:#DBEAFE;color:#1E40AF',canc:'background:#FEE2E2;color:#991B1B'};
+    const badges={pend:'background:#FCF3E3;color:#B07410',conf:'background:#E7F6EF;color:#1BA572',prog:'background:#EAF1F8;color:#2E5B8A',canc:'background:#FFE9E6;color:#C4140C'};
     const bstyle=badges[stKey(g.estado)]||badges.pend;
-    const resps=(g.responsables||[]).map(r=>`<span style="font-size:10px;background:var(--blue-lt);color:#1E40AF;padding:2px 6px;border-radius:20px;font-weight:500;">${r.split(' ')[0]}</span>`).join(' ');
+    const resps=(g.responsables||[]).map(r=>`<span style="font-size:10px;background:var(--steel-soft);color:var(--steel);padding:3px 8px;border-radius:20px;font-weight:600;">${r.split(' ')[0]}</span>`).join(' ');
     const calUrl=buildCalLink(g.nombre,g.fecha);
     const tr=document.createElement('tr');
     tr.innerHTML=`
@@ -541,17 +541,17 @@ window.renderAnalytics=()=>{
   const teamToShow=anView==='personal'?[viewName]:TEAM;
   if(anView==='personal'){
     const estados=['Pendiente','En Proceso','Completada','Cancelada'];
-    mkBar('chartEnc',estados,estados.map(e=>mt.filter(t=>t.estado===e).length),['#E0322B','#E8A93B','#2EA56A','#6B7280']);
+    mkBar('chartEnc',estados,estados.map(e=>mt.filter(t=>t.estado===e).length),['#E8261C','#E9A23B','#1BA572','#5B7088']);
   } else {
     mkBar('chartEnc',TEAM.map(e=>e.split(' ')[0]),TEAM.map(e=>mt.filter(t=>(t.encargados||[]).includes(e)).length),COLORS);
   }
   mkDona('chartCat',CATS.map(c=>c.length>16?c.slice(0,16)+'…':c),CATS.map(c=>mt.filter(t=>t.categoria===c).length));
   const aMap={};mt.forEach(t=>{if(t.area)aMap[t.area]=(aMap[t.area]||0)+1;});
   const aKeys=Object.keys(aMap).sort((a,b)=>aMap[b]-aMap[a]).slice(0,6);
-  mkBar('chartArea',aKeys,aKeys.map(k=>aMap[k]),['#5B8FC7']);
+  mkBar('chartArea',aKeys,aKeys.map(k=>aMap[k]),['#2E5B8A']);
   const sMap={};mt.forEach(t=>{if(t.solicita)sMap[t.solicita]=(sMap[t.solicita]||0)+1;});
   const sKeys=Object.keys(sMap).sort((a,b)=>sMap[b]-sMap[a]).slice(0,6);
-  mkBar('chartSol',sKeys,sKeys.map(k=>sMap[k]),['#2EA56A']);
+  mkBar('chartSol',sKeys,sKeys.map(k=>sMap[k]),['#1BA572']);
 
   const rt=$('rankTime');rt.innerHTML='';
   teamToShow.forEach(enc=>{
