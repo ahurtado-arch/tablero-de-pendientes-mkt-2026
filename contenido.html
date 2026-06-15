@@ -146,9 +146,12 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .copypill:hover,.tagspill:hover{background:#fff;border-color:var(--line)}
 .copypill:focus,.tagspill:focus{background:#fff;border-color:var(--steel);color:var(--ink)}
 /* ===== vista de lectura estilo tabla espaciosa (sin lineas) ===== */
-.rdate{display:flex;flex-direction:column;align-items:flex-start;line-height:1.1}
-.rd-day{font-size:11px;font-weight:600;color:var(--muted)}
-.rd-num{font-size:20px;font-weight:700;color:var(--ink);letter-spacing:-.5px}
+.rdate{display:flex;flex-direction:column;align-items:center;text-align:center;gap:1px;line-height:1.05}
+.rd-day-btn{font-family:inherit;font-size:11px;font-weight:600;color:var(--muted);background:none;border:none;cursor:pointer;border-radius:6px;padding:2px 7px;transition:.12s}
+.rd-day-btn:hover{background:var(--steel-soft);color:var(--steel)}
+.rd-num-in{width:44px;font-family:inherit;font-size:20px;font-weight:700;color:var(--ink);text-align:center;letter-spacing:-.5px;border:1px solid transparent;border-radius:8px;padding:1px;outline:none;background:transparent}
+.rd-num-in:hover{background:#fff;border-color:var(--line)}
+.rd-num-in:focus{background:#fff;border-color:var(--steel)}
 .rd-mon{font-size:9.5px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
 .rfmt{display:flex;align-items:center;gap:8px;min-width:0}
 .rfmt-ico{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;flex-shrink:0}
@@ -915,9 +918,10 @@ function rowRead(p){
     : `<div class="htags-cell"><div class="rtags${tags.length?'':' rmuted'}" onclick="startEdit(${p.id},'h')">${tags.length?escT(tags.join(' ')):'#…'}</div></div>`;
   return `<div class="prow gridcols" onfocusout="rowFocusOut(event,${p.id})">
     <div class="row-handle" draggable="true" ondragstart="dragRow(event,${p.id})" ondragend="dragRowEnd(event)" title="Arrastrar para mover de semana"><svg class="grip" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="7" r="1.3"/><circle cx="9" cy="12" r="1.3"/><circle cx="9" cy="17" r="1.3"/><circle cx="15" cy="7" r="1.3"/><circle cx="15" cy="12" r="1.3"/><circle cx="15" cy="17" r="1.3"/></svg></div>
-    <div class="pdate-cell">
-      <button class="ddbtn plain ddsm" onclick="openDD(event,${p.id},'dia')"><span class="dd-lbl">${escT(p.dia)||'—'}</span>${chev()}</button>
-      <input class="numpill" value="${esc(p.num)}" oninput="setField(${p.id},'num',this.value)" placeholder="#">
+    <div class="rdate">
+      <button class="rd-day-btn" onclick="openDD(event,${p.id},'dia')">${escT(p.dia)||'—'}</button>
+      <input class="rd-num-in" value="${esc(p.num)}" oninput="setField(${p.id},'num',this.value)" placeholder="·">
+      <span class="rd-mon">${MESab[curM].toUpperCase()}</span>
     </div>
     <div><button class="ddbtn dd-fmt plain" onclick="openDD(event,${p.id},'fmt')"><span class="rfmt-ico" style="background:${fc[0]};color:${fc[1]}"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24">${fmtIcon[p.fmt]||fmtIcon['Diseño']}</svg></span><span class="dd-lbl">${escT(p.fmt)||'—'}</span>${chev()}</button></div>
     <div><button class="ddbtn" style="background:${ps[0]};color:${ps[1]}" onclick="openDD(event,${p.id},'pilar')"><span class="dd-lbl">${escT(pilarShortMap[p.pilar]||p.pilar)}</span>${chev()}</button></div>
