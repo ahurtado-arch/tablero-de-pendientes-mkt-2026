@@ -156,10 +156,11 @@ select.cell-input{cursor:pointer}
 .fecha-sel{padding:3px 2px!important;font-size:10px!important}
 .fecha-num{padding:3px!important;font-size:11px!important;text-align:center;margin-top:4px}
 .pdate-cell{display:flex;flex-direction:column;gap:3px}
-.grip-row{cursor:grab;display:flex;justify-content:center;color:#C3CDD9;opacity:0;transition:opacity .18s ease}
+.grip-row{cursor:grab;display:flex;justify-content:center;align-items:center;color:#9AA8B8;opacity:0;height:18px;border-radius:6px;transition:opacity .18s ease,background .15s ease,color .15s ease}
 .prow:hover .grip-row{opacity:1}
-.grip-row:active{cursor:grabbing}
-.grip-row .grip{width:16px;height:11px}
+.grip-row:hover{background:var(--steel-soft);color:var(--steel)}
+.grip-row:active{cursor:grabbing;background:var(--steel-soft);color:var(--steel)}
+.grip-row .grip{width:20px;height:13px}
 .inl-sel{width:100%;font-family:inherit;font-size:11px;font-weight:600;border:1px solid var(--line);border-radius:8px;padding:5px 17px 5px 8px;outline:none;cursor:pointer;color:var(--ink);background-color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 24 24' fill='none' stroke='%236B7A8D' stroke-width='3'><path d='M6 9l6 6 6-6'/></svg>");background-repeat:no-repeat;background-position:right 6px center}
 .inl-sel:focus{border-color:var(--steel)!important}
 .inl-num{width:100%;font-family:inherit;font-size:12px;font-weight:600;text-align:center;border:1px solid var(--line);border-radius:7px;padding:4px;outline:none;color:var(--ink)}
