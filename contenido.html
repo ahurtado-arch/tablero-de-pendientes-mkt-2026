@@ -84,16 +84,53 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 
 /* PARRILLA TABLE (scroll horizontal) */
 .parrilla{background:var(--white);border:1px solid var(--line);border-radius:18px;overflow-x:auto;box-shadow:var(--shadow)}
-.gridcols{display:grid;grid-template-columns:70px 88px 168px minmax(260px,1.4fr) minmax(170px,1fr) 116px 126px 92px 92px 92px 42px;column-gap:10px;min-width:1416px}
+.gridcols{display:grid;grid-template-columns:64px 116px 150px minmax(240px,1.6fr) minmax(150px,1fr) 132px 152px 54px 54px 54px 92px;column-gap:12px;min-width:1372px}
 .ph{padding:0 18px;background:var(--bg);font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:600;border-bottom:1px solid var(--line);align-items:stretch}
 .ph>div{display:flex;align-items:flex-end;padding:11px 0}
 .ph-group{flex-direction:column;align-items:stretch;justify-content:flex-end;gap:7px;padding:8px 0!important}
 .ph-cap{font-size:9px;color:#8190A2;font-weight:600;text-transform:none;letter-spacing:0;text-align:center;white-space:nowrap;line-height:1}
 .subhead{display:grid;grid-template-columns:repeat(3,1fr);width:100%}
 .subhead span{text-align:center;font-size:10px;font-weight:700;color:var(--slate)}
-.week-band{padding:9px 18px;background:var(--steel-tint);font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--steel);text-transform:uppercase;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:8px;min-width:1416px}
+.week-band{padding:12px 18px;background:var(--steel-tint);font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--steel);text-transform:uppercase;display:flex;align-items:center;gap:10px;min-width:1372px}
+.week-count{font-size:10px;font-weight:600;letter-spacing:0;text-transform:none;color:var(--muted);background:var(--white);border:1px solid var(--line);padding:2px 9px;border-radius:20px}
 .week-band span{color:var(--muted);font-weight:500;letter-spacing:0;text-transform:none}
-.prow{padding:14px 18px;border-bottom:1px solid var(--line);align-items:start;transition:.15s;position:relative}
+.prow{padding:18px 18px;align-items:center;transition:background .15s;position:relative}
+.prow:not(:last-child){box-shadow:none}
+/* ===== vista de lectura estilo tabla espaciosa (sin lineas) ===== */
+.rdate{display:flex;flex-direction:column;align-items:flex-start;line-height:1.1}
+.rd-day{font-size:11px;font-weight:600;color:var(--muted)}
+.rd-num{font-size:20px;font-weight:700;color:var(--ink);letter-spacing:-.5px}
+.rd-mon{font-size:9.5px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.rfmt{display:flex;align-items:center;gap:8px;min-width:0}
+.rfmt-ico{width:30px;height:30px;border-radius:9px;display:grid;place-items:center;flex-shrink:0}
+.rfmt-ico svg{width:16px;height:16px;stroke-width:1.8}
+.rfmt-lbl{font-size:12px;font-weight:600;color:var(--navy);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rpill{display:inline-block;font-size:11px;font-weight:600;padding:5px 11px;border-radius:20px;line-height:1.3}
+.rtitle-cell{min-width:0}
+.rtitle{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:3px}
+.rmuted{color:var(--muted);font-weight:400}
+.rcopy{font-size:11.5px;color:var(--muted);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-wrap}
+.rcopy.exp{-webkit-line-clamp:unset;overflow:visible}
+.rmore{font-size:11px;font-weight:600;color:var(--steel);margin-top:3px;padding:0}
+.rmore:hover{text-decoration:underline}
+.rtags-cell{min-width:0}
+.rtags{font-size:11px;color:var(--steel);font-weight:500;line-height:1.6;word-break:break-word}
+.rtag-more{display:inline-block;font-size:10.5px;color:var(--muted);font-weight:600;margin-top:3px}
+.rtags-empty{color:var(--line)}
+.rstate{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;padding:5px 11px;border-radius:20px}
+.rstate-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.rresp{display:flex;align-items:center;gap:8px;min-width:0}
+.ravatar{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-size:10.5px;font-weight:700;flex-shrink:0}
+.rresp-name{font-size:12px;font-weight:500;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rnet-cell{display:flex;justify-content:center}
+.rnet{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;font-size:12px;font-weight:700}
+.rnet svg{width:14px;height:14px;stroke-width:3}
+.rnet.off{color:#C8D2DC;background:transparent}
+.ractions{display:flex;gap:3px;justify-content:flex-end}
+.ract{width:30px;height:30px;border-radius:8px;display:grid;place-items:center;color:var(--muted);transition:.15s}
+.ract svg{width:15px;height:15px;stroke-width:1.8}
+.ract:hover{background:var(--steel-soft);color:var(--steel)}
+.ract.del:hover{background:var(--red-soft);color:var(--red)}
 .prow:hover{background:#FBFCFE}
 .prow.editing{background:var(--steel-soft);box-shadow:inset 3px 0 0 var(--steel)}
 .pdate{font-size:13px;font-weight:600}
@@ -145,7 +182,7 @@ select.cell-input{cursor:pointer}
 .act-btn.del:hover{background:var(--red-soft);color:var(--red)}
 .act-btn.save{color:var(--green)}
 .act-btn.save:hover{background:#E7F6EF;color:var(--green)}
-.add-row{padding:11px 18px;border-bottom:1px solid var(--line);font-size:12px;font-weight:500;color:var(--muted);display:flex;align-items:center;gap:7px;cursor:pointer;min-width:1416px}
+.add-row{padding:13px 18px;font-size:12px;font-weight:500;color:var(--muted);display:flex;align-items:center;gap:7px;cursor:pointer;min-width:1372px}
 .add-row:hover{color:var(--steel);background:var(--steel-soft)}
 .add-row svg{width:14px;height:14px}
 .week-group.drop-over{box-shadow:inset 0 0 0 2px var(--steel)}
@@ -519,11 +556,11 @@ select.cell-input{cursor:pointer}
           <div class="ph-c">FB</div>
           <div class="ph-c">IG</div>
           <div class="ph-c">LK</div>
-          <div></div>
+          <div class="ph-c">Acciones</div>
         </div>
         <div id="parrilla-body"></div>
       </div>
-      <p class="subtitle" style="margin-top:14px">Edición directa: todo se cambia en la misma tabla. Fecha, formato, pilar, estado, responsable y FB/IG/LK son desplegables; el título, copy y hashtags se editan al hacer clic en el texto. Cada estado por red (FB/IG/LK) puede ser No va, Pendiente, Programado o Publicado. Arrastra desde los puntos de la fecha para mover una pieza de semana, y usa el ícono de copiar para llevar el texto al portapapeles.</p>
+      <p class="subtitle" style="margin-top:14px">Pasa el cursor sobre una fila para ver la barra de arrastre a la izquierda y mover la pieza de semana. Usa el lápiz para editar todos los campos (fecha, copy, hashtags, estado y publicación por red), el ícono de copiar para llevar el texto al portapapeles, y la papelera para eliminar. El copy largo se recorta con "Ver más".</p>
     </section>
 
     <!-- HISTORIAS -->
@@ -719,36 +756,69 @@ const stSoft={publicado:['#E7F6EF','#1BA572'],proceso:['#FCF3E3','#B07410'],pend
 const pilarSoft={'El proyecto, desde la vida':['#FDEAE9','#C4140C'],'Vida de barrio':['#E7F0FA','#2E5B8A'],'Cómo construimos':['#EFEAF8','#6A4FB0'],'Asesoría que da confianza':['#FCF1DF','#B07410']};
 function selOpts(list,val){return list.map(o=>optn(o[0],o[1],o[0]===val)).join('');}
 function rowHTML(p){return rowRead(p);}
-function autoGrow(el){if(!el)return;el.style.height='auto';el.style.height=(el.scrollHeight+2)+'px';}
-function growAll(){document.querySelectorAll('#parrilla-body .inl-copy,#parrilla-body .inl-tags').forEach(autoGrow);}
+const fmtIcon={
+ 'Reel':'<rect x="2" y="5" width="14" height="14" rx="2"/><path d="M16 9l6-3v12l-6-3"/>',
+ 'Video':'<rect x="2" y="5" width="14" height="14" rx="2"/><path d="M16 9l6-3v12l-6-3"/>',
+ 'Diseño':'<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/>',
+ 'Foto':'<path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/><circle cx="12" cy="13" r="4"/>',
+ 'Carrusel':'<rect x="3" y="3" width="14" height="14" rx="2"/><path d="M7 17v2a2 2 0 002 2h10a2 2 0 002-2V9a2 2 0 00-2-2h-2"/>',
+ 'GIF':'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12h3M11 9v6M14 9v6h3"/>'
+};
+const fmtColor={'Reel':['#EFEAF8','#7A5CC0'],'Video':['#EFEAF8','#7A5CC0'],'Diseño':['#FBEAEE','#C43B63'],'Foto':['#E2F1F0','#1E8A7A'],'Carrusel':['#EAF1F8','#2E5B8A'],'GIF':['#FCF3E3','#B07410']};
+const pilarShortMap={'El proyecto, desde la vida':'El proyecto','Vida de barrio':'Vida de barrio','Cómo construimos':'Cómo construimos','Asesoría que da confianza':'Asesoría'};
+function inits(n){return (n||'').trim().split(/\s+/).slice(0,2).map(w=>w[0]||'').join('').toUpperCase();}
+function netChip(state){
+  if(state==='na'||!state)return '<span class="rnet off">—</span>';
+  const cls={pub:'b-green',prog:'b-blue',pend:'b-amber'}[state]||'b-blue';
+  return `<span class="rnet ${cls}"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg></span>`;
+}
+function tagsPreview(h){
+  const tags=(h||'').split(/\s+/).filter(Boolean);
+  if(!tags.length)return '<span class="rtags-empty">—</span>';
+  const shown=`<div class="rtags">${escT(tags.slice(0,3).join(' '))}</div>`;
+  const extra=tags.length>3?`<span class="rtag-more">+${tags.length-3} más</span>`:'';
+  return shown+extra;
+}
 function rowRead(p){
   const ps=pilarSoft[p.pilar]||['#fff','var(--ink)'];
   const ss=stSoft[p.st]||['#fff','var(--ink)'];
-  const rs=respColor[p.r]||['#fff','var(--ink)'];
+  const rs=respColor[p.r]||['#EAF1F8','#2E5B8A'];
+  const fc=fmtColor[p.fmt]||['var(--steel-soft)','var(--steel)'];
+  const longCopy=(p.c||'').length>90;
   return `<div class="prow gridcols">
     <div class="row-handle" draggable="true" ondragstart="dragRow(event,${p.id})" ondragend="dragRowEnd(event)" title="Arrastrar para mover de semana"><svg class="grip" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="7" r="1.3"/><circle cx="9" cy="12" r="1.3"/><circle cx="9" cy="17" r="1.3"/><circle cx="15" cy="7" r="1.3"/><circle cx="15" cy="12" r="1.3"/><circle cx="15" cy="17" r="1.3"/></svg></div>
-    <div class="pdate-cell">
-      <select class="inl-sel" onchange="setField(${p.id},'dia',this.value)">${dias.map(d=>optn(d,d,d===p.dia)).join('')}</select>
-      <input class="inl-num" value="${esc(p.num)}" oninput="setField(${p.id},'num',this.value)" placeholder="#">
+    <div class="rdate"><span class="rd-day">${escT(p.dia)||'—'}</span><span class="rd-num">${esc(p.num)||'·'}</span><span class="rd-mon">May</span></div>
+    <div class="rfmt"><span class="rfmt-ico" style="background:${fc[0]};color:${fc[1]}"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24">${fmtIcon[p.fmt]||fmtIcon['Diseño']}</svg></span><span class="rfmt-lbl">${escT(p.fmt)||'—'}</span></div>
+    <div><span class="rpill" style="background:${ps[0]};color:${ps[1]}">${escT(pilarShortMap[p.pilar]||p.pilar)}</span></div>
+    <div class="rtitle-cell">
+      <div class="rtitle">${escT(p.t)||"<span class='rmuted'>Sin título</span>"}</div>
+      ${p.c?`<div class="rcopy ${p._exp?'exp':''}">${escT(p.c)}</div>`:''}
+      ${longCopy?`<button class="rmore" onclick="toggleExp(${p.id})">${p._exp?'Ver menos':'Ver más'}</button>`:''}
     </div>
-    <div><select class="inl-sel" onchange="setField(${p.id},'fmt',this.value)">${fmtList.map(x=>optn(x,x,x===p.fmt)).join('')}</select></div>
-    <div><select class="inl-sel" style="background-color:${ps[0]};color:${ps[1]};border-color:transparent" onchange="setField(${p.id},'pilar',this.value);stylePilar(this);renderGoals()">${Object.keys(pColor).map(x=>optn(x,x,x===p.pilar)).join('')}</select></div>
-    <div class="title-cell"><button class="copy-cell" onclick="copyCell(${p.id},this)" title="Copiar título y copy"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg></button><input class="inl-title" value="${esc(p.t)}" oninput="setField(${p.id},'t',this.value)" placeholder="Título…"><textarea class="inl-copy" oninput="setField(${p.id},'c',this.value);autoGrow(this)" placeholder="Escribe el copy…">${escT(p.c)}</textarea></div>
-    <div class="htags-cell"><button class="copy-cell" onclick="copyHash(${p.id},this)" title="Copiar hashtags"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg></button><textarea class="inl-tags" oninput="setField(${p.id},'h',this.value);autoGrow(this)" placeholder="#Hashtags…">${escT(p.h)}</textarea></div>
-    <div><select class="inl-sel" style="background-color:${ss[0]};color:${ss[1]};border-color:transparent" onchange="setField(${p.id},'st',this.value);styleSt(this)">${selOpts(stList,p.st)}</select></div>
-    <div><select class="inl-sel" style="background-color:${rs[0]};color:${rs[1]};border-color:transparent" onchange="setField(${p.id},'r',this.value);styleResp(this)">${respList.map(x=>optn(x,x,x===p.r)).join('')}</select></div>
-    ${[0,1,2].map(i=>{const c=redSoft[p.red[i]]||['#fff','var(--ink)'];return `<div><select class="inl-sel" style="background-color:${c[0]};color:${c[1]};border-color:transparent" onchange="setRed(${p.id},${i},this)">${selOpts(redList,p.red[i])}</select></div>`;}).join('')}
-    <div class="actions"><button class="act-btn del" onclick="delRow(${p.id})" title="Eliminar"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></button></div>
+    <div class="rtags-cell">${tagsPreview(p.h)}</div>
+    <div><span class="rstate" style="background:${ss[0]};color:${ss[1]}"><span class="rstate-dot" style="background:${ss[1]}"></span>${stMap[p.st]||p.st}</span></div>
+    <div class="rresp"><span class="ravatar" style="background:${rs[0]};color:${rs[1]}">${inits(p.r)}</span><span class="rresp-name">${escT(p.r)}</span></div>
+    <div class="rnet-cell">${netChip(p.red[0])}</div>
+    <div class="rnet-cell">${netChip(p.red[1])}</div>
+    <div class="rnet-cell">${netChip(p.red[2])}</div>
+    <div class="ractions">
+      <button class="ract" onclick="copyCell(${p.id},this)" title="Copiar título y copy"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg></button>
+      <button class="ract" onclick="openEdit(${p.id})" title="Editar"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></button>
+      <button class="ract del" onclick="delRow(${p.id})" title="Eliminar"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></button>
+    </div>
   </div>`;
 }
+function toggleExp(id){const f=findRow(id);if(f){f.r._exp=!f.r._exp;renderParrilla();}}
 function stylePilar(el){const c=pilarSoft[el.value]||['#fff','var(--ink)'];el.style.backgroundColor=c[0];el.style.color=c[1];}
 function styleSt(el){const c=stSoft[el.value]||['#fff','var(--ink)'];el.style.backgroundColor=c[0];el.style.color=c[1];}
 function styleResp(el){const c=respColor[el.value]||['#fff','var(--ink)'];el.style.backgroundColor=c[0];el.style.color=c[1];}
 function setRed(id,i,el){const f=findRow(id);if(f)f.r.red[i]=el.value;const c=redSoft[el.value]||['#fff','var(--ink)'];el.style.backgroundColor=c[0];el.style.color=c[1];}
+function setRedModal(id,i,v){const f=findRow(id);if(f)f.r.red[i]=v;renderEditModal();}
 function renderParrilla(){
   const c=document.querySelector('.parrilla');const sx=c?c.scrollLeft:0;
   document.getElementById('parrilla-body').innerHTML=weeks.map((w,wi)=>{
-    let html=`<div class="week-band">${w.label} <span>· ${w.range}</span></div>`;
+    const cnt=w.rows.length;
+    let html=`<div class="week-band">${w.label} <span>· ${w.range}</span>${cnt?`<span class="week-count">${cnt} pieza${cnt===1?'':'s'}</span>`:''}</div>`;
     if(w.rows.length===0){
       html+=`<div class="add-row" onclick="addPiece(${wi})"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Sin contenido planificado · agregar pieza</div>`;
     }else{
@@ -758,7 +828,6 @@ function renderParrilla(){
     return `<div class="week-group" ondragover="allowRowDrop(event,this)" ondragleave="leaveRowDrop(this)" ondrop="dropRow(event,${wi})">${html}</div>`;
   }).join('');
   if(c)c.scrollLeft=sx;
-  growAll();
 }
 function toggleAssign(id,i){const f=findRow(id);if(!f)return;f.r.plat[i]=f.r.plat[i]?0:1;renderParrilla();}
 function setPub(id,i,v){const f=findRow(id);if(!f)return;f.r.pub[i]=v;}
@@ -774,7 +843,7 @@ function toggleAssignModal(id,i){const f=findRow(id);if(!f)return;f.r.plat[i]=f.
 function renderEditModal(){
   const f=findRow(editId);if(!f){closeEdit();return;}
   const p=f.r;const dias=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
-  const pubsel=(i)=>{const on=p.plat[i];const v=on?p.pub[i]:'no';const dis=on?'':'disabled';return `<select class="pubsel ${on?('ps-'+v):'ps-off'}" ${dis} onchange="setPub(${p.id},${i},this.value);this.className='pubsel ps-'+this.value">${pubList.map(o=>optn(o[0],o[1],o[0]===v)).join('')}</select>`;};
+  const redsel=(i,lbl)=>{const v=p.red[i]||'na';const c=redSoft[v]||['#fff','var(--ink)'];return `<div class="mpub"><span>${lbl}</span><select class="pubsel" style="background-color:${c[0]};color:${c[1]};border-color:transparent" onchange="setRedModal(${p.id},${i},this.value)">${selOpts(redList,v)}</select></div>`;};
   document.getElementById('edit-modal').innerHTML=`<div class="modal-overlay" onclick="if(event.target===this)cancelEdit()"><div class="modal">
     <div class="modal-head"><h3>Editar pieza</h3><button class="modal-close" onclick="cancelEdit()"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="18" height="18"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
     <div class="modal-body">
@@ -784,11 +853,6 @@ function renderEditModal(){
         <div class="fld"><label>Formato</label><select onchange="setField(${p.id},'fmt',this.value)">${fmtList.map(x=>optn(x,x,x===p.fmt)).join('')}</select></div>
       </div>
       <div class="fld"><label>Pilar</label><select onchange="setField(${p.id},'pilar',this.value)">${Object.keys(pColor).map(x=>optn(x,x,x===p.pilar)).join('')}</select></div>
-      <div class="fld"><label>Se publicará en</label><div class="modal-chk">
-        <label><input type="checkbox" ${p.plat[0]?'checked':''} onchange="toggleAssignModal(${p.id},0)">Facebook</label>
-        <label><input type="checkbox" ${p.plat[1]?'checked':''} onchange="toggleAssignModal(${p.id},1)">Instagram</label>
-        <label><input type="checkbox" ${p.plat[2]?'checked':''} onchange="toggleAssignModal(${p.id},2)">LinkedIn</label>
-      </div></div>
       <div class="fld"><label>Título</label><input value="${esc(p.t)}" oninput="setField(${p.id},'t',this.value)"></div>
       <div class="fld"><label>Copy</label><textarea oninput="setField(${p.id},'c',this.value)">${escT(p.c)}</textarea></div>
       <div class="fld"><label>Hashtags</label><textarea style="min-height:60px" oninput="setField(${p.id},'h',this.value)">${escT(p.h)}</textarea></div>
@@ -796,10 +860,8 @@ function renderEditModal(){
         <div class="fld"><label>Estado</label><select onchange="setField(${p.id},'st',this.value)">${stList.map(o=>optn(o[0],o[1],o[0]===p.st)).join('')}</select></div>
         <div class="fld"><label>Responsable</label><select onchange="setField(${p.id},'r',this.value)">${respList.map(x=>optn(x,x,x===p.r)).join('')}</select></div>
       </div>
-      <div class="fld"><label>¿Se publicó? · estado por red</label><div class="modal-pub">
-        <div class="mpub"><span>Facebook</span>${pubsel(0)}</div>
-        <div class="mpub"><span>Instagram</span>${pubsel(1)}</div>
-        <div class="mpub"><span>LinkedIn</span>${pubsel(2)}</div>
+      <div class="fld"><label>Estado por red · FB · IG · LK</label><div class="modal-pub">
+        ${redsel(0,'Facebook')}${redsel(1,'Instagram')}${redsel(2,'LinkedIn')}
       </div></div>
     </div>
     <div class="modal-foot"><button class="btn-primary" onclick="saveEdit()">Guardar cambios</button><button class="btn-ghost" onclick="cancelEdit()">Cancelar</button><button class="modal-del" onclick="delFromModal(${p.id})"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="15" height="15"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg>Eliminar</button></div>
@@ -1226,6 +1288,7 @@ function sendFecha(id){const f=fechas.find(x=>x.id===id);if(!f||f.sent)return;we
 window.PLAT={
   getState(){
     const s=JSON.parse(JSON.stringify({weeks,stories,trends,extras,banco,fechas}));
+    s.weeks.forEach(w=>(w.rows||[]).forEach(r=>{delete r._exp;}));
     s.stories.forEach(x=>x.editing=false);
     s.trends.forEach(x=>{delete x.editing;});
     s.banco.forEach(x=>x.editing=false);
