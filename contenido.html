@@ -84,18 +84,33 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 
 /* PARRILLA TABLE (scroll horizontal) */
 .parrilla{background:var(--white);border:1px solid var(--line);border-radius:18px;overflow-x:auto;box-shadow:var(--shadow)}
-.gridcols{display:grid;grid-template-columns:64px 116px 150px minmax(240px,1.6fr) minmax(150px,1fr) 132px 152px 54px 54px 54px 92px;column-gap:12px;min-width:1372px}
+.gridcols{display:grid;grid-template-columns:70px 122px 168px minmax(240px,1.5fr) minmax(160px,1fr) 130px 152px 92px 92px 92px 64px;column-gap:12px;min-width:1496px}
 .ph{padding:0 18px;background:var(--bg);font-size:10px;text-transform:uppercase;letter-spacing:.6px;color:var(--muted);font-weight:600;border-bottom:1px solid var(--line);align-items:stretch}
 .ph>div{display:flex;align-items:flex-end;padding:11px 0}
 .ph-group{flex-direction:column;align-items:stretch;justify-content:flex-end;gap:7px;padding:8px 0!important}
 .ph-cap{font-size:9px;color:#8190A2;font-weight:600;text-transform:none;letter-spacing:0;text-align:center;white-space:nowrap;line-height:1}
 .subhead{display:grid;grid-template-columns:repeat(3,1fr);width:100%}
 .subhead span{text-align:center;font-size:10px;font-weight:700;color:var(--slate)}
-.week-band{padding:12px 18px;background:var(--steel-tint);font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--steel);text-transform:uppercase;display:flex;align-items:center;gap:10px;min-width:1372px}
+.week-band{padding:12px 18px;background:var(--steel-tint);font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--steel);text-transform:uppercase;display:flex;align-items:center;gap:10px;min-width:1496px}
 .week-count{font-size:10px;font-weight:600;letter-spacing:0;text-transform:none;color:var(--muted);background:var(--white);border:1px solid var(--line);padding:2px 9px;border-radius:20px}
 .week-band span{color:var(--muted);font-weight:500;letter-spacing:0;text-transform:none}
-.prow{padding:18px 18px;align-items:flex-start;transition:background .15s;position:relative;cursor:pointer}
+.prow{padding:16px 18px;align-items:center;transition:background .15s;position:relative}
 .prow:hover{background:#FBFCFE}
+/* ===== controles inline redondeados (edicion directa) ===== */
+.pillsel{font-family:inherit;font-size:12px;font-weight:600;border:1px solid var(--line);border-radius:20px;padding:6px 24px 6px 12px;outline:none;cursor:pointer;color:var(--ink);background-color:#fff;width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 24 24' fill='none' stroke='%236B7A8D' stroke-width='3'><path d='M6 9l6 6 6-6'/></svg>");background-repeat:no-repeat;background-position:right 9px center}
+.pillsel:focus{border-color:var(--steel)!important}
+.pillsel.net{padding:5px 22px 5px 10px;font-size:11px}
+.rfmt .pillsel,.rresp .pillsel{flex:1;min-width:0}
+.numpill{font-family:inherit;font-size:12px;font-weight:600;text-align:center;border:1px solid var(--line);border-radius:14px;padding:5px;outline:none;color:var(--ink);width:100%}
+.numpill:focus{border-color:var(--steel)}
+.titlepill{width:100%;font-family:inherit;font-size:13px;font-weight:600;color:var(--ink);border:1px solid transparent;border-radius:9px;padding:6px 9px;outline:none;background:transparent}
+.titlepill:hover{background:#fff;border-color:var(--line)}
+.titlepill:focus{background:#fff;border-color:var(--steel)}
+.copypill,.tagspill{width:100%;font-family:inherit;border:1px solid transparent;border-radius:9px;padding:6px 9px;outline:none;background:transparent;resize:none;overflow:hidden;line-height:1.5;margin-top:4px}
+.copypill{font-size:11.5px;color:var(--muted);white-space:pre-wrap}
+.tagspill{font-size:11px;color:var(--steel);font-weight:500;line-height:1.6}
+.copypill:hover,.tagspill:hover{background:#fff;border-color:var(--line)}
+.copypill:focus,.tagspill:focus{background:#fff;border-color:var(--steel);color:var(--ink)}
 /* ===== vista de lectura estilo tabla espaciosa (sin lineas) ===== */
 .rdate{display:flex;flex-direction:column;align-items:flex-start;line-height:1.1}
 .rd-day{font-size:11px;font-weight:600;color:var(--muted)}
@@ -179,7 +194,7 @@ select.cell-input{cursor:pointer}
 .act-btn.del:hover{background:var(--red-soft);color:var(--red)}
 .act-btn.save{color:var(--green)}
 .act-btn.save:hover{background:#E7F6EF;color:var(--green)}
-.add-row{padding:13px 18px;font-size:12px;font-weight:500;color:var(--muted);display:flex;align-items:center;gap:7px;cursor:pointer;min-width:1372px}
+.add-row{padding:13px 18px;font-size:12px;font-weight:500;color:var(--muted);display:flex;align-items:center;gap:7px;cursor:pointer;min-width:1496px}
 .add-row:hover{color:var(--steel);background:var(--steel-soft)}
 .add-row svg{width:14px;height:14px}
 .week-group.drop-over{box-shadow:inset 0 0 0 2px var(--steel)}
@@ -557,7 +572,7 @@ select.cell-input{cursor:pointer}
         </div>
         <div id="parrilla-body"></div>
       </div>
-      <p class="subtitle" style="margin-top:14px">Haz clic en cualquier parte de una fila para editar todos sus campos (fecha, copy, hashtags, estado y publicación por red). Pasa el cursor para ver la barra de arrastre a la izquierda y mover la pieza de semana. El ícono de copiar lleva el copy y los hashtags al portapapeles; la papelera elimina la pieza.</p>
+      <p class="subtitle" style="margin-top:14px">Edición directa: haz clic en cualquier campo para cambiarlo. Fecha, formato, pilar, estado, responsable y FB/IG/LK son desplegables; el título, copy y hashtags se escriben directo y muestran todo el texto. Pasa el cursor para ver la barra de arrastre a la izquierda y mover la pieza de semana. El ícono de copiar lleva el copy y los hashtags al portapapeles.</p>
     </section>
 
     <!-- HISTORIAS -->
@@ -776,33 +791,35 @@ function tagsPreview(h){
   const extra=tags.length>3?`<span class="rtag-more">+${tags.length-3} más</span>`:'';
   return shown+extra;
 }
+function autoGrow(el){if(!el)return;el.style.height='auto';el.style.height=(el.scrollHeight+2)+'px';}
+function growAll(){document.querySelectorAll('#parrilla-body .copypill,#parrilla-body .tagspill').forEach(autoGrow);}
 function rowRead(p){
   const ps=pilarSoft[p.pilar]||['#fff','var(--ink)'];
   const ss=stSoft[p.st]||['#fff','var(--ink)'];
   const rs=respColor[p.r]||['#EAF1F8','#2E5B8A'];
   const fc=fmtColor[p.fmt]||['var(--steel-soft)','var(--steel)'];
-  return `<div class="prow gridcols" onclick="rowClick(event,${p.id})" title="Clic para editar">
+  return `<div class="prow gridcols">
     <div class="row-handle" draggable="true" ondragstart="dragRow(event,${p.id})" ondragend="dragRowEnd(event)" title="Arrastrar para mover de semana"><svg class="grip" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="7" r="1.3"/><circle cx="9" cy="12" r="1.3"/><circle cx="9" cy="17" r="1.3"/><circle cx="15" cy="7" r="1.3"/><circle cx="15" cy="12" r="1.3"/><circle cx="15" cy="17" r="1.3"/></svg></div>
-    <div class="rdate"><span class="rd-day">${escT(p.dia)||'—'}</span><span class="rd-num">${esc(p.num)||'·'}</span><span class="rd-mon">May</span></div>
-    <div class="rfmt"><span class="rfmt-ico" style="background:${fc[0]};color:${fc[1]}"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24">${fmtIcon[p.fmt]||fmtIcon['Diseño']}</svg></span><span class="rfmt-lbl">${escT(p.fmt)||'—'}</span></div>
-    <div><span class="rpill" style="background:${ps[0]};color:${ps[1]}">${escT(pilarShortMap[p.pilar]||p.pilar)}</span></div>
-    <div class="rtitle-cell">
-      <div class="rtitle">${escT(p.t)||"<span class='rmuted'>Sin título</span>"}</div>
-      ${p.c?`<div class="rcopy">${escT(p.c)}</div>`:''}
+    <div class="pdate-cell">
+      <select class="pillsel" onchange="setField(${p.id},'dia',this.value)">${dias.map(d=>optn(d,d,d===p.dia)).join('')}</select>
+      <input class="numpill" value="${esc(p.num)}" oninput="setField(${p.id},'num',this.value)" placeholder="#">
     </div>
-    <div class="rtags-cell">${tagsPreview(p.h)}</div>
-    <div><span class="rstate" style="background:${ss[0]};color:${ss[1]}"><span class="rstate-dot" style="background:${ss[1]}"></span>${stMap[p.st]||p.st}</span></div>
-    <div class="rresp"><span class="ravatar" style="background:${rs[0]};color:${rs[1]}">${inits(p.r)}</span><span class="rresp-name">${escT(p.r)}</span></div>
-    <div class="rnet-cell">${netChip(p.red[0])}</div>
-    <div class="rnet-cell">${netChip(p.red[1])}</div>
-    <div class="rnet-cell">${netChip(p.red[2])}</div>
+    <div class="rfmt"><span class="rfmt-ico" style="background:${fc[0]};color:${fc[1]}"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24">${fmtIcon[p.fmt]||fmtIcon['Diseño']}</svg></span><select class="pillsel" onchange="setField(${p.id},'fmt',this.value);renderParrilla()">${fmtList.map(x=>optn(x,x,x===p.fmt)).join('')}</select></div>
+    <div><select class="pillsel" style="background-color:${ps[0]};color:${ps[1]};border-color:transparent" onchange="setField(${p.id},'pilar',this.value);stylePilar(this);renderGoals()">${Object.keys(pColor).map(x=>optn(x,x,x===p.pilar)).join('')}</select></div>
+    <div class="rtitle-cell">
+      <input class="titlepill" value="${esc(p.t)}" oninput="setField(${p.id},'t',this.value)" placeholder="Título…">
+      <textarea class="copypill" oninput="setField(${p.id},'c',this.value);autoGrow(this)" placeholder="Escribe el copy…">${escT(p.c)}</textarea>
+    </div>
+    <div class="htags-cell"><textarea class="tagspill" oninput="setField(${p.id},'h',this.value);autoGrow(this)" placeholder="#Hashtags…">${escT(p.h)}</textarea></div>
+    <div><select class="pillsel" style="background-color:${ss[0]};color:${ss[1]};border-color:transparent" onchange="setField(${p.id},'st',this.value);styleSt(this)">${selOpts(stList,p.st)}</select></div>
+    <div class="rresp"><span class="ravatar" style="background:${rs[0]};color:${rs[1]}">${inits(p.r)}</span><select class="pillsel" onchange="setField(${p.id},'r',this.value);renderParrilla()">${respList.map(x=>optn(x,x,x===p.r)).join('')}</select></div>
+    ${[0,1,2].map(i=>{const c=redSoft[p.red[i]]||['#fff','var(--ink)'];return `<div><select class="pillsel net" style="background-color:${c[0]};color:${c[1]};border-color:transparent" onchange="setRed(${p.id},${i},this)">${selOpts(redList,p.red[i])}</select></div>`;}).join('')}
     <div class="ractions">
-      <button class="ract" onclick="event.stopPropagation();copyCopyTags(${p.id},this)" title="Copiar copy y hashtags"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg></button>
-      <button class="ract del" onclick="event.stopPropagation();delRow(${p.id})" title="Eliminar"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></button>
+      <button class="ract" onclick="copyCopyTags(${p.id},this)" title="Copiar copy y hashtags"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg></button>
+      <button class="ract del" onclick="delRow(${p.id})" title="Eliminar"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></button>
     </div>
   </div>`;
 }
-function rowClick(e,id){if(e.target.closest('.ract')||e.target.closest('.row-handle'))return;openEdit(id);}
 function stylePilar(el){const c=pilarSoft[el.value]||['#fff','var(--ink)'];el.style.backgroundColor=c[0];el.style.color=c[1];}
 function styleSt(el){const c=stSoft[el.value]||['#fff','var(--ink)'];el.style.backgroundColor=c[0];el.style.color=c[1];}
 function styleResp(el){const c=respColor[el.value]||['#fff','var(--ink)'];el.style.backgroundColor=c[0];el.style.color=c[1];}
@@ -822,6 +839,7 @@ function renderParrilla(){
     return `<div class="week-group" ondragover="allowRowDrop(event,this)" ondragleave="leaveRowDrop(this)" ondrop="dropRow(event,${wi})">${html}</div>`;
   }).join('');
   if(c)c.scrollLeft=sx;
+  growAll();
 }
 function toggleAssign(id,i){const f=findRow(id);if(!f)return;f.r.plat[i]=f.r.plat[i]?0:1;renderParrilla();}
 function setPub(id,i,v){const f=findRow(id);if(!f)return;f.r.pub[i]=v;}
