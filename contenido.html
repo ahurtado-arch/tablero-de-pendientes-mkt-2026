@@ -156,7 +156,8 @@ select.cell-input{cursor:pointer}
 .fecha-sel{padding:3px 2px!important;font-size:10px!important}
 .fecha-num{padding:3px!important;font-size:11px!important;text-align:center;margin-top:4px}
 .pdate-cell{display:flex;flex-direction:column;gap:3px}
-.grip-row{cursor:grab;display:flex;justify-content:center;color:#C3CDD9}
+.grip-row{cursor:grab;display:flex;justify-content:center;color:#C3CDD9;opacity:0;transition:opacity .18s ease}
+.prow:hover .grip-row{opacity:1}
 .grip-row:active{cursor:grabbing}
 .grip-row .grip{width:16px;height:11px}
 .inl-sel{width:100%;font-family:inherit;font-size:11px;font-weight:600;border:1px solid var(--line);border-radius:8px;padding:5px 17px 5px 8px;outline:none;cursor:pointer;color:var(--ink);background-color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 24 24' fill='none' stroke='%236B7A8D' stroke-width='3'><path d='M6 9l6 6 6-6'/></svg>");background-repeat:no-repeat;background-position:right 6px center}
@@ -166,9 +167,9 @@ select.cell-input{cursor:pointer}
 .inl-title{width:100%;font-family:inherit;font-size:13px;font-weight:600;color:var(--ink);border:1px solid transparent;border-radius:7px;padding:5px 24px 5px 7px;outline:none;background:transparent}
 .inl-title:hover{background:#FBFCFE}
 .inl-title:focus{background:#fff;border-color:var(--steel)}
-.inl-copy,.inl-tags{width:100%;font-family:inherit;border:1px solid transparent;border-radius:7px;padding:5px 7px;outline:none;background:transparent;resize:vertical;line-height:1.5}
-.inl-copy{font-size:11px;color:var(--muted);min-height:48px;margin-top:2px;white-space:pre-wrap}
-.inl-tags{font-size:11px;color:var(--steel);font-weight:500;min-height:46px;line-height:1.6}
+.inl-copy,.inl-tags{width:100%;font-family:inherit;border:1px solid transparent;border-radius:7px;padding:5px 7px;outline:none;background:transparent;resize:none;overflow:hidden;line-height:1.5}
+.inl-copy{font-size:11px;color:var(--muted);margin-top:2px;white-space:pre-wrap}
+.inl-tags{font-size:11px;color:var(--steel);font-weight:500;line-height:1.6}
 .inl-copy:hover,.inl-tags:hover{background:#FBFCFE}
 .inl-copy:focus,.inl-tags:focus{background:#fff;border-color:var(--steel);color:var(--ink)}
 .ph-c{justify-content:center}
@@ -716,6 +717,8 @@ const stSoft={publicado:['#E7F6EF','#1BA572'],proceso:['#FCF3E3','#B07410'],pend
 const pilarSoft={'El proyecto, desde la vida':['#FDEAE9','#C4140C'],'Vida de barrio':['#E7F0FA','#2E5B8A'],'Cómo construimos':['#EFEAF8','#6A4FB0'],'Asesoría que da confianza':['#FCF1DF','#B07410']};
 function selOpts(list,val){return list.map(o=>optn(o[0],o[1],o[0]===val)).join('');}
 function rowHTML(p){return rowRead(p);}
+function autoGrow(el){if(!el)return;el.style.height='auto';el.style.height=(el.scrollHeight+2)+'px';}
+function growAll(){document.querySelectorAll('#parrilla-body .inl-copy,#parrilla-body .inl-tags').forEach(autoGrow);}
 function rowRead(p){
   const ps=pilarSoft[p.pilar]||['#fff','var(--ink)'];
   const ss=stSoft[p.st]||['#fff','var(--ink)'];
@@ -728,8 +731,8 @@ function rowRead(p){
     </div>
     <div><select class="inl-sel" onchange="setField(${p.id},'fmt',this.value)">${fmtList.map(x=>optn(x,x,x===p.fmt)).join('')}</select></div>
     <div><select class="inl-sel" style="background-color:${ps[0]};color:${ps[1]};border-color:transparent" onchange="setField(${p.id},'pilar',this.value);stylePilar(this);renderGoals()">${Object.keys(pColor).map(x=>optn(x,x,x===p.pilar)).join('')}</select></div>
-    <div class="title-cell"><button class="copy-cell" onclick="copyCell(${p.id},this)" title="Copiar título y copy"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg></button><input class="inl-title" value="${esc(p.t)}" oninput="setField(${p.id},'t',this.value)" placeholder="Título…"><textarea class="inl-copy" oninput="setField(${p.id},'c',this.value)" placeholder="Escribe el copy…">${escT(p.c)}</textarea></div>
-    <div class="htags-cell"><button class="copy-cell" onclick="copyHash(${p.id},this)" title="Copiar hashtags"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg></button><textarea class="inl-tags" oninput="setField(${p.id},'h',this.value)" placeholder="#Hashtags…">${escT(p.h)}</textarea></div>
+    <div class="title-cell"><button class="copy-cell" onclick="copyCell(${p.id},this)" title="Copiar título y copy"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg></button><input class="inl-title" value="${esc(p.t)}" oninput="setField(${p.id},'t',this.value)" placeholder="Título…"><textarea class="inl-copy" oninput="setField(${p.id},'c',this.value);autoGrow(this)" placeholder="Escribe el copy…">${escT(p.c)}</textarea></div>
+    <div class="htags-cell"><button class="copy-cell" onclick="copyHash(${p.id},this)" title="Copiar hashtags"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg></button><textarea class="inl-tags" oninput="setField(${p.id},'h',this.value);autoGrow(this)" placeholder="#Hashtags…">${escT(p.h)}</textarea></div>
     <div><select class="inl-sel" style="background-color:${ss[0]};color:${ss[1]};border-color:transparent" onchange="setField(${p.id},'st',this.value);styleSt(this)">${selOpts(stList,p.st)}</select></div>
     <div><select class="inl-sel" style="background-color:${rs[0]};color:${rs[1]};border-color:transparent" onchange="setField(${p.id},'r',this.value);styleResp(this)">${respList.map(x=>optn(x,x,x===p.r)).join('')}</select></div>
     ${[0,1,2].map(i=>{const c=redSoft[p.red[i]]||['#fff','var(--ink)'];return `<div><select class="inl-sel" style="background-color:${c[0]};color:${c[1]};border-color:transparent" onchange="setRed(${p.id},${i},this)">${selOpts(redList,p.red[i])}</select></div>`;}).join('')}
@@ -753,6 +756,7 @@ function renderParrilla(){
     return `<div class="week-group" ondragover="allowRowDrop(event,this)" ondragleave="leaveRowDrop(this)" ondrop="dropRow(event,${wi})">${html}</div>`;
   }).join('');
   if(c)c.scrollLeft=sx;
+  growAll();
 }
 function toggleAssign(id,i){const f=findRow(id);if(!f)return;f.r.plat[i]=f.r.plat[i]?0:1;renderParrilla();}
 function setPub(id,i,v){const f=findRow(id);if(!f)return;f.r.pub[i]=v;}
