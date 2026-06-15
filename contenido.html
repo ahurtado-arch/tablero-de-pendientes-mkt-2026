@@ -94,8 +94,8 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .week-band{padding:12px 18px;background:var(--steel-tint);font-size:11px;font-weight:700;letter-spacing:.5px;color:var(--steel);text-transform:uppercase;display:flex;align-items:center;gap:10px;min-width:1372px}
 .week-count{font-size:10px;font-weight:600;letter-spacing:0;text-transform:none;color:var(--muted);background:var(--white);border:1px solid var(--line);padding:2px 9px;border-radius:20px}
 .week-band span{color:var(--muted);font-weight:500;letter-spacing:0;text-transform:none}
-.prow{padding:18px 18px;align-items:center;transition:background .15s;position:relative}
-.prow:not(:last-child){box-shadow:none}
+.prow{padding:18px 18px;align-items:flex-start;transition:background .15s;position:relative;cursor:pointer}
+.prow:hover{background:#FBFCFE}
 /* ===== vista de lectura estilo tabla espaciosa (sin lineas) ===== */
 .rdate{display:flex;flex-direction:column;align-items:flex-start;line-height:1.1}
 .rd-day{font-size:11px;font-weight:600;color:var(--muted)}
@@ -109,10 +109,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .rtitle-cell{min-width:0}
 .rtitle{font-size:13px;font-weight:600;color:var(--ink);margin-bottom:3px}
 .rmuted{color:var(--muted);font-weight:400}
-.rcopy{font-size:11.5px;color:var(--muted);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-wrap}
-.rcopy.exp{-webkit-line-clamp:unset;overflow:visible}
-.rmore{font-size:11px;font-weight:600;color:var(--steel);margin-top:3px;padding:0}
-.rmore:hover{text-decoration:underline}
+.rcopy{font-size:11.5px;color:var(--muted);line-height:1.5;white-space:pre-wrap}
 .rtags-cell{min-width:0}
 .rtags{font-size:11px;color:var(--steel);font-weight:500;line-height:1.6;word-break:break-word}
 .rtag-more{display:inline-block;font-size:10.5px;color:var(--muted);font-weight:600;margin-top:3px}
@@ -560,7 +557,7 @@ select.cell-input{cursor:pointer}
         </div>
         <div id="parrilla-body"></div>
       </div>
-      <p class="subtitle" style="margin-top:14px">Pasa el cursor sobre una fila para ver la barra de arrastre a la izquierda y mover la pieza de semana. Usa el lápiz para editar todos los campos (fecha, copy, hashtags, estado y publicación por red), el ícono de copiar para llevar el texto al portapapeles, y la papelera para eliminar. El copy largo se recorta con "Ver más".</p>
+      <p class="subtitle" style="margin-top:14px">Haz clic en cualquier parte de una fila para editar todos sus campos (fecha, copy, hashtags, estado y publicación por red). Pasa el cursor para ver la barra de arrastre a la izquierda y mover la pieza de semana. El ícono de copiar lleva el copy y los hashtags al portapapeles; la papelera elimina la pieza.</p>
     </section>
 
     <!-- HISTORIAS -->
@@ -784,16 +781,14 @@ function rowRead(p){
   const ss=stSoft[p.st]||['#fff','var(--ink)'];
   const rs=respColor[p.r]||['#EAF1F8','#2E5B8A'];
   const fc=fmtColor[p.fmt]||['var(--steel-soft)','var(--steel)'];
-  const longCopy=(p.c||'').length>90;
-  return `<div class="prow gridcols">
+  return `<div class="prow gridcols" onclick="rowClick(event,${p.id})" title="Clic para editar">
     <div class="row-handle" draggable="true" ondragstart="dragRow(event,${p.id})" ondragend="dragRowEnd(event)" title="Arrastrar para mover de semana"><svg class="grip" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="7" r="1.3"/><circle cx="9" cy="12" r="1.3"/><circle cx="9" cy="17" r="1.3"/><circle cx="15" cy="7" r="1.3"/><circle cx="15" cy="12" r="1.3"/><circle cx="15" cy="17" r="1.3"/></svg></div>
     <div class="rdate"><span class="rd-day">${escT(p.dia)||'—'}</span><span class="rd-num">${esc(p.num)||'·'}</span><span class="rd-mon">May</span></div>
     <div class="rfmt"><span class="rfmt-ico" style="background:${fc[0]};color:${fc[1]}"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24">${fmtIcon[p.fmt]||fmtIcon['Diseño']}</svg></span><span class="rfmt-lbl">${escT(p.fmt)||'—'}</span></div>
     <div><span class="rpill" style="background:${ps[0]};color:${ps[1]}">${escT(pilarShortMap[p.pilar]||p.pilar)}</span></div>
     <div class="rtitle-cell">
       <div class="rtitle">${escT(p.t)||"<span class='rmuted'>Sin título</span>"}</div>
-      ${p.c?`<div class="rcopy ${p._exp?'exp':''}">${escT(p.c)}</div>`:''}
-      ${longCopy?`<button class="rmore" onclick="toggleExp(${p.id})">${p._exp?'Ver menos':'Ver más'}</button>`:''}
+      ${p.c?`<div class="rcopy">${escT(p.c)}</div>`:''}
     </div>
     <div class="rtags-cell">${tagsPreview(p.h)}</div>
     <div><span class="rstate" style="background:${ss[0]};color:${ss[1]}"><span class="rstate-dot" style="background:${ss[1]}"></span>${stMap[p.st]||p.st}</span></div>
@@ -802,13 +797,12 @@ function rowRead(p){
     <div class="rnet-cell">${netChip(p.red[1])}</div>
     <div class="rnet-cell">${netChip(p.red[2])}</div>
     <div class="ractions">
-      <button class="ract" onclick="copyCell(${p.id},this)" title="Copiar título y copy"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg></button>
-      <button class="ract" onclick="openEdit(${p.id})" title="Editar"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 013 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></button>
-      <button class="ract del" onclick="delRow(${p.id})" title="Eliminar"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></button>
+      <button class="ract" onclick="event.stopPropagation();copyCopyTags(${p.id},this)" title="Copiar copy y hashtags"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg></button>
+      <button class="ract del" onclick="event.stopPropagation();delRow(${p.id})" title="Eliminar"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></button>
     </div>
   </div>`;
 }
-function toggleExp(id){const f=findRow(id);if(f){f.r._exp=!f.r._exp;renderParrilla();}}
+function rowClick(e,id){if(e.target.closest('.ract')||e.target.closest('.row-handle'))return;openEdit(id);}
 function stylePilar(el){const c=pilarSoft[el.value]||['#fff','var(--ink)'];el.style.backgroundColor=c[0];el.style.color=c[1];}
 function styleSt(el){const c=stSoft[el.value]||['#fff','var(--ink)'];el.style.backgroundColor=c[0];el.style.color=c[1];}
 function styleResp(el){const c=respColor[el.value]||['#fff','var(--ink)'];el.style.backgroundColor=c[0];el.style.color=c[1];}
@@ -874,6 +868,7 @@ function copyMini(txt,btn){
 }
 function copyCell(id,btn){const f=findRow(id);if(!f)return;copyMini(f.r.t+'\n\n'+f.r.c,btn);}
 function copyHash(id,btn){const f=findRow(id);if(!f)return;copyMini(f.r.h||'',btn);}
+function copyCopyTags(id,btn){const f=findRow(id);if(!f)return;const c=f.r.c||'';const h=f.r.h||'';copyMini((c+(h?'\n\n'+h:'')).trim(),btn);}
 function delRow(id){const f=findRow(id);if(!f)return;f.w.rows=f.w.rows.filter(x=>x.id!==id);renderParrilla();renderGoals();}
 function addPiece(wi){weeks[wi].rows.push({id:++rid,dia:"Lun",num:"",fmt:"Reel",pilar:"El proyecto, desde la vida",t:"",c:"",h:"",red:["pend","pend","na"],st:"pendiente",r:"Pablo"});renderParrilla();renderGoals();}
 function dragRow(e,id){dragData={type:'prow',id};e.dataTransfer.effectAllowed='move';const r=e.currentTarget.closest('.prow');if(r)r.classList.add('dragging');}
