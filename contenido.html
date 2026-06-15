@@ -96,12 +96,35 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .week-band span{color:var(--muted);font-weight:500;letter-spacing:0;text-transform:none}
 .prow{padding:16px 18px;align-items:center;transition:background .15s;position:relative}
 .prow:hover{background:#FBFCFE}
-/* ===== controles inline redondeados (edicion directa) ===== */
-.pillsel{font-family:inherit;font-size:12px;font-weight:600;border:1px solid var(--line);border-radius:20px;padding:6px 24px 6px 12px;outline:none;cursor:pointer;color:var(--ink);background-color:#fff;width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='8' height='8' viewBox='0 0 24 24' fill='none' stroke='%236B7A8D' stroke-width='3'><path d='M6 9l6 6 6-6'/></svg>");background-repeat:no-repeat;background-position:right 9px center}
-.pillsel:focus{border-color:var(--steel)!important}
-.pillsel.net{padding:5px 22px 5px 10px;font-size:11px}
-.rfmt .pillsel,.rresp .pillsel{flex:1;min-width:0}
-.numpill{font-family:inherit;font-size:12px;font-weight:600;text-align:center;border:1px solid var(--line);border-radius:14px;padding:5px;outline:none;color:var(--ink);width:100%}
+/* ===== menús desplegables personalizados (edicion directa) ===== */
+.ddbtn{display:inline-flex;align-items:center;gap:6px;max-width:100%;width:100%;font-family:inherit;font-size:11.5px;font-weight:600;border:1px solid transparent;border-radius:20px;padding:6px 9px 6px 11px;cursor:pointer;line-height:1.2;transition:filter .12s,border-color .12s}
+.ddbtn:hover{filter:brightness(.96)}
+.ddbtn.plain{background:#fff;border-color:var(--line);color:var(--ink)}
+.ddbtn.plain:hover{filter:none;border-color:var(--steel)}
+.ddbtn .dd-lbl{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pill-chev{width:11px;height:11px;stroke-width:2.6;opacity:.5;flex-shrink:0;margin-left:auto}
+.pill-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.ddsm{padding:5px 8px;font-size:11px}
+.dd-fmt .rfmt-ico{width:26px;height:26px;border-radius:8px;margin-left:-3px}
+.dd-fmt .rfmt-ico svg{width:15px;height:15px}
+.ravatar.sm{width:24px;height:24px;font-size:9.5px;margin-left:-3px}
+.dd-net{justify-content:center;padding:5px 8px;font-size:10.5px}
+.dd-menu{position:fixed;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-lg);padding:6px;z-index:300;max-height:280px;overflow:auto;animation:fade .12s ease}
+.dd-opt{display:flex;align-items:center;gap:9px;width:100%;font-family:inherit;font-size:12.5px;font-weight:500;color:var(--ink);padding:8px 10px;border-radius:9px;cursor:pointer;white-space:nowrap;text-align:left;background:none;border:none}
+.dd-opt:hover{background:var(--steel-soft)}
+.dd-opt.sel{font-weight:700}
+.dd-opt .dd-lbl{flex:1;overflow:hidden;text-overflow:ellipsis}
+.ddo-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
+.ddo-ava{width:24px;height:24px;border-radius:50%;display:grid;place-items:center;font-size:9.5px;font-weight:700;flex-shrink:0}
+.ddo-ico{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;flex-shrink:0}
+.ddo-ico svg{width:15px;height:15px;stroke-width:1.8}
+.ddo-check{width:15px;height:15px;stroke-width:3;color:var(--steel);flex-shrink:0}
+/* display truncado (modo lectura de texto) */
+.rtitle{font-size:13px;font-weight:600;color:var(--ink);cursor:text;line-height:1.3}
+.rcopy{font-size:11.5px;color:var(--muted);line-height:1.5;cursor:text;margin-top:3px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;white-space:pre-wrap}
+.rtags{font-size:11px;color:var(--steel);font-weight:500;line-height:1.55;cursor:text;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;word-break:break-word}
+.rmuted{color:#B6C2CF;font-weight:400}
+.numpill{font-family:inherit;font-size:12px;font-weight:600;text-align:center;border:1px solid var(--line);border-radius:14px;padding:5px;outline:none;color:var(--ink);width:100%;margin-top:4px}
 .numpill:focus{border-color:var(--steel)}
 .titlepill{width:100%;font-family:inherit;font-size:13px;font-weight:600;color:var(--ink);border:1px solid transparent;border-radius:9px;padding:6px 9px;outline:none;background:transparent}
 .titlepill:hover{background:#fff;border-color:var(--line)}
@@ -793,27 +816,76 @@ function tagsPreview(h){
 }
 function autoGrow(el){if(!el)return;el.style.height='auto';el.style.height=(el.scrollHeight+2)+'px';}
 function growAll(){document.querySelectorAll('#parrilla-body .copypill,#parrilla-body .tagspill').forEach(autoGrow);}
+
+/* ===== menús desplegables personalizados (estéticos) ===== */
+let editCell=null,focusF=null,ddOpen=null;
+function chev(){return '<svg class="pill-chev" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>';}
+const redLbl={na:'No va',pend:'Pendiente',prog:'Programado',pub:'Publicado'};
+const ddConf={
+  dia:{opts:dias.map(d=>[d,d])},
+  fmt:{opts:fmtList.map(x=>[x,x]),color:v=>fmtColor[v],icon:v=>fmtIcon[v]},
+  pilar:{opts:Object.keys(pColor).map(k=>[k,pilarShortMap[k]||k]),color:v=>pilarSoft[v]},
+  st:{opts:stList,color:v=>stSoft[v]},
+  r:{opts:respList.map(x=>[x,x]),color:v=>respColor[v],avatar:true},
+  red:{opts:redList,color:v=>redSoft[v]}
+};
+function ddCurrent(id,field,i){const f=findRow(id);if(!f)return null;return field==='red'?f.r.red[i]:f.r[field];}
+function closeDD(){const l=document.getElementById('dd-layer');if(l)l.remove();ddOpen=null;document.removeEventListener('mousedown',ddOutside,true);}
+function ddOutside(e){if(!e.target.closest('#dd-layer')&&!e.target.closest('.ddbtn'))closeDD();}
+function openDD(e,id,field,i){
+  e.stopPropagation();
+  const key=id+'|'+field+'|'+(i==null?'':i);
+  const wasOpen=ddOpen===key;
+  closeDD();
+  if(wasOpen)return;
+  ddOpen=key;
+  const btn=e.currentTarget,r=btn.getBoundingClientRect(),conf=ddConf[field],cur=ddCurrent(id,field,i);
+  const opts=conf.opts.map(o=>{
+    const val=o[0],lbl=o[1],sel=val===cur;
+    let lead='';
+    if(conf.avatar){const rc=respColor[val]||['#eee','#555'];lead=`<span class="ddo-ava" style="background:${rc[0]};color:${rc[1]}">${inits(val)}</span>`;}
+    else if(conf.icon){const ic=fmtColor[val]||['var(--steel-soft)','var(--steel)'];lead=`<span class="ddo-ico" style="background:${ic[0]};color:${ic[1]}"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24">${conf.icon(val)}</svg></span>`;}
+    else if(conf.color){const c=conf.color(val)||['#eee','#555'];lead=`<span class="ddo-dot" style="background:${c[1]}"></span>`;}
+    return `<button class="dd-opt ${sel?'sel':''}" onclick="pickDD(${id},'${field}',${i==null?'null':i},'${esc(val)}')">${lead}<span class="dd-lbl">${escT(lbl)}</span>${sel?'<svg class="ddo-check" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>':''}</button>`;
+  }).join('');
+  const l=document.createElement('div');l.id='dd-layer';
+  l.innerHTML=`<div class="dd-menu" style="left:${Math.round(r.left)}px;top:${Math.round(r.bottom+5)}px;min-width:${Math.round(Math.max(r.width,164))}px">${opts}</div>`;
+  document.body.appendChild(l);
+  const menu=l.firstElementChild,mb=menu.getBoundingClientRect();
+  if(r.bottom+5+mb.height>window.innerHeight-8)menu.style.top=Math.round(Math.max(8,r.top-mb.height-5))+'px';
+  if(r.left+mb.width>window.innerWidth-8)menu.style.left=Math.round(Math.max(8,window.innerWidth-8-mb.width))+'px';
+  setTimeout(()=>document.addEventListener('mousedown',ddOutside,true),0);
+}
+function pickDD(id,field,i,val){const f=findRow(id);if(f){if(field==='red')f.r.red[i]=val;else f.r[field]=val;}closeDD();renderParrilla();if(field==='pilar')renderGoals();}
+function startEdit(id,field){if(editCell===id){focusF=field;const el=document.querySelector('#parrilla-body [data-ef="'+id+'-'+field+'"]');if(el)el.focus();focusF=null;return;}editCell=id;focusF=field;renderParrilla();}
+function rowFocusOut(e,id){if(editCell!==id)return;const row=e.currentTarget;if(e.relatedTarget&&row.contains(e.relatedTarget))return;editCell=null;renderParrilla();}
+
 function rowRead(p){
   const ps=pilarSoft[p.pilar]||['#fff','var(--ink)'];
   const ss=stSoft[p.st]||['#fff','var(--ink)'];
   const rs=respColor[p.r]||['#EAF1F8','#2E5B8A'];
   const fc=fmtColor[p.fmt]||['var(--steel-soft)','var(--steel)'];
-  return `<div class="prow gridcols">
+  const editing=(editCell===p.id);
+  const tags=(p.h||'').split(/\s+/).filter(Boolean);
+  const titleCell=editing
+    ? `<div class="rtitle-cell"><input class="titlepill" data-ef="${p.id}-t" value="${esc(p.t)}" oninput="setField(${p.id},'t',this.value)" placeholder="Título…"><textarea class="copypill" data-ef="${p.id}-c" oninput="setField(${p.id},'c',this.value);autoGrow(this)" placeholder="Escribe el copy…">${escT(p.c)}</textarea></div>`
+    : `<div class="rtitle-cell"><div class="rtitle" onclick="startEdit(${p.id},'t')">${escT(p.t)||"<span class='rmuted'>Sin título…</span>"}</div><div class="rcopy${p.c?'':' rmuted'}" onclick="startEdit(${p.id},'c')">${escT(p.c)||'Agregar copy…'}</div></div>`;
+  const tagsCell=editing
+    ? `<div class="htags-cell"><textarea class="tagspill" data-ef="${p.id}-h" oninput="setField(${p.id},'h',this.value);autoGrow(this)" placeholder="#Hashtags…">${escT(p.h)}</textarea></div>`
+    : `<div class="htags-cell"><div class="rtags${tags.length?'':' rmuted'}" onclick="startEdit(${p.id},'h')">${tags.length?escT(tags.join(' ')):'#…'}</div></div>`;
+  return `<div class="prow gridcols" onfocusout="rowFocusOut(event,${p.id})">
     <div class="row-handle" draggable="true" ondragstart="dragRow(event,${p.id})" ondragend="dragRowEnd(event)" title="Arrastrar para mover de semana"><svg class="grip" viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="7" r="1.3"/><circle cx="9" cy="12" r="1.3"/><circle cx="9" cy="17" r="1.3"/><circle cx="15" cy="7" r="1.3"/><circle cx="15" cy="12" r="1.3"/><circle cx="15" cy="17" r="1.3"/></svg></div>
     <div class="pdate-cell">
-      <select class="pillsel" onchange="setField(${p.id},'dia',this.value)">${dias.map(d=>optn(d,d,d===p.dia)).join('')}</select>
+      <button class="ddbtn plain ddsm" onclick="openDD(event,${p.id},'dia')"><span class="dd-lbl">${escT(p.dia)||'—'}</span>${chev()}</button>
       <input class="numpill" value="${esc(p.num)}" oninput="setField(${p.id},'num',this.value)" placeholder="#">
     </div>
-    <div class="rfmt"><span class="rfmt-ico" style="background:${fc[0]};color:${fc[1]}"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24">${fmtIcon[p.fmt]||fmtIcon['Diseño']}</svg></span><select class="pillsel" onchange="setField(${p.id},'fmt',this.value);renderParrilla()">${fmtList.map(x=>optn(x,x,x===p.fmt)).join('')}</select></div>
-    <div><select class="pillsel" style="background-color:${ps[0]};color:${ps[1]};border-color:transparent" onchange="setField(${p.id},'pilar',this.value);stylePilar(this);renderGoals()">${Object.keys(pColor).map(x=>optn(x,x,x===p.pilar)).join('')}</select></div>
-    <div class="rtitle-cell">
-      <input class="titlepill" value="${esc(p.t)}" oninput="setField(${p.id},'t',this.value)" placeholder="Título…">
-      <textarea class="copypill" oninput="setField(${p.id},'c',this.value);autoGrow(this)" placeholder="Escribe el copy…">${escT(p.c)}</textarea>
-    </div>
-    <div class="htags-cell"><textarea class="tagspill" oninput="setField(${p.id},'h',this.value);autoGrow(this)" placeholder="#Hashtags…">${escT(p.h)}</textarea></div>
-    <div><select class="pillsel" style="background-color:${ss[0]};color:${ss[1]};border-color:transparent" onchange="setField(${p.id},'st',this.value);styleSt(this)">${selOpts(stList,p.st)}</select></div>
-    <div class="rresp"><span class="ravatar" style="background:${rs[0]};color:${rs[1]}">${inits(p.r)}</span><select class="pillsel" onchange="setField(${p.id},'r',this.value);renderParrilla()">${respList.map(x=>optn(x,x,x===p.r)).join('')}</select></div>
-    ${[0,1,2].map(i=>{const c=redSoft[p.red[i]]||['#fff','var(--ink)'];return `<div><select class="pillsel net" style="background-color:${c[0]};color:${c[1]};border-color:transparent" onchange="setRed(${p.id},${i},this)">${selOpts(redList,p.red[i])}</select></div>`;}).join('')}
+    <div><button class="ddbtn dd-fmt plain" onclick="openDD(event,${p.id},'fmt')"><span class="rfmt-ico" style="background:${fc[0]};color:${fc[1]}"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24">${fmtIcon[p.fmt]||fmtIcon['Diseño']}</svg></span><span class="dd-lbl">${escT(p.fmt)||'—'}</span>${chev()}</button></div>
+    <div><button class="ddbtn" style="background:${ps[0]};color:${ps[1]}" onclick="openDD(event,${p.id},'pilar')"><span class="dd-lbl">${escT(pilarShortMap[p.pilar]||p.pilar)}</span>${chev()}</button></div>
+    ${titleCell}
+    ${tagsCell}
+    <div><button class="ddbtn" style="background:${ss[0]};color:${ss[1]}" onclick="openDD(event,${p.id},'st')"><span class="pill-dot" style="background:${ss[1]}"></span><span class="dd-lbl">${stMap[p.st]||p.st}</span>${chev()}</button></div>
+    <div><button class="ddbtn dd-resp plain" onclick="openDD(event,${p.id},'r')"><span class="ravatar sm" style="background:${rs[0]};color:${rs[1]}">${inits(p.r)}</span><span class="dd-lbl">${escT(p.r)}</span>${chev()}</button></div>
+    ${[0,1,2].map(i=>{const c=redSoft[p.red[i]]||['#fff','var(--ink)'];return `<div><button class="ddbtn dd-net" style="background:${c[0]};color:${c[1]}" onclick="openDD(event,${p.id},'red',${i})"><span class="dd-lbl">${redLbl[p.red[i]]||'—'}</span>${chev()}</button></div>`;}).join('')}
     <div class="ractions">
       <button class="ract" onclick="copyCopyTags(${p.id},this)" title="Copiar copy y hashtags"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg></button>
       <button class="ract del" onclick="delRow(${p.id})" title="Eliminar"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></button>
@@ -840,6 +912,7 @@ function renderParrilla(){
   }).join('');
   if(c)c.scrollLeft=sx;
   growAll();
+  if(editCell&&focusF){const el=document.querySelector('#parrilla-body [data-ef="'+editCell+'-'+focusF+'"]');if(el){el.focus();try{const L=(el.value||'').length;el.setSelectionRange&&el.setSelectionRange(L,L);}catch(e){}}focusF=null;}
 }
 function toggleAssign(id,i){const f=findRow(id);if(!f)return;f.r.plat[i]=f.r.plat[i]?0:1;renderParrilla();}
 function setPub(id,i,v){const f=findRow(id);if(!f)return;f.r.pub[i]=v;}
