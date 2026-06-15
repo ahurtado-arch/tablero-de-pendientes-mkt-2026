@@ -36,8 +36,19 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .tab.active{color:var(--steel);font-weight:600}
 .tab.active::after{content:"";position:absolute;bottom:0;left:12px;right:12px;height:3px;background:var(--steel);border-radius:3px 3px 0 0}
 .top-right{display:flex;align-items:center;gap:14px;flex:1;justify-content:flex-end}
-.month-pick{display:flex;align-items:center;gap:9px;background:var(--bg);border:1px solid var(--line);border-radius:11px;padding:8px 14px;font-size:13px;font-weight:600}
+.month-pick{display:flex;align-items:center;gap:9px;background:var(--bg);border:1px solid var(--line);border-radius:11px;padding:8px 14px;font-size:13px;font-weight:600;cursor:pointer;transition:border-color .12s}
+.month-pick:hover{border-color:var(--steel)}
 .month-pick svg{width:16px;height:16px;color:var(--steel)}
+.mp-wrap{position:relative}
+.mp-pop{position:absolute;top:calc(100% + 8px);right:0;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow-lg);padding:14px;width:268px;z-index:300;animation:fade .12s ease}
+.mp-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.mp-head b{font-size:15px;font-weight:700;color:var(--navy)}
+.mp-head button{width:30px;height:30px;border-radius:9px;border:1px solid var(--line);background:#fff;color:var(--steel);font-size:16px;cursor:pointer;display:grid;place-items:center;transition:.12s}
+.mp-head button:hover{border-color:var(--steel);background:var(--steel-soft)}
+.mp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:7px}
+.mp-m{font-family:inherit;font-size:12px;font-weight:600;color:var(--ink);background:var(--bg);border:1px solid transparent;border-radius:10px;padding:9px 0;cursor:pointer;transition:.12s}
+.mp-m:hover{background:var(--steel-soft);color:var(--steel)}
+.mp-m.on{background:var(--grad-navy);color:#fff}
 .avatar{width:36px;height:36px;border-radius:50%;background:var(--grad-navy);color:#fff;display:grid;place-items:center;font-size:13px;font-weight:600}
 
 .content{padding:24px 32px;max-width:1760px;margin:0 auto;animation:fade .3s ease}
@@ -553,7 +564,10 @@ select.cell-input{cursor:pointer}
     </nav>
     <div class="top-right">
       <span id="save-ind" style="font-size:11px;color:var(--green);font-weight:600;opacity:0;transition:opacity .3s">● Guardado</span>
-      <div class="month-pick"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>Mayo 2026<svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+      <div class="mp-wrap">
+        <div class="month-pick" id="monthPick" onclick="toggleMonthPanel(event)"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg><span id="monthLbl">Mayo 2026</span><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+        <div id="month-panel"></div>
+      </div>
       <div class="avatar" id="avatar">—</div>
     </div>
   </div>
@@ -767,6 +781,32 @@ const weeks=[
   ]}
 ];
 function findRow(id){for(const w of weeks){const r=w.rows.find(x=>x.id===id);if(r)return{r,w};}return null;}
+
+/* ===== parrilla por mes/año ===== */
+const MES=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const MESab=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+let parrillas={},curY=2026,curM=4;          // curM 0-based (4 = Mayo)
+function curKey(){return curY+'-'+String(curM+1).padStart(2,'0');}
+function daysInMonth(y,m){return new Date(y,m+1,0).getDate();}
+function weeksFor(y,m){const dim=daysInMonth(y,m),ab=MESab[m],ws=[];let s=1,n=1;while(s<=dim){const e=Math.min(s+6,dim);ws.push({label:'Semana '+n,range:s+' – '+e+' '+ab,rows:[]});s+=7;n++;}return ws;}
+function syncCurrentMonth(){parrillas[curKey()]={weeks:JSON.parse(JSON.stringify(weeks)),goalTotal:+document.getElementById('goal-total').value||20};}
+function loadMonth(){
+  const k=curKey();
+  if(!parrillas[k])parrillas[k]={weeks:weeksFor(curY,curM),goalTotal:20};
+  const data=JSON.parse(JSON.stringify(parrillas[k]));
+  weeks.length=0;data.weeks.forEach(w=>weeks.push(w));
+  const gt=document.getElementById('goal-total');if(gt)gt.value=data.goalTotal||20;
+  rid=Math.max(0,...weeks.flatMap(w=>w.rows.map(r=>+r.id||0)));
+}
+function updateMonthLabel(){const el=document.getElementById('monthLbl');if(el)el.textContent=MES[curM]+' '+curY;}
+function switchToMonth(y,m){syncCurrentMonth();curY=y;curM=m;loadMonth();updateMonthLabel();editCell=null;renderParrilla();renderGoals();}
+/* panel selector de mes/año */
+let panelYear=null;
+function toggleMonthPanel(e){e.stopPropagation();const el=document.getElementById('month-panel');if(el.innerHTML){closeMonthPanel();return;}renderMonthPanel(curY);setTimeout(()=>document.addEventListener('mousedown',mpOutside,true),0);}
+function renderMonthPanel(y){panelYear=y;const el=document.getElementById('month-panel');el.innerHTML=`<div class="mp-pop"><div class="mp-head"><button onclick="event.stopPropagation();renderMonthPanel(${y-1})">‹</button><b>${y}</b><button onclick="event.stopPropagation();renderMonthPanel(${y+1})">›</button></div><div class="mp-grid">${MESab.map((m,i)=>`<button class="mp-m ${(i===curM&&y===curY)?'on':''}" onclick="pickMonth(${y},${i})">${m}</button>`).join('')}</div></div>`;}
+function pickMonth(y,m){closeMonthPanel();switchToMonth(y,m);}
+function closeMonthPanel(){const el=document.getElementById('month-panel');if(el)el.innerHTML='';document.removeEventListener('mousedown',mpOutside,true);}
+function mpOutside(e){if(!e.target.closest('#month-panel')&&!e.target.closest('#monthPick'))closeMonthPanel();}
 
 const stMap={publicado:'Publicado',proceso:'En proceso',pendiente:'Pendiente'};
 const stBadge={publicado:'b-green',proceso:'b-amber',pendiente:'b-gray'};
@@ -1289,7 +1329,7 @@ function moduleReporteBody(){
   const cargaTxt=Object.entries(cc).filter(([k,v])=>v>0).map(([k,v])=>`${k} (${v})`).join(' · ')||'sin asignaciones';
   return `<div style="margin-bottom:16px;display:flex;gap:8px"><button class="btn-primary" id="pdf-btn" onclick="generatePDF()"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>Descargar PDF</button><button class="btn-ghost" onclick="window.print()"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="15" height="15"><path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2M6 14h12v8H6z"/></svg>Imprimir</button></div>
   <div class="report-sheet" id="report-sheet">
-    <div class="rep-head"><div class="rep-logo">TDC</div><div><h2>Reporte de contenido</h2><small>Taller de Diseño Constructivo · Mayo 2026</small></div></div>
+    <div class="rep-head"><div class="rep-logo">TDC</div><div><h2>Reporte de contenido</h2><small>Taller de Diseño Constructivo · ${MES[curM]+' '+curY}</small></div></div>
     <div class="rep-sec"><h3>Resumen del mes</h3><div class="rep-kpis">
       <div class="rep-kpi"><div class="n">${planTot}</div><div class="l">Piezas planificadas</div></div>
       <div class="rep-kpi"><div class="n">${pub}</div><div class="l">Publicadas</div></div>
@@ -1314,7 +1354,7 @@ function generatePDF(){
     let pos=m,hLeft=ih;
     pdf.addImage(img,'PNG',m,pos,iw,ih);hLeft-=(ph-m*2);
     while(hLeft>0){pos=m-(ih-hLeft);pdf.addPage();pdf.addImage(img,'PNG',m,pos,iw,ih);hLeft-=(ph-m*2);}
-    pdf.save('Reporte-Contenido-TDC-Mayo-2026.pdf');
+    pdf.save('Reporte-Contenido-TDC-'+MES[curM]+'-'+curY+'.pdf');
     btn.innerHTML=orig;btn.disabled=false;
   }).catch(()=>{btn.innerHTML=orig;btn.disabled=false;window.print();});
 }
@@ -1373,25 +1413,27 @@ function sendFecha(id){const f=fechas.find(x=>x.id===id);if(!f||f.sent)return;we
 /* ====== PUENTE DE ESTADO (persistencia en Firestore, ver script de abajo) ====== */
 window.PLAT={
   getState(){
-    const s=JSON.parse(JSON.stringify({weeks,stories,trends,extras,banco,fechas}));
-    s.weeks.forEach(w=>(w.rows||[]).forEach(r=>{delete r._exp;}));
+    syncCurrentMonth();
+    const s=JSON.parse(JSON.stringify({parrillas,stories,trends,extras,banco,fechas,curY,curM}));
+    Object.values(s.parrillas).forEach(pm=>(pm.weeks||[]).forEach(w=>(w.rows||[]).forEach(r=>{delete r._exp;})));
     s.stories.forEach(x=>x.editing=false);
     s.trends.forEach(x=>{delete x.editing;});
     s.banco.forEach(x=>x.editing=false);
-    s.goalTotal=+document.getElementById('goal-total').value||20;
     return s;
   },
   setState(s){
     if(!s)return;
-    if(Array.isArray(s.weeks)){weeks.length=0;s.weeks.forEach(w=>weeks.push(w));}
+    if(s.parrillas&&typeof s.parrillas==='object'){parrillas=s.parrillas;}
+    else if(Array.isArray(s.weeks)){parrillas={};parrillas['2026-05']={weeks:s.weeks,goalTotal:s.goalTotal||20};curY=2026;curM=4;}
+    if(typeof s.curY==='number')curY=s.curY;
+    if(typeof s.curM==='number')curM=s.curM;
     if(Array.isArray(s.stories))stories=s.stories;
     if(Array.isArray(s.trends))trends=s.trends;
     if(Array.isArray(s.extras))extras=s.extras;
     if(Array.isArray(s.banco))banco=s.banco;
     if(Array.isArray(s.fechas))fechas=s.fechas;
-    if(s.goalTotal)document.getElementById('goal-total').value=s.goalTotal;
+    loadMonth();updateMonthLabel();
     // counters: evitar colisiones de id con datos guardados
-    rid=Math.max(0,...weeks.flatMap(w=>w.rows.map(r=>+r.id||0)));
     sid=Math.max(0,...stories.map(x=>+x.id||0));
     tid=Math.max(0,...trends.map(x=>+x.id||0));
     eid=Math.max(0,...extras.map(x=>+x.id||0));
@@ -1401,6 +1443,10 @@ window.PLAT={
     renderExtras();renderTrends();renderStories();renderParrilla();renderGoals();
   }
 };
+
+// inicializa el mes actual (Mayo 2026) con los datos de ejemplo
+parrillas['2026-05']={weeks:JSON.parse(JSON.stringify(weeks)),goalTotal:20};
+loadMonth();updateMonthLabel();
 
 renderExtras();
 renderTrends();
