@@ -33,9 +33,10 @@ getRedirectResult(auth).then(result=>{
 });
 const tasksCol=collection(db,"tareas_v2");
 const grabsCol=collection(db,"grabaciones");
+const proyectosCol=collection(db,"proyectos");
 
-let tasks=[],grabs=[],currentUser=null,anView='global',myFilter='mios',charts={};
-let editTaskId=null,editGrabId=null,prevTaskEstado=null;
+let tasks=[],grabs=[],proyectos=[],currentUser=null,anView='global',myFilter='mios',charts={};
+let editTaskId=null,editGrabId=null,editProyId=null,prevTaskEstado=null;
 let curY=new Date().getFullYear(),curM=new Date().getMonth();
 let activeSection=1;
 
@@ -134,15 +135,17 @@ function loadData(){
   }
   onSnapshot(tasksCol,snap=>{tasks=snap.docs.map(d=>({id:d.id,...d.data()}));t1=true;renderBoard();if(activeSection===3)renderAnalytics();check();},()=>{setSync('error');t1=true;check();});
   onSnapshot(grabsCol,snap=>{grabs=snap.docs.map(d=>({id:d.id,...d.data()}));t2=true;renderCal();check();},()=>{setSync('error');t2=true;check();});
+  onSnapshot(proyectosCol,snap=>{proyectos=snap.docs.map(d=>({id:d.id,...d.data()}));renderProyectos();},()=>{});
 }
 
 // NAV
 window.switchSection=n=>{
   activeSection=n;
-  [1,2,3,4,5].forEach(i=>{$(`navTab${i}`).className='nav-tab'+(i===n?' active':'');$(`sec${i}`).className='section'+(i===n?' active':'');});
+  [1,2,3,4,5,6].forEach(i=>{$(`navTab${i}`).className='nav-tab'+(i===n?' active':'');$(`sec${i}`).className='section'+(i===n?' active':'');});
   if(n===3)renderAnalytics();
   if(n===4){const f=$('kpisFrame');if(f&&!f.src)f.src=f.dataset.src;}
   if(n===5){const f=$('contenidoFrame');if(f&&!f.src)f.src=f.dataset.src;}
+  if(n===6)renderProyectos();
 };
 
 // BOARD FILTERS
@@ -438,6 +441,112 @@ window.deleteGrab=async(id,nombre)=>{
   setSync('s');try{await deleteDoc(doc(db,'grabaciones',id));showToast('Eliminada','🗑');renderCal();}catch(e){showToast('Error','⚠️');}
 };
 
+// PROYECTOS (CUADRO MATRIZ)
+const PROY_ESTADO_CLASS={'En planos':'pe-planos','Preventa':'pe-preventa','En construcción':'pe-constr','Entrega inmediata':'pe-entrega','Entregado':'pe-entregado'};
+const esc=s=>(s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
+function filteredProyectos(){
+  const q=($('pfBuscar').value||'').trim().toLowerCase();
+  const fE=$('pfEstado').value,fP=$('pfPri').value;
+  return proyectos.filter(p=>{
+    if(fE&&p.estado!==fE)return false;
+    if(fP&&p.prioridad!==fP)return false;
+    if(q){
+      const hay=[p.comercial,p.tecnico,p.direccion,p.respNombre].map(x=>(x||'').toLowerCase()).join(' ');
+      if(!hay.includes(q))return false;
+    }
+    return true;
+  });
+}
+window.clearPF=()=>{$('pfBuscar').value='';$('pfEstado').value='';$('pfPri').value='';renderProyectos();};
+
+function renderProyectos(){
+  if(!$('proyList'))return;
+  $('pTotal').textContent=proyectos.length;
+  $('pPrev').textContent=proyectos.filter(p=>p.estado==='Preventa').length;
+  $('pConstr').textContent=proyectos.filter(p=>p.estado==='En construcción').length;
+  $('pEntr').textContent=proyectos.filter(p=>p.estado==='Entrega inmediata').length;
+  const tbody=$('proyList');tbody.innerHTML='';
+  const list=filteredProyectos();
+  if(!list.length){tbody.innerHTML='<tr><td colspan="10" class="proy-empty">No hay proyectos que coincidan. Crea uno con «Nuevo Proyecto».</td></tr>';return;}
+  const po={Alta:0,Media:1,Baja:2};
+  [...list].sort((a,b)=>(po[a.prioridad]??1)-(po[b.prioridad]??1)||(a.comercial||'').localeCompare(b.comercial||'')).forEach(p=>{
+    const pc=p.prioridad==='Alta'?'p-a':p.prioridad==='Media'?'p-m':'p-b';
+    const ec=PROY_ESTADO_CLASS[p.estado]||'pe-planos';
+    const tel=(p.respTel||'').trim(),mail=(p.respMail||'').trim();
+    const telLink=tel?`<a href="tel:${esc(tel.replace(/\s/g,''))}">📞 ${esc(tel)}</a>`:'';
+    const mailLink=mail?`<a href="mailto:${esc(mail)}">✉️ ${esc(mail)}</a>`:'';
+    const resp=(p.respNombre||tel||mail)?`<div class="proy-resp"><span class="pr-name">${esc(p.respNombre||'—')}</span>${telLink}${mailLink}</div>`:'<span style="color:var(--muted)">—</span>';
+    const tr=document.createElement('tr');
+    tr.innerHTML=`
+      <td><div class="proy-name">${esc(p.comercial||'Sin nombre')}</div>${p.tecnico?`<div class="proy-tech">${esc(p.tecnico)}</div>`:''}</td>
+      <td><span class="proy-badge ${ec}">${esc(p.estado||'—')}</span></td>
+      <td><span class="pri-badge ${pc}">${esc(p.prioridad||'—')}</span></td>
+      <td><span class="proy-num">${esc(p.metraje||'—')}</span></td>
+      <td><span class="proy-num">${esc(p.pisos||'—')}</span></td>
+      <td><span class="proy-num">${esc(p.depas||'—')}</span></td>
+      <td><div class="proy-precios">${p.precios?esc(p.precios):'—'}</div></td>
+      <td><div class="proy-dir">${esc(p.direccion||'—')}</div></td>
+      <td>${resp}</td>
+      <td class="proy-acts">
+        <button class="btn-edit" onclick="openEditProy('${p.id}')">Editar</button>
+        <button class="btn-del" onclick="deleteProy('${p.id}','${(p.comercial||'').replace(/'/g,"\\'")}')">🗑</button>
+      </td>`;
+    tbody.appendChild(tr);
+  });
+}
+window.renderProyectos=renderProyectos;
+
+function fillProy(p){
+  $('pComercial').value=p.comercial||'';$('pTecnico').value=p.tecnico||'';
+  $('pEstado').value=p.estado||'En planos';$('pPrioridad').value=p.prioridad||'Media';
+  $('pMetraje').value=p.metraje||'';$('pPisos').value=p.pisos||'';
+  $('pDepas').value=p.depas||'';$('pDireccion').value=p.direccion||'';
+  $('pPrecios').value=p.precios||'';$('pRespNombre').value=p.respNombre||'';
+  $('pRespTel').value=p.respTel||'';$('pRespMail').value=p.respMail||'';
+}
+window.openProyModal=()=>{
+  editProyId=null;
+  $('proyMTitle').textContent='Nuevo Proyecto';
+  fillProy({});
+  $('proyModal').style.display='block';
+  setTimeout(()=>$('pComercial').focus(),100);
+};
+window.openEditProy=id=>{
+  editProyId=id;const p=proyectos.find(x=>x.id===id)||{};
+  $('proyMTitle').textContent='Editar Proyecto';
+  fillProy(p);
+  $('proyModal').style.display='block';
+};
+window.closeProyModal=()=>{$('proyModal').style.display='none';editProyId=null;};
+
+window.saveProy=async()=>{
+  const comercial=$('pComercial').value.trim();
+  if(!comercial){$('pComercial').focus();showToast('El nombre comercial es obligatorio','⚠️');return;}
+  const btn=$('btnSaveProy');btn.disabled=true;btn.textContent='Guardando...';setSync('s');
+  const data={
+    comercial,tecnico:$('pTecnico').value.trim(),estado:$('pEstado').value,prioridad:$('pPrioridad').value,
+    metraje:$('pMetraje').value.trim(),pisos:$('pPisos').value.trim(),depas:$('pDepas').value.trim(),
+    direccion:$('pDireccion').value.trim(),precios:$('pPrecios').value.trim(),
+    respNombre:$('pRespNombre').value.trim(),respTel:$('pRespTel').value.trim(),respMail:$('pRespMail').value.trim(),
+    updatedAt:serverTimestamp()
+  };
+  const isNew=!editProyId;
+  try{
+    if(isNew){data.createdAt=serverTimestamp();await addDoc(proyectosCol,data);}
+    else{await updateDoc(doc(db,'proyectos',editProyId),data);}
+    window.closeProyModal();
+    showToast(isNew?'Proyecto creado ✓':'Proyecto actualizado ✓');
+    setSync('ok');
+  }catch(e){showToast('Error al guardar','⚠️');setSync('error');}
+  btn.disabled=false;btn.textContent='Guardar proyecto';
+};
+
+window.deleteProy=async(id,nombre)=>{
+  if(!confirm(`¿Eliminar el proyecto "${nombre}"?`))return;
+  setSync('s');try{await deleteDoc(doc(db,'proyectos',id));showToast('Proyecto eliminado','🗑');setSync('ok');}catch(e){showToast('Error','⚠️');setSync('error');}
+};
+
 // EMAILS
 const emailsSentLocal=new Set();
 
@@ -587,4 +696,4 @@ function mkDona(id,labels,data){
   charts[id]=new Chart(ctx,{type:'doughnut',data:{labels,datasets:[{data,backgroundColor:COLORS,borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:10},boxWidth:12}}}}});
 }
 
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){window.closeTaskModal();window.closeGrabModal();window.closeBanner();window.closeCalPopup();}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){window.closeTaskModal();window.closeGrabModal();window.closeProyModal();window.closeBanner();window.closeCalPopup();}});
