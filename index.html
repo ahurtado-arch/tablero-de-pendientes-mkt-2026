@@ -297,6 +297,7 @@
       </select>
       <button class="btn-clear" onclick="clearPF()">✕ Limpiar</button>
       <div class="toolbar-right">
+        <button class="btn-clear" id="btnSeedProy" onclick="seedProyectos()" title="Crea los 5 proyectos con los datos de las fichas">⬇ Cargar proyectos iniciales</button>
         <button class="btn-primary" onclick="openProyModal()">
           <svg width="11" height="11" viewBox="0 0 12 12" fill="none"><path d="M6 1v10M1 6h10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Nuevo Proyecto
         </button>
@@ -316,7 +317,7 @@
           <th>Prioridad</th>
           <th>Metraje total</th>
           <th>Pisos</th>
-          <th>Depas disp.</th>
+          <th>Unidades disp.</th>
           <th>Precios</th>
           <th>Dirección</th>
           <th>Responsable</th>
@@ -439,14 +440,17 @@
         </div>
       </div>
       <div class="fg2">
-        <div class="frow"><label>Metraje total</label><input id="pMetraje" type="text" placeholder="Ej: 2,500 m²"/></div>
-        <div class="frow"><label>N° de pisos</label><input id="pPisos" type="text" placeholder="Ej: 15"/></div>
+        <div class="frow"><label>Rango de metraje</label><input id="pMetraje" type="text" placeholder="Ej: 80 m² - 189 m²"/></div>
+        <div class="frow"><label>N° de pisos</label><input id="pPisos" type="text" placeholder="Ej: 9"/></div>
       </div>
       <div class="fg2">
-        <div class="frow"><label>Depas disponibles</label><input id="pDepas" type="text" placeholder="Ej: 12 de 40"/></div>
-        <div class="frow"><label>Dirección</label><input id="pDireccion" type="text" placeholder="Av. ... , distrito"/></div>
+        <div class="frow"><label>N° total de unidades</label><input id="pTotalUnid" type="text" placeholder="Ej: 32"/></div>
+        <div class="frow"><label>Año</label><input id="pAnio" type="text" placeholder="Ej: 2026"/></div>
       </div>
-      <div class="frow"><label>Precios</label><textarea id="pPrecios" placeholder="Ej: 1 dorm: S/250k · 2 dorm: S/350k · 3 dorm: S/480k"></textarea></div>
+      <div class="frow"><label>Dirección</label><input id="pDireccion" type="text" placeholder="Ca. ... , distrito"/></div>
+      <div class="frow"><label>Tipologías</label><input id="pTipologias" type="text" placeholder="Ej: Flats y dúplex · 2 – 3 dorm"/></div>
+      <div class="frow"><label>Rango de precios</label><textarea id="pPrecios" placeholder="Ej: S/ 717,500 - S/ 1 470,000"></textarea></div>
+      <div class="frow"><label>Descripción</label><textarea id="pDescripcion" placeholder="Reseña del proyecto para piezas..."></textarea></div>
       <div class="frow"><label>Responsable comercial</label><input id="pRespNombre" type="text" placeholder="Nombre del responsable"/></div>
       <div class="fg2">
         <div class="frow"><label>Número del responsable</label><input id="pRespTel" type="text" placeholder="+51 999 999 999"/></div>
@@ -455,6 +459,32 @@
       <div class="macts">
         <button class="btn-cc" onclick="closeProyModal()">Cancelar</button>
         <button class="btn-sv" id="btnSaveProy" onclick="saveProy()">Guardar proyecto</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL UNIDADES (DEPARTAMENTOS) -->
+<div id="unidModal" style="display:none;">
+  <div class="overlay" onclick="if(event.target===this)closeUnidModal()">
+    <div class="mbox mbox-wide">
+      <div class="mhead">
+        <span class="mhead-title">🏠 Unidades · <span id="unidProyName">—</span></span>
+        <button class="mcls" onclick="closeUnidModal()">✕</button>
+      </div>
+      <div class="unid-summary" id="unidSummary"></div>
+      <div class="unid-table-wrap">
+        <table class="unid-table">
+          <thead><tr>
+            <th>Código</th><th>Tipología</th><th>Área</th><th>Dorm.</th><th>Vista</th><th>Precio</th><th>Estado</th><th></th>
+          </tr></thead>
+          <tbody id="unidList"></tbody>
+        </table>
+      </div>
+      <button class="btn-add-unid" onclick="addUnidRow()">+ Agregar unidad</button>
+      <div class="macts">
+        <button class="btn-cc" onclick="closeUnidModal()">Cancelar</button>
+        <button class="btn-sv" id="btnSaveUnid" onclick="saveUnid()">Guardar unidades</button>
       </div>
     </div>
   </div>

@@ -241,6 +241,36 @@ html,body{min-height:100%;font-family:'General Sans','Segoe UI',system-ui,sans-s
 .proy-acts{white-space:nowrap;}
 .proy-acts .btn-edit{display:inline-block;flex:none;padding:6px 11px;margin-right:5px;}
 .proy-empty{text-align:center;color:var(--muted);padding:2.5rem 1rem;font-size:13px;}
+/* celda de unidades disponibles */
+.unid-cell{display:flex;flex-direction:column;gap:5px;align-items:flex-start;}
+.unid-count{font-size:13px;font-weight:700;color:var(--navy);}
+.unid-count .uc-disp{color:var(--green);}
+.unid-count .uc-zero{color:var(--red);}
+.btn-unid{font-size:11px;font-weight:600;color:var(--steel);background:var(--steel-soft);border:none;border-radius:7px;padding:4px 9px;cursor:pointer;font-family:inherit;white-space:nowrap;}
+.btn-unid:hover{background:var(--steel);color:#fff;}
+.unid-bar{height:5px;width:64px;background:var(--gray);border-radius:99px;overflow:hidden;}
+.unid-bar-fill{height:100%;background:var(--green);border-radius:99px;}
+
+/* MODAL UNIDADES */
+.mbox-wide{max-width:860px;}
+.unid-summary{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:14px;padding:12px 14px;background:var(--steel-tint);border:1px solid var(--gray2);border-radius:12px;font-size:12.5px;font-weight:600;}
+.unid-summary span{display:inline-flex;align-items:center;gap:6px;}
+.unid-summary .us-dot{width:9px;height:9px;border-radius:3px;}
+.unid-table-wrap{overflow-x:auto;border:1px solid var(--gray2);border-radius:12px;max-height:50vh;overflow-y:auto;}
+.unid-table{width:100%;border-collapse:collapse;font-size:12px;min-width:640px;}
+.unid-table thead th{position:sticky;top:0;background:var(--bg);color:var(--muted);padding:9px 10px;text-align:left;font-size:9.5px;text-transform:uppercase;letter-spacing:.5px;font-weight:700;border-bottom:1px solid var(--gray2);white-space:nowrap;}
+.unid-table tbody td{padding:6px 8px;border-bottom:1px solid var(--gray2);vertical-align:middle;}
+.unid-table tbody tr:last-child td{border-bottom:none;}
+.unid-table input,.unid-table select{width:100%;min-width:60px;font-size:12px;padding:6px 7px;border:1px solid var(--gray2);border-radius:7px;background:var(--white);color:var(--text);font-family:inherit;}
+.unid-table input:focus,.unid-table select:focus{outline:none;border-color:var(--steel);}
+.unid-table select.st-Disponible{background:var(--green-lt);color:var(--green);font-weight:700;border-color:#BCE6D4;}
+.unid-table select.st-Reservado{background:var(--yellow-lt);color:var(--amber-tx);font-weight:700;border-color:#F0DBB2;}
+.unid-table select.st-Vendido{background:var(--red-lt);color:var(--red-dk);font-weight:700;border-color:#F3C9C5;}
+.unid-rm{background:none;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:4px 6px;border-radius:6px;}
+.unid-rm:hover{color:var(--red);background:var(--red-lt);}
+.unid-empty{text-align:center;color:var(--muted);padding:1.6rem 1rem;font-size:12.5px;}
+.btn-add-unid{margin-top:12px;font-size:12.5px;font-weight:600;color:var(--steel);background:var(--white);border:1.5px dashed var(--gray3);border-radius:10px;padding:9px 14px;cursor:pointer;font-family:inherit;width:100%;transition:.15s;}
+.btn-add-unid:hover{border-color:var(--steel);background:var(--steel-tint);}
 
 /* COMPLETION BANNER */
 .completion-banner{position:fixed;top:0;left:0;right:0;z-index:2000;background:linear-gradient(135deg,#15805A,#1BA572);color:#fff;transform:translateY(-100%);transition:transform .4s cubic-bezier(.34,1.56,.64,1);box-shadow:0 4px 20px rgba(21,128,90,.4);}

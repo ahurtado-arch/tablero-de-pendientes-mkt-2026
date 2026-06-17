@@ -36,7 +36,7 @@ const grabsCol=collection(db,"grabaciones");
 const proyectosCol=collection(db,"proyectos");
 
 let tasks=[],grabs=[],proyectos=[],currentUser=null,anView='global',myFilter='mios',charts={};
-let editTaskId=null,editGrabId=null,editProyId=null,prevTaskEstado=null;
+let editTaskId=null,editGrabId=null,editProyId=null,unidProyId=null,prevTaskEstado=null;
 let curY=new Date().getFullYear(),curM=new Date().getMonth();
 let activeSection=1;
 
@@ -477,6 +477,23 @@ function renderProyectos(){
     const telLink=tel?`<a href="tel:${esc(tel.replace(/\s/g,''))}">📞 ${esc(tel)}</a>`:'';
     const mailLink=mail?`<a href="mailto:${esc(mail)}">✉️ ${esc(mail)}</a>`:'';
     const resp=(p.respNombre||tel||mail)?`<div class="proy-resp"><span class="pr-name">${esc(p.respNombre||'—')}</span>${telLink}${mailLink}</div>`:'<span style="color:var(--muted)">—</span>';
+    const uds=p.unidades||[];
+    const totU=uds.length||parseInt(p.totalUnidades)||0;
+    const dispU=uds.filter(u=>u.estado==='Disponible').length;
+    let unidCell;
+    if(uds.length){
+      const pct=totU?Math.round((dispU/totU)*100):0;
+      unidCell=`<div class="unid-cell">
+        <span class="unid-count"><span class="${dispU>0?'uc-disp':'uc-zero'}">${dispU}</span> / ${totU} disp.</span>
+        <div class="unid-bar"><div class="unid-bar-fill" style="width:${pct}%;${dispU===0?'background:var(--red)':''}"></div></div>
+        <button class="btn-unid" onclick="openUnidModal('${p.id}')">Ver / editar</button>
+      </div>`;
+    }else{
+      unidCell=`<div class="unid-cell">
+        <span class="unid-count" style="color:var(--muted);font-weight:600;">${totU?totU+' und. (sin cargar)':'—'}</span>
+        <button class="btn-unid" onclick="openUnidModal('${p.id}')">+ Agregar</button>
+      </div>`;
+    }
     const tr=document.createElement('tr');
     tr.innerHTML=`
       <td><div class="proy-name">${esc(p.comercial||'Sin nombre')}</div>${p.tecnico?`<div class="proy-tech">${esc(p.tecnico)}</div>`:''}</td>
@@ -484,7 +501,7 @@ function renderProyectos(){
       <td><span class="pri-badge ${pc}">${esc(p.prioridad||'—')}</span></td>
       <td><span class="proy-num">${esc(p.metraje||'—')}</span></td>
       <td><span class="proy-num">${esc(p.pisos||'—')}</span></td>
-      <td><span class="proy-num">${esc(p.depas||'—')}</span></td>
+      <td>${unidCell}</td>
       <td><div class="proy-precios">${p.precios?esc(p.precios):'—'}</div></td>
       <td><div class="proy-dir">${esc(p.direccion||'—')}</div></td>
       <td>${resp}</td>
@@ -501,8 +518,10 @@ function fillProy(p){
   $('pComercial').value=p.comercial||'';$('pTecnico').value=p.tecnico||'';
   $('pEstado').value=p.estado||'En planos';$('pPrioridad').value=p.prioridad||'Media';
   $('pMetraje').value=p.metraje||'';$('pPisos').value=p.pisos||'';
-  $('pDepas').value=p.depas||'';$('pDireccion').value=p.direccion||'';
-  $('pPrecios').value=p.precios||'';$('pRespNombre').value=p.respNombre||'';
+  $('pTotalUnid').value=p.totalUnidades||'';$('pAnio').value=p.anio||'';
+  $('pDireccion').value=p.direccion||'';$('pTipologias').value=p.tipologias||'';
+  $('pPrecios').value=p.precios||'';$('pDescripcion').value=p.descripcion||'';
+  $('pRespNombre').value=p.respNombre||'';
   $('pRespTel').value=p.respTel||'';$('pRespMail').value=p.respMail||'';
 }
 window.openProyModal=()=>{
@@ -526,8 +545,9 @@ window.saveProy=async()=>{
   const btn=$('btnSaveProy');btn.disabled=true;btn.textContent='Guardando...';setSync('s');
   const data={
     comercial,tecnico:$('pTecnico').value.trim(),estado:$('pEstado').value,prioridad:$('pPrioridad').value,
-    metraje:$('pMetraje').value.trim(),pisos:$('pPisos').value.trim(),depas:$('pDepas').value.trim(),
-    direccion:$('pDireccion').value.trim(),precios:$('pPrecios').value.trim(),
+    metraje:$('pMetraje').value.trim(),pisos:$('pPisos').value.trim(),totalUnidades:$('pTotalUnid').value.trim(),
+    anio:$('pAnio').value.trim(),direccion:$('pDireccion').value.trim(),tipologias:$('pTipologias').value.trim(),
+    precios:$('pPrecios').value.trim(),descripcion:$('pDescripcion').value.trim(),
     respNombre:$('pRespNombre').value.trim(),respTel:$('pRespTel').value.trim(),respMail:$('pRespMail').value.trim(),
     updatedAt:serverTimestamp()
   };
@@ -545,6 +565,88 @@ window.saveProy=async()=>{
 window.deleteProy=async(id,nombre)=>{
   if(!confirm(`¿Eliminar el proyecto "${nombre}"?`))return;
   setSync('s');try{await deleteDoc(doc(db,'proyectos',id));showToast('Proyecto eliminado','🗑');setSync('ok');}catch(e){showToast('Error','⚠️');setSync('error');}
+};
+
+// UNIDADES (DEPARTAMENTOS) POR PROYECTO
+const UNID_ESTADOS=['Disponible','Reservado','Vendido'];
+function unidRowHTML(u={}){
+  const e=u.estado&&UNID_ESTADOS.includes(u.estado)?u.estado:'Disponible';
+  const opts=UNID_ESTADOS.map(s=>`<option${s===e?' selected':''}>${s}</option>`).join('');
+  return `<tr>
+    <td><input class="u-cod" value="${esc(u.codigo||'')}" placeholder="LC-101"/></td>
+    <td><input class="u-tip" value="${esc(u.tipologia||'')}" placeholder="Flat / Dúplex"/></td>
+    <td><input class="u-area" value="${esc(u.area||'')}" placeholder="80 m²"/></td>
+    <td><input class="u-dorm" value="${esc(u.dorm||'')}" placeholder="2"/></td>
+    <td><input class="u-vista" value="${esc(u.vista||'')}" placeholder="Exterior"/></td>
+    <td><input class="u-precio" value="${esc(u.precio||'')}" placeholder="S/ 717,500"/></td>
+    <td><select class="u-est st-${e}" onchange="this.className='u-est st-'+this.value;refreshUnidSummary();">${opts}</select></td>
+    <td><button class="unid-rm" onclick="this.closest('tr').remove();refreshUnidSummary();" title="Eliminar">🗑</button></td>
+  </tr>`;
+}
+function refreshUnidSummary(){
+  const rows=[...document.querySelectorAll('#unidList tr')];
+  const cnt={Disponible:0,Reservado:0,Vendido:0};
+  rows.forEach(r=>{const v=r.querySelector('.u-est')?.value;if(cnt[v]!==undefined)cnt[v]++;});
+  $('unidSummary').innerHTML=
+    `<span><span class="us-dot" style="background:var(--green)"></span>Disponibles: <strong>${cnt.Disponible}</strong></span>`+
+    `<span><span class="us-dot" style="background:var(--yellow)"></span>Reservados: <strong>${cnt.Reservado}</strong></span>`+
+    `<span><span class="us-dot" style="background:var(--red)"></span>Vendidos: <strong>${cnt.Vendido}</strong></span>`+
+    `<span style="margin-left:auto;color:var(--muted)">Total: <strong>${rows.length}</strong></span>`;
+}
+window.refreshUnidSummary=refreshUnidSummary;
+window.addUnidRow=(u)=>{
+  const empty=$('unidList').querySelector('.unid-empty-row');if(empty)empty.remove();
+  $('unidList').insertAdjacentHTML('beforeend',unidRowHTML(u&&u.target?{}:u));
+  refreshUnidSummary();
+};
+window.openUnidModal=id=>{
+  unidProyId=id;const p=proyectos.find(x=>x.id===id)||{};
+  $('unidProyName').textContent=p.comercial||'Proyecto';
+  const tbody=$('unidList');tbody.innerHTML='';
+  (p.unidades||[]).forEach(u=>tbody.insertAdjacentHTML('beforeend',unidRowHTML(u)));
+  if(!tbody.children.length)tbody.innerHTML='<tr class="unid-empty-row"><td colspan="8" class="unid-empty">Aún no hay unidades. Usa «+ Agregar unidad» para crearlas.</td></tr>';
+  refreshUnidSummary();
+  $('unidModal').style.display='block';
+};
+window.closeUnidModal=()=>{$('unidModal').style.display='none';unidProyId=null;};
+window.saveUnid=async()=>{
+  if(!unidProyId)return;
+  const unidades=[...document.querySelectorAll('#unidList tr')].filter(r=>!r.classList.contains('unid-empty-row')).map(r=>({
+    codigo:r.querySelector('.u-cod').value.trim(),
+    tipologia:r.querySelector('.u-tip').value.trim(),
+    area:r.querySelector('.u-area').value.trim(),
+    dorm:r.querySelector('.u-dorm').value.trim(),
+    vista:r.querySelector('.u-vista').value.trim(),
+    precio:r.querySelector('.u-precio').value.trim(),
+    estado:r.querySelector('.u-est').value
+  })).filter(u=>u.codigo||u.tipologia||u.area||u.precio);
+  const btn=$('btnSaveUnid');btn.disabled=true;btn.textContent='Guardando...';setSync('s');
+  try{
+    await updateDoc(doc(db,'proyectos',unidProyId),{unidades,updatedAt:serverTimestamp()});
+    window.closeUnidModal();showToast('Unidades actualizadas ✓');setSync('ok');
+  }catch(e){showToast('Error al guardar','⚠️');setSync('error');}
+  btn.disabled=false;btn.textContent='Guardar unidades';
+};
+
+// SEED: cargar los 5 proyectos desde las fichas
+const SEED_PROYECTOS=[
+  {comercial:'Las Moras',tecnico:'LM 2',estado:'En construcción',prioridad:'Media',anio:'2026',pisos:'5',totalUnidades:'12',metraje:'121 m² - 300 m²',tipologias:'Flats y dúplex · 2 – 3 dorm',direccion:'Ca. Las Moras 315, Miraflores',precios:'S/ 717,500 - S/ 1 470,000',descripcion:'Las Moras, en Miraflores, es un edificio de 5 pisos con 12 departamentos (flats y dúplex desde 121 m² hasta 300 m²), ubicado frente al parque Francisco García Calderón. Combina vistas privilegiadas, entorno natural y cercanía a servicios, ofreciendo una vida tranquila sin perder conexión con la ciudad.',unidades:[]},
+  {comercial:'Boloña 675',tecnico:'A3',estado:'Preventa',prioridad:'Alta',anio:'2025',pisos:'7',totalUnidades:'16',metraje:'100 m² - 278 m²',tipologias:'Flats y dúplex · 2 – 3 dorm',direccion:'Av. Roca y Boloña 675, Miraflores',precios:'$ 219,000 - $ 489,000',descripcion:'Boloña 675, en Miraflores, es un edificio de 7 pisos con 16 departamentos (flats y dúplex desde 100 m² hasta 278 m²), diseñados para una vida moderna y confortable, con altos estándares de calidad. Su ubicación equilibra seguridad y conectividad.',unidades:[]},
+  {comercial:'Cochrane 366',tecnico:'LC',estado:'En construcción',prioridad:'Alta',anio:'2025',pisos:'9',totalUnidades:'32',metraje:'80 m² - 189 m²',tipologias:'Flats y dúplex · 2 – 3 dorm',direccion:'Ca. Lord Cochrane 366, Miraflores',precios:'S/ 717,500 - S/ 1 470,000',descripcion:'Cochrane 366, en Miraflores, es un edificio de 9 pisos y 32 departamentos (flats y dúplex desde 80 m² hasta 230 m²), pensado para una vida cómoda y caminable: parques cerca y lugares del día a día como Pastelería San Antonio, Wong Óvalo Gutiérrez y Cineplanet Alcázar.',unidades:[{codigo:'LC-101',tipologia:'Dúplex',area:'189 m²',dorm:'3',vista:'Exterior',precio:'S/ 1 470,000',estado:'Disponible'}]},
+  {comercial:'Castilla',tecnico:'PC',estado:'Entregado',prioridad:'Baja',anio:'2024',pisos:'4',totalUnidades:'10',metraje:'80 m² - 189 m²',tipologias:'Flats y dúplex · 2 – 3 dorm',direccion:'Ca. Pedro Venturo 423, Miraflores',precios:'$ 380,000',descripcion:'Castilla, en Miraflores, es un edificio con 10 departamentos (flats y dúplex desde 80 m² hasta 189 m²). Cada espacio fue diseñado con acabados exclusivos y materiales seleccionados por su durabilidad y elegancia.',unidades:[]},
+  {comercial:'Two Flex One',tecnico:'AQ',estado:'Entregado',prioridad:'Baja',anio:'2024',pisos:'5',totalUnidades:'18',metraje:'93 m² - 248 m²',tipologias:'Flats y dúplex · 2 – 3 dorm',direccion:'Ca. Antequera 611, San Isidro',precios:'S/ 896,400 - S/ 1 184,400',descripcion:'Two Flex One, en San Isidro, es un edificio de 5 pisos con 18 departamentos (flats y dúplex desde 93 m² hasta 248 m²), diseñado para un estilo de vida vinculado a la dinámica corporativa. En el corazón financiero y rodeado de parques.',unidades:[]}
+];
+window.seedProyectos=async()=>{
+  const existentes=new Set(proyectos.map(p=>(p.comercial||'').toLowerCase()));
+  const faltan=SEED_PROYECTOS.filter(p=>!existentes.has(p.comercial.toLowerCase()));
+  if(!faltan.length){showToast('Los proyectos ya están cargados','ℹ️');return;}
+  if(!confirm(`Se crearán ${faltan.length} proyecto(s): ${faltan.map(p=>p.comercial).join(', ')}. ¿Continuar?`))return;
+  const btn=$('btnSeedProy');btn.disabled=true;btn.textContent='Cargando...';setSync('s');
+  try{
+    for(const p of faltan){await addDoc(proyectosCol,{...p,respNombre:'',respTel:'',respMail:'',createdAt:serverTimestamp(),updatedAt:serverTimestamp()});}
+    showToast(`${faltan.length} proyecto(s) cargado(s) ✓`);setSync('ok');
+  }catch(e){showToast('Error al cargar (revisa permisos de Firestore)','⚠️');setSync('error');}
+  btn.disabled=false;btn.textContent='⬇ Cargar proyectos iniciales';
 };
 
 // EMAILS
@@ -696,4 +798,4 @@ function mkDona(id,labels,data){
   charts[id]=new Chart(ctx,{type:'doughnut',data:{labels,datasets:[{data,backgroundColor:COLORS,borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:10},boxWidth:12}}}}});
 }
 
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){window.closeTaskModal();window.closeGrabModal();window.closeProyModal();window.closeBanner();window.closeCalPopup();}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){window.closeTaskModal();window.closeGrabModal();window.closeProyModal();window.closeUnidModal();window.closeBanner();window.closeCalPopup();}});
