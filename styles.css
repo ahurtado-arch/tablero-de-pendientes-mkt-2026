@@ -262,6 +262,8 @@ html,body{min-height:100%;font-family:'General Sans','Segoe UI',system-ui,sans-s
 .unid-table tbody td{padding:6px 8px;border-bottom:1px solid var(--gray2);vertical-align:middle;}
 .unid-table tbody tr:last-child td{border-bottom:none;}
 .unid-table input,.unid-table select{width:100%;min-width:60px;font-size:12px;padding:6px 7px;border:1px solid var(--gray2);border-radius:7px;background:var(--white);color:var(--text);font-family:inherit;}
+.unid-table .u-estac-cell{text-align:center;}
+.unid-table input.u-estac{width:18px;min-width:0;height:18px;padding:0;cursor:pointer;accent-color:var(--green);}
 .unid-table input:focus,.unid-table select:focus{outline:none;border-color:var(--steel);}
 .unid-table select.st-Disponible{background:var(--green-lt);color:var(--green);font-weight:700;border-color:#BCE6D4;}
 .unid-table select.st-Reservado{background:var(--yellow-lt);color:var(--amber-tx);font-weight:700;border-color:#F0DBB2;}

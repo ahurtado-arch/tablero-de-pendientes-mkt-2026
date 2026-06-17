@@ -603,7 +603,8 @@ function unidRowHTML(u={}){
     <td><input class="u-tip" value="${esc(u.tipologia||'')}" placeholder="Flat / Dúplex"/></td>
     <td><input class="u-area" value="${esc(u.area||'')}" placeholder="80 m²"/></td>
     <td><input class="u-dorm" value="${esc(u.dorm||'')}" placeholder="2"/></td>
-    <td><input class="u-vista" value="${esc(u.vista||'')}" placeholder="Exterior"/></td>
+    <td><select class="u-vista"><option value=""${!u.vista?' selected':''}>—</option><option${u.vista==='Exterior'?' selected':''}>Exterior</option><option${u.vista==='Interior'?' selected':''}>Interior</option></select></td>
+    <td class="u-estac-cell"><input type="checkbox" class="u-estac"${u.estacionamiento?' checked':''} title="¿Cuenta con estacionamiento?"/></td>
     <td><input class="u-precio" value="${esc(u.precio||'')}" placeholder="S/ 717,500"/></td>
     <td><select class="u-est st-${e}" onchange="this.className='u-est st-'+this.value;refreshUnidSummary();">${opts}</select></td>
     <td><button class="unid-rm" onclick="this.closest('tr').remove();refreshUnidSummary();" title="Eliminar">🗑</button></td>
@@ -643,6 +644,7 @@ window.saveUnid=async()=>{
     area:r.querySelector('.u-area').value.trim(),
     dorm:r.querySelector('.u-dorm').value.trim(),
     vista:r.querySelector('.u-vista').value.trim(),
+    estacionamiento:r.querySelector('.u-estac').checked,
     precio:r.querySelector('.u-precio').value.trim(),
     estado:r.querySelector('.u-est').value
   })).filter(u=>u.codigo||u.tipologia||u.area||u.precio);
