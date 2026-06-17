@@ -514,6 +514,27 @@ function renderProyectos(){
 }
 window.renderProyectos=renderProyectos;
 
+const RESPONSABLES_PROY={
+  'Fabiola Trebejo':{tel:'912 456 165',mail:'ftrebejo@taller.pe'},
+  'Carmelina Castro':{tel:'924 323 094',mail:'ccastro@taller.pe'},
+  'Mónica Zegarra':{tel:'906 388 988',mail:'mzegarra@taller.pe'}
+};
+window.onRespChange=()=>{
+  const v=$('pRespSel').value;
+  if(v==='__otro'){
+    $('pRespNombreRow').style.display='block';
+    $('pRespNombre').value='';$('pRespTel').value='';$('pRespMail').value='';
+    setTimeout(()=>$('pRespNombre').focus(),50);
+  }else if(v&&RESPONSABLES_PROY[v]){
+    $('pRespNombreRow').style.display='none';
+    $('pRespNombre').value=v;
+    $('pRespTel').value=RESPONSABLES_PROY[v].tel;
+    $('pRespMail').value=RESPONSABLES_PROY[v].mail;
+  }else{
+    $('pRespNombreRow').style.display='none';
+    $('pRespNombre').value='';$('pRespTel').value='';$('pRespMail').value='';
+  }
+};
 function fillProy(p){
   $('pComercial').value=p.comercial||'';$('pTecnico').value=p.tecnico||'';
   $('pEstado').value=p.estado||'En planos';$('pPrioridad').value=p.prioridad||'Media';
@@ -523,6 +544,11 @@ function fillProy(p){
   $('pPrecios').value=p.precios||'';$('pDescripcion').value=p.descripcion||'';
   $('pRespNombre').value=p.respNombre||'';
   $('pRespTel').value=p.respTel||'';$('pRespMail').value=p.respMail||'';
+  // sincroniza el selector de responsable
+  const nombre=p.respNombre||'';
+  if(nombre&&RESPONSABLES_PROY[nombre]){$('pRespSel').value=nombre;$('pRespNombreRow').style.display='none';}
+  else if(nombre){$('pRespSel').value='__otro';$('pRespNombreRow').style.display='block';}
+  else{$('pRespSel').value='';$('pRespNombreRow').style.display='none';}
 }
 window.openProyModal=()=>{
   editProyId=null;

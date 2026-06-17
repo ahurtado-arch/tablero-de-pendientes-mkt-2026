@@ -452,7 +452,16 @@
       <div class="frow"><label>Tipologías</label><input id="pTipologias" type="text" placeholder="Ej: Flats y dúplex · 2 – 3 dorm"/></div>
       <div class="frow"><label>Rango de precios</label><textarea id="pPrecios" placeholder="Ej: S/ 717,500 - S/ 1 470,000"></textarea></div>
       <div class="frow"><label>Descripción</label><textarea id="pDescripcion" placeholder="Reseña del proyecto para piezas..."></textarea></div>
-      <div class="frow"><label>Responsable comercial</label><input id="pRespNombre" type="text" placeholder="Nombre del responsable"/></div>
+      <div class="frow"><label>Responsable comercial</label>
+        <select id="pRespSel" onchange="onRespChange()">
+          <option value="">Seleccionar...</option>
+          <option>Fabiola Trebejo</option>
+          <option>Carmelina Castro</option>
+          <option>Mónica Zegarra</option>
+          <option value="__otro">Otro (escribir)…</option>
+        </select>
+      </div>
+      <div class="frow" id="pRespNombreRow" style="display:none;"><label>Nombre del responsable</label><input id="pRespNombre" type="text" placeholder="Nombre del responsable"/></div>
       <div class="fg2">
         <div class="frow"><label>Número del responsable</label><input id="pRespTel" type="text" placeholder="+51 999 999 999"/></div>
         <div class="frow"><label>Correo del responsable</label><input id="pRespMail" type="email" placeholder="correo@..."/></div>
