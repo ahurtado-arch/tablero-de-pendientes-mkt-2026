@@ -85,8 +85,8 @@ html,body{min-height:100%;font-family:'General Sans','Segoe UI',system-ui,sans-s
 #sec3 .analytics-section{padding-top:36px;}
 /* secciones con iframe (KPIs y Contenido): ancho completo y alto exacto de ventana,
    para que el scroll viva dentro del iframe y nada quede recortado */
-#sec4,#sec5{max-width:none;margin:0;animation:none;}
-#sec4 iframe,#sec5 iframe{height:100vh;}
+#sec4,#sec5,#sec7{max-width:none;margin:0;animation:none;}
+#sec4 iframe,#sec5 iframe,#sec7 iframe{height:100vh;}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
 
 /* TOOLBAR (flotando sobre el fondo, como la plataforma de Contenido) */
