@@ -387,12 +387,12 @@
         const VACATION_YEAR = 2026, DAYS_PER_MONTH = 2.5, MAX_ACCRUAL = 30;
 
         const initialMembers = [
-            { id: 1, name: 'Johan Gálvez', role: 'Ejecutivo de marketing', joinDate: '2026-01-01', carryover: 0, debt: 0, color: colorPalette[0] },
-            { id: 2, name: 'Pablo Caillahua', role: 'Diseñador', joinDate: '2026-01-01', carryover: 0, debt: 0, color: colorPalette[1] },
-            { id: 3, name: 'Ana Paula Hurtado', role: 'Community manager', joinDate: '2026-01-01', carryover: 0, debt: 0, color: colorPalette[2] },
-            { id: 4, name: 'Diego David', role: 'Audiovisual', joinDate: '2026-01-01', carryover: 9, debt: 0, color: colorPalette[3] },
-            { id: 5, name: 'Eduardo Cornejo', role: 'Performance', joinDate: '2026-01-01', carryover: 0, debt: 0, color: colorPalette[4] },
-            { id: 6, name: 'Gabriela Curotto', role: 'Dirección de marketing', joinDate: '2026-01-01', carryover: 0, debt: 0, color: colorPalette[5] }
+            { id: 1, name: 'Johan Gálvez', role: 'Coordinador Marca', joinDate: '2026-01-01', carryover: 0, debt: 0, color: colorPalette[0] },
+            { id: 2, name: 'Pablo Caillahua', role: 'Coordinador Audiovisual', joinDate: '2026-01-01', carryover: 0, debt: 0, color: colorPalette[1] },
+            { id: 3, name: 'Ana Paula Hurtado', role: 'Asistente de Marketing', joinDate: '2026-01-01', carryover: 0, debt: 0, color: colorPalette[2] },
+            { id: 4, name: 'Diego David', role: 'Jefe de Publicidad', joinDate: '2026-01-01', carryover: 9, debt: 0, color: colorPalette[3] },
+            { id: 5, name: 'Eduardo Cornejo', role: 'Sub gerente de marketing', joinDate: '2026-01-01', carryover: 0, debt: 0, color: colorPalette[4] },
+            { id: 6, name: 'Gabriela Curotto', role: 'Jefe de Marketing', joinDate: '2026-01-01', carryover: 0, debt: 0, color: colorPalette[5] }
         ];
 
         let currentDate = new Date();
@@ -400,8 +400,15 @@
         function loadData() {
             const d = localStorage.getItem('vacationData');
             const parsed = d ? JSON.parse(d) : { members: initialMembers, vacations: [], medicalRests: [] };
+            if (!parsed.members) parsed.members = [];
             if (!parsed.vacations) parsed.vacations = [];
             if (!parsed.medicalRests) parsed.medicalRests = [];
+            // sincroniza nombre/cargo/color desde la config (y agrega miembros faltantes)
+            initialMembers.forEach(im => {
+                const m = parsed.members.find(x => x.id === im.id);
+                if (m) { m.name = im.name; m.role = im.role; m.color = im.color; }
+                else parsed.members.push({ ...im });
+            });
             return parsed;
         }
         function saveData(d) { localStorage.setItem('vacationData', JSON.stringify(d)); }
