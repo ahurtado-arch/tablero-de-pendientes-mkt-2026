@@ -168,7 +168,7 @@ tfoot td,.totalrow td{background:var(--navy);color:#fff;font-weight:700;padding:
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-import { getFirestore, collection, doc, getDoc, setDoc, getDocs, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { getFirestore, collection, doc, getDoc, setDoc, getDocs, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
 import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
 
 const fbApp=initializeApp({apiKey:"AIzaSyDb5rQYu5_Ukf5AQ77zz8O6Si1MUdGcz_w",authDomain:"tdc-calendario-av.firebaseapp.com",projectId:"tdc-calendario-av",storageBucket:"tdc-calendario-av.firebasestorage.app",messagingSenderId:"393165602286",appId:"1:393165602286:web:702df05a4a4aa6ef3662ff",measurementId:"G-9NGVTJVFDQ"});
@@ -259,6 +259,7 @@ async function loadIndex(){
   }
 }
 async function loadMonth(m){
+  notifKpiSent=false; // permite un aviso nuevo al editar otro mes
   try{
     const r=await getDoc(doc(db,KPIS_COL,m));
     if(r.exists()&&r.data().state){ state=mergeState(r.data().state); }
@@ -275,8 +276,25 @@ function scheduleSave(){
   if(!canEdit) return;
   clearTimeout(saveTimer);
   saveTimer=setTimeout(async()=>{
-    try{ await setDoc(doc(db,KPIS_COL,curMonth),{state,updatedAt:serverTimestamp()}); flashSaved(); }catch(e){}
+    try{ await setDoc(doc(db,KPIS_COL,curMonth),{state,updatedAt:serverTimestamp()}); flashSaved(); notifyKpiChange(); }catch(e){}
   },350);
+}
+let currentEmail="", notifKpiSent=false;
+async function notifyKpiChange(){
+  if(notifKpiSent) return;
+  notifKpiSent=true; // un aviso por sesión de edición de cada mes
+  try{
+    await addDoc(collection(db,"notificaciones"),{
+      de: currentEmail,
+      scope: "todos",
+      icono: "📊",
+      titulo: "KPIs actualizados",
+      mensaje: "Se registraron cambios en el tablero de KPIs ("+curMonth+").",
+      link: 4,
+      readBy: [],
+      createdAt: serverTimestamp()
+    });
+  }catch(e){}
 }
 function flashSaved(){ const el=document.getElementById("saved"); el.classList.add("show"); clearTimeout(el._t); el._t=setTimeout(()=>el.classList.remove("show"),1400); }
 
@@ -534,7 +552,7 @@ async function init(){
 /* Espera a la sesión de Firebase (compartida con la app principal, mismo origen) */
 let started=false;
 onAuthStateChanged(auth,user=>{
-  if(user&&!started){ started=true; canEdit=KPI_EDITORS.includes((user.email||"").toLowerCase()); init(); }
+  if(user&&!started){ started=true; currentEmail=(user.email||"").toLowerCase(); canEdit=KPI_EDITORS.includes(currentEmail); init(); }
   else if(!user&&!started){ document.getElementById("view").innerHTML='<div class="empty">Inicia sesión en el tablero para ver los KPIs.</div>'; }
 });
 </script>

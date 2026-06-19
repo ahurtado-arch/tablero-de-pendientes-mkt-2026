@@ -34,8 +34,9 @@ getRedirectResult(auth).then(result=>{
 const tasksCol=collection(db,"tareas_v2");
 const grabsCol=collection(db,"grabaciones");
 const proyectosCol=collection(db,"proyectos");
+const notifsCol=collection(db,"notificaciones");
 
-let tasks=[],grabs=[],proyectos=[],currentUser=null,anView='global',myFilter='mios',charts={};
+let tasks=[],grabs=[],proyectos=[],notifs=[],currentUser=null,anView='global',myFilter='mios',charts={};
 let editTaskId=null,editGrabId=null,editProyId=null,unidProyId=null,prevTaskEstado=null;
 let curY=new Date().getFullYear(),curM=new Date().getMonth();
 let activeSection=1;
@@ -136,7 +137,60 @@ function loadData(){
   onSnapshot(tasksCol,snap=>{tasks=snap.docs.map(d=>({id:d.id,...d.data()}));t1=true;renderBoard();if(activeSection===3)renderAnalytics();check();},()=>{setSync('error');t1=true;check();});
   onSnapshot(grabsCol,snap=>{grabs=snap.docs.map(d=>({id:d.id,...d.data()}));t2=true;renderCal();check();},()=>{setSync('error');t2=true;check();});
   onSnapshot(proyectosCol,snap=>{proyectos=snap.docs.map(d=>({id:d.id,...d.data()}));renderProyectos();},()=>{});
+  onSnapshot(notifsCol,snap=>{notifs=snap.docs.map(d=>({id:d.id,...d.data()}));renderNotifBadge();},()=>{});
 }
+
+// AVISOS / NOTIFICACIONES
+function notifRelevante(n){
+  const e=(currentUser?.email||'').toLowerCase();
+  if(!e)return false;
+  if((n.de||'').toLowerCase()===e)return false; // no me notifico a mí mismo
+  if(n.scope==='todos')return true;
+  if(n.scope==='admins')return isAdmin();
+  return (n.scope||'').toLowerCase()===e;
+}
+function notifNoLeida(n){
+  const e=(currentUser?.email||'').toLowerCase();
+  return !((n.readBy||[]).map(x=>(x||'').toLowerCase()).includes(e));
+}
+function notifMios(){
+  return notifs.filter(notifRelevante).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+}
+function renderNotifBadge(){
+  const b=$('notifBadge');if(!b)return;
+  const n=notifMios().filter(notifNoLeida).length;
+  b.textContent=n>9?'9+':n;
+  b.style.display=n>0?'flex':'none';
+}
+function fmtNotifTime(ts){
+  if(!ts?.seconds)return '';
+  const d=new Date(ts.seconds*1000);
+  return d.toLocaleDateString('es-PE',{day:'2-digit',month:'short'})+' · '+d.toLocaleTimeString('es-PE',{hour:'2-digit',minute:'2-digit'});
+}
+window.openNotifs=async()=>{
+  const list=$('notifList');const items=notifMios();
+  if(!items.length){list.innerHTML='<div class="notif-empty">No tienes avisos por ahora.</div>';}
+  else{
+    list.innerHTML=items.map(n=>`
+      <div class="notif-item${notifNoLeida(n)?' unread':''}"${n.link?` onclick="goNotif(${n.link})"`:''}>
+        <div class="notif-ico">${n.icono||'🔔'}</div>
+        <div class="notif-body">
+          <div class="notif-title">${(n.titulo||'Aviso').replace(/</g,'&lt;')}</div>
+          <div class="notif-msg">${(n.mensaje||'').replace(/</g,'&lt;')}</div>
+          <div class="notif-time">${fmtNotifTime(n.createdAt)}</div>
+        </div>
+      </div>`).join('');
+  }
+  $('notifPanel').style.display='block';
+  // marcar como leídas las relevantes no leídas
+  const e=(currentUser?.email||'');
+  const porLeer=items.filter(notifNoLeida);
+  for(const n of porLeer){
+    try{await updateDoc(doc(db,'notificaciones',n.id),{readBy:[...new Set([...(n.readBy||[]),e])]});}catch(err){}
+  }
+};
+window.closeNotifs=()=>{$('notifPanel').style.display='none';};
+window.goNotif=sec=>{closeNotifs();switchSection(sec);};
 
 // NAV
 window.switchSection=n=>{
@@ -873,4 +927,4 @@ function mkDona(id,labels,data){
   charts[id]=new Chart(ctx,{type:'doughnut',data:{labels,datasets:[{data,backgroundColor:COLORS,borderWidth:2,borderColor:'#fff'}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:10},boxWidth:12}}}}});
 }
 
-document.addEventListener('keydown',e=>{if(e.key==='Escape'){window.closeTaskModal();window.closeGrabModal();window.closeProyModal();window.closeUnidModal();window.closeBanner();window.closeCalPopup();}});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'){window.closeTaskModal();window.closeGrabModal();window.closeProyModal();window.closeUnidModal();window.closeNotifs();window.closeBanner();window.closeCalPopup();}});
