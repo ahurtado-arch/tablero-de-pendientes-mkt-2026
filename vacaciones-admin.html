@@ -478,12 +478,33 @@ function renderCalendar(){
 function prevMonth(){ currentDate.setMonth(currentDate.getMonth()-1); renderCalendar(); }
 function nextMonth(){ currentDate.setMonth(currentDate.getMonth()+1); renderCalendar(); }
 
+// ===== Envío de correos (función serverless en Vercel + Gmail) =====
+async function sendVacEmail(type, data){
+    try {
+        await fetch('/api/send-email', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ type, ...data })
+        });
+    } catch(e){ console.error('Email vacaciones:', e); }
+}
+
 // ===== Aprobar / Rechazar =====
 async function decide(id, approved){
     const v=vacations.find(x=>x.id===id); if(!v)return;
     try{
         await updateDoc(doc(db,'vacaciones',id), { status: approved?'approved':'rejected', decidedBy: (ADMIN.email||''), decidedAt: serverTimestamp() });
         await addDoc(notifCol, { de: ADMIN.email, scope: v.memberEmail, icono: approved?'✅':'❌', titulo: approved?'Vacaciones aprobadas':'Vacaciones rechazadas', mensaje: `Tus vacaciones ${fmtRange(v.startDate,v.endDate)} fueron ${approved?'aprobadas':'rechazadas'}.`, link: 7, readBy: [], createdAt: serverTimestamp() });
+        await sendVacEmail('vac_decision', {
+            to: v.memberEmail,
+            empleado: v.memberName || v.memberEmail,
+            approved: approved,
+            fecha_inicio: fmtDateLong(v.startDate),
+            fecha_fin: fmtDateLong(v.endDate),
+            dias: v.days,
+            decidido_por: ADMIN.name || ADMIN.email,
+            app_url: window.location.href
+        });
         toast(approved?'Solicitud aprobada':'Solicitud rechazada');
     }catch(e){ toast('No se pudo guardar (revisa permisos).','error'); }
 }

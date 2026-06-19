@@ -410,6 +410,17 @@
         const notifCol = collection(db, "notificaciones");
         const APROBADORES = ["gcurotto@paraleloinmobiliaria.pe","ecornejo@paraleloinmobiliaria.pe"];
 
+        // ===== Envío de correos (función serverless en Vercel + Gmail) =====
+        async function sendVacEmail(type, data){
+            try {
+                await fetch('/api/send-email', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ type, ...data })
+                });
+            } catch(e){ console.error('Email vacaciones:', e); }
+        }
+
         // ====== Persona logueada (sesión de Firebase, mismo origen que el tablero) ======
         const REQUESTED_MEMBER = new URLSearchParams((location.hash||'').replace(/^#/,'')).get('member') || new URLSearchParams(location.search).get('member');
         function normName(s){ return (s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().trim(); }
@@ -485,6 +496,10 @@
             chevronRight: '<polyline points="9 18 15 12 9 6"/>'
         };
         const monthsShort = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+        function fmtDate(s) {
+            const d = parseDate(s);
+            return `${d.getDate()} ${monthsShort[d.getMonth()]} ${d.getFullYear()}`;
+        }
         function fmtRange(s, e) {
             const a = parseDate(s), b = parseDate(e);
             const sameMonth = a.getMonth() === b.getMonth();
@@ -707,6 +722,17 @@
                 await addDoc(vacCol, { memberEmail: m.email, memberName: m.name, startDate: s, endDate: e, days: n, status: 'pending', notes, createdAt: serverTimestamp() });
                 for (const ap of APROBADORES) {
                     await addDoc(notifCol, { de: m.email, scope: ap, icono: '🏖️', titulo: 'Solicitud de vacaciones', mensaje: `${m.name} solicitó vacaciones: ${fmtRange(s, e)} (${n} día(s)).`, link: 7, readBy: [], createdAt: serverTimestamp() });
+                    const apMember = memberByEmail(ap);
+                    await sendVacEmail('vac_request', {
+                        to: ap,
+                        aprobador: apMember ? apMember.name : ap,
+                        solicitante: m.name,
+                        fecha_inicio: fmtDate(s),
+                        fecha_fin: fmtDate(e),
+                        dias: n,
+                        notas: notes || '—',
+                        app_url: window.location.href
+                    });
                 }
                 closeRequest();
                 toast('Solicitud enviada. Queda pendiente de aprobación.');
@@ -745,6 +771,17 @@
             try {
                 await updateDoc(doc(db, 'vacaciones', id), { status: approved ? 'approved' : 'rejected', decidedBy: currentEmail, decidedAt: serverTimestamp() });
                 await addDoc(notifCol, { de: currentEmail, scope: v.memberEmail, icono: approved ? '✅' : '❌', titulo: approved ? 'Vacaciones aprobadas' : 'Vacaciones rechazadas', mensaje: `Tus vacaciones ${fmtRange(v.startDate, v.endDate)} fueron ${approved ? 'aprobadas' : 'rechazadas'}.`, link: 7, readBy: [], createdAt: serverTimestamp() });
+                const decisor = memberByEmail(currentEmail);
+                await sendVacEmail('vac_decision', {
+                    to: v.memberEmail,
+                    empleado: v.memberName || v.memberEmail,
+                    approved: approved,
+                    fecha_inicio: fmtDate(v.startDate),
+                    fecha_fin: fmtDate(v.endDate),
+                    dias: v.days,
+                    decidido_por: decisor ? decisor.name : currentEmail,
+                    app_url: window.location.href
+                });
                 toast(approved ? 'Solicitud aprobada ✓' : 'Solicitud rechazada');
             } catch (err) {
                 toast('No se pudo guardar (revisa permisos).', 'error');
