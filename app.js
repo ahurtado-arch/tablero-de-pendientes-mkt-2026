@@ -8,6 +8,7 @@ const APP_URL=window.location.href;
 
 // ADMINS
 const ADMINS=["ahurtado@paraleloinmobiliaria.pe","gcurotto@paraleloinmobiliaria.pe","ecornejo@paraleloinmobiliaria.pe"];
+const APROBADORES_VAC=["gcurotto@paraleloinmobiliaria.pe","ecornejo@paraleloinmobiliaria.pe"];
 
 const TEAM_EMAILS={"Ana Paula Hurtado":"ahurtado@paraleloinmobiliaria.pe","Johan Galvez":"jgalvez@paraleloinmobiliaria.pe","Pablo Caillahua":"pcaillahua@paraleloinmobiliaria.pe","Gabriela Curotto":"gcurotto@paraleloinmobiliaria.pe","Diego David":"ddavid@paraleloinmobiliaria.pe","Eduardo Cornejo":"ecornejo@paraleloinmobiliaria.pe"};
 const TEAM_NAMES={"ahurtado@paraleloinmobiliaria.pe":"Ana Paula Hurtado","jgalvez@paraleloinmobiliaria.pe":"Johan Galvez","pcaillahua@paraleloinmobiliaria.pe":"Pablo Caillahua","gcurotto@paraleloinmobiliaria.pe":"Gabriela Curotto","ddavid@paraleloinmobiliaria.pe":"Diego David","ecornejo@paraleloinmobiliaria.pe":"Eduardo Cornejo"};
@@ -200,7 +201,12 @@ window.switchSection=n=>{
   if(n===4){const f=$('kpisFrame');if(f&&!f.src)f.src=f.dataset.src;}
   if(n===5){const f=$('contenidoFrame');if(f&&!f.src)f.src=f.dataset.src;}
   if(n===6)renderProyectos();
-  if(n===7){const f=$('vacacionesFrame');if(f&&!f.src){const nm=getUserFullName();f.src=f.dataset.src+(nm?'#member='+encodeURIComponent(nm):'');}}
+  if(n===7){const f=$('vacacionesFrame');if(f&&!f.src){
+    const email=(currentUser?.email||'').toLowerCase();
+    const esAprob=APROBADORES_VAC.includes(email);
+    if(esAprob){f.src='vacaciones-admin.html';}
+    else{const nm=getUserFullName();f.src=f.dataset.src+(nm?'#member='+encodeURIComponent(nm):'');}
+  }}
 };
 
 // BOARD FILTERS

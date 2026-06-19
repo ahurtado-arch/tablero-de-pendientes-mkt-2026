@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vacaciones · Administración - TDC</title>
+    <link rel="preconnect" href="https://api.fontshare.com" crossorigin>
+    <link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap" rel="stylesheet">
+</head>
+<body>
+<style>
+@import url('https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap');
+@keyframes tdcSlide { from { transform: translateX(60px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+.tdc-vac-admin {
+
+        * { margin: 0; padding: 0; box-sizing: border-box; letter-spacing: normal; text-transform: none; font-style: normal; text-shadow: none; }
+        & {
+            --tdc-red: #FF3700; --tdc-red-dark: #E63100; --tdc-navy: #1A324D;
+            --celeste: #4F8FCC; --bg: #FFFFFF; --surface: #F6F9FD; --surface-2: #EAF1FB;
+            --text: #1A324D; --text-soft: #5A6B82; --text-faint: #93A1B5; --border: #E2EAF3;
+            --success: #1D9E75; --warning: #E8920C;
+            --radius: 16px; --radius-sm: 10px;
+            --shadow: 0 4px 18px rgba(26,50,77,0.06); --shadow-hover: 0 10px 28px rgba(26,50,77,0.12);
+        }
+        & { font-family: 'General Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; line-height: 1.4; }
+
+        .topbar { display: flex; align-items: center; justify-content: space-between; padding: 14px 32px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: rgba(255,255,255,0.92); backdrop-filter: blur(8px); z-index: 50; }
+        .topbar-left { display: flex; align-items: center; gap: 14px; }
+        .topbar-logo { height: 38px; width: auto; display: block; }
+        .topbar-title { font-size: 15px; font-weight: 600; color: var(--tdc-navy); border-left: 1px solid var(--border); padding-left: 14px; }
+        .badge-admin { font-size: 11px; font-weight: 700; color: var(--tdc-red); background: rgba(255,55,0,0.1); padding: 3px 9px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        .wrap { max-width: 1180px; margin: 0 auto; padding: 26px 32px 48px; display: flex; flex-direction: column; gap: 22px; }
+
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; }
+        .stat { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 14px; transition: all 0.2s; }
+        .stat:hover { box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+        .stat-top { display: flex; align-items: center; justify-content: space-between; }
+        .stat-chip { width: 42px; height: 42px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: var(--surface-2); color: var(--celeste); flex-shrink: 0; }
+        .stat-chip.red { background: rgba(255,55,0,0.1); color: var(--tdc-red); }
+        .stat-chip.navy { background: rgba(26,50,77,0.08); color: var(--tdc-navy); }
+        .stat-chip svg { width: 21px; height: 21px; }
+        .stat-label { font-size: 13px; color: var(--text-soft); font-weight: 500; }
+        .stat-value { font-size: 34px; font-weight: 700; color: var(--text); line-height: 1; letter-spacing: -0.5px; }
+        .stat-value small { font-size: 13px; font-weight: 500; color: var(--text-faint); }
+        .stat-foot { font-size: 12px; color: var(--text-faint); display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+        .stat.clickable { cursor: pointer; }
+        .stat.clickable:hover { border-color: var(--celeste); box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+        .stat-see { color: var(--celeste); font-weight: 600; white-space: nowrap; }
+
+        /* Filas de detalle (modales de tarjeta) */
+        .dl { display: flex; flex-direction: column; gap: 8px; }
+        .dl-intro { font-size: 13px; color: var(--text-soft); line-height: 1.6; }
+        .dl-row { display: flex; align-items: center; gap: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 11px 13px; }
+        .dl-main { flex: 1; min-width: 0; }
+        .dl-name { font-size: 14px; font-weight: 600; color: var(--text); }
+        .dl-sub { font-size: 12px; color: var(--text-soft); margin-top: 2px; }
+        .dl-val { font-size: 18px; font-weight: 700; color: var(--text); white-space: nowrap; text-align: right; }
+        .dl-val small { font-size: 12px; font-weight: 500; color: var(--text-faint); }
+        .dl-row.muted { opacity: 0.45; }
+        .dl-row.current { border-color: var(--tdc-red); background: rgba(255,55,0,0.04); }
+        .dl-empty { padding: 24px 6px; text-align: center; font-size: 13px; color: var(--text-faint); }
+
+        .card { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; }
+        .card-head { display: flex; align-items: center; justify-content: space-between; padding: 18px 22px; border-bottom: 1px solid var(--border); gap: 12px; flex-wrap: wrap; }
+        .card-head h2 { font-size: 16px; font-weight: 600; color: var(--text); display: flex; align-items: center; gap: 9px; }
+        .card-head h2 svg { width: 18px; height: 18px; color: var(--celeste); }
+        .card-head .count { font-size: 12px; font-weight: 700; background: var(--tdc-red); color: #fff; border-radius: 20px; padding: 2px 9px; }
+        .card-body { padding: 18px 22px 22px; }
+
+        .btn { display: inline-flex; align-items: center; gap: 7px; border-radius: var(--radius-sm); font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; padding: 9px 14px; transition: all 0.2s; border: 1px solid var(--border); background: #fff; color: var(--text); }
+        .btn:hover { background: var(--surface); border-color: var(--celeste); }
+        .btn svg { width: 15px; height: 15px; }
+        .btn-red { background: var(--tdc-red); border: none; color: #fff; box-shadow: 0 3px 10px rgba(255,55,0,0.22); }
+        .btn-red:hover { background: var(--tdc-red-dark); }
+        .btn-green { background: var(--success); border: none; color: #fff; }
+        .btn-green:hover { filter: brightness(1.07); }
+        .btn-ghost-red { background: #fff; border: 1px solid var(--tdc-red); color: var(--tdc-red); }
+        .btn-ghost-red:hover { background: rgba(255,55,0,0.07); }
+
+        /* Solicitudes */
+        .req-list { display: flex; flex-direction: column; gap: 10px; }
+        .req-row { display: flex; align-items: center; gap: 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px 14px; flex-wrap: wrap; }
+        .req-info { flex: 1; min-width: 160px; }
+        .req-name { font-size: 14px; font-weight: 600; color: var(--text); }
+        .req-detail { font-size: 13px; color: var(--text-soft); margin-top: 2px; }
+        .req-actions { display: flex; gap: 8px; }
+        .empty { padding: 26px 6px; text-align: center; font-size: 13px; color: var(--text-faint); line-height: 1.6; }
+
+        /* Avatares */
+        .av { border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; flex-shrink: 0; }
+        .av-sm { width: 38px; height: 38px; font-size: 13px; }
+        .av-lg { width: 52px; height: 52px; font-size: 18px; }
+
+        /* Equipo */
+        .team-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+        @media (max-width: 860px) { .team-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 560px) { .team-grid { grid-template-columns: 1fr; } }
+        .mcard { border: 1px solid var(--border); border-radius: var(--radius); padding: 16px; cursor: pointer; transition: all 0.2s; background: var(--bg); }
+        .mcard:hover { border-color: var(--celeste); box-shadow: var(--shadow-hover); transform: translateY(-2px); }
+        .mcard-head { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; }
+        .mcard-name { font-size: 14px; font-weight: 600; color: var(--text); }
+        .mcard-role { font-size: 12px; color: var(--text-soft); }
+        .mcard-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        .mini { background: var(--surface); border-radius: 8px; padding: 8px 10px; }
+        .mini-label { font-size: 11px; color: var(--text-soft); }
+        .mini-value { font-size: 18px; font-weight: 700; color: var(--text); }
+        .mini-value.neg { color: var(--tdc-red); }
+        .mcard-flag { font-size: 11px; color: var(--warning); font-weight: 600; margin-top: 10px; display: flex; align-items: center; gap: 5px; }
+        .mcard-flag svg { width: 13px; height: 13px; }
+
+        /* Calendario */
+        .cal-summary { font-size: 13px; color: var(--text-soft); }
+        .cal-summary b { color: var(--tdc-navy); font-weight: 600; }
+        .cal-nav { display: flex; align-items: center; gap: 6px; }
+        .cal-nav .month { font-size: 14px; font-weight: 600; min-width: 120px; text-align: center; }
+        .cal-nav button { width: 32px; height: 32px; border-radius: 8px; border: 1px solid var(--border); background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; color: var(--text-soft); }
+        .cal-nav button:hover { background: var(--surface); border-color: var(--celeste); color: var(--tdc-navy); }
+        .cal-nav button svg { width: 16px; height: 16px; }
+        .cal-weekdays, .cal-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 7px; }
+        .cal-weekdays { margin-bottom: 8px; }
+        .cal-weekday { text-align: center; font-size: 11px; font-weight: 600; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.5px; }
+        .cal-day { aspect-ratio: 1; min-height: 52px; border: 1px solid var(--border); border-radius: var(--radius-sm); background: var(--surface); display: flex; flex-direction: column; align-items: center; padding: 7px 0 0; gap: 4px; position: relative; font-size: 13px; }
+        .cal-day.other { background: transparent; border-color: transparent; color: var(--text-faint); }
+        .cal-day.today { border-color: var(--tdc-red); border-width: 2px; background: rgba(255,55,0,0.05); }
+        .cal-day.today .cal-num { color: var(--tdc-red); font-weight: 700; }
+        .cal-num { font-size: 13px; }
+        .cal-dots { display: flex; gap: 3px; flex-wrap: wrap; justify-content: center; max-width: 84%; }
+        .cal-dot { width: 6px; height: 6px; border-radius: 50%; }
+        .legend { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 16px; }
+        .legend-item { display: inline-flex; align-items: center; gap: 7px; font-size: 12px; color: var(--text-soft); }
+        .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+
+        /* Saludo admin */
+        .welcome { display: flex; align-items: center; justify-content: space-between; gap: 20px; flex-wrap: wrap; }
+        .welcome-left { display: flex; align-items: center; gap: 16px; }
+        .welcome .av-lg { background: rgba(255,55,0,0.1); color: var(--tdc-red); }
+        .welcome h1 { font-size: 26px; font-weight: 600; color: var(--text); letter-spacing: -0.3px; }
+        .welcome .role { font-size: 14px; color: var(--text-soft); margin-top: 2px; }
+        .welcome .role span { color: var(--celeste); font-weight: 600; }
+        .btn-primary { display: inline-flex; align-items: center; gap: 8px; background: var(--tdc-red); color: #fff; border: none; padding: 13px 20px; border-radius: var(--radius-sm); font-family: inherit; font-size: 14px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 12px rgba(255,55,0,0.25); transition: all 0.2s; }
+        .btn-primary:hover { background: var(--tdc-red-dark); transform: translateY(-2px); box-shadow: 0 6px 16px rgba(255,55,0,0.32); }
+        .btn-primary svg { width: 17px; height: 17px; }
+
+        /* Fila calendario + solicitudes */
+        .cal-row { display: grid; grid-template-columns: 1.5fr 1fr; gap: 22px; align-items: start; }
+        @media (max-width: 920px) { .cal-row { grid-template-columns: 1fr; } }
+
+        /* Modal */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(26,50,77,0.45); z-index: 1000; align-items: center; justify-content: center; padding: 1rem; }
+        .modal.active { display: flex; }
+        .modal-card { background: #fff; border-radius: var(--radius); width: 100%; max-width: 520px; max-height: 88vh; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 20px 50px rgba(0,0,0,0.2); }
+        .modal-head { padding: 18px 22px; border-bottom: 1px solid var(--border); font-size: 16px; font-weight: 600; display: flex; align-items: center; gap: 10px; }
+        .modal-head svg { width: 18px; height: 18px; flex-shrink: 0; color: var(--celeste); }
+        .modal-body { padding: 20px 22px; overflow-y: auto; display: flex; flex-direction: column; gap: 18px; }
+        .modal-foot { padding: 16px 22px; background: var(--surface); border-top: 1px solid var(--border); display: flex; gap: 10px; justify-content: flex-end; }
+        .section-label { font-size: 12px; font-weight: 700; color: var(--text-faint); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+        .mstats { display: grid; grid-template-columns: repeat(auto-fit, minmax(90px, 1fr)); gap: 8px; }
+        .mstat { background: var(--surface); border-radius: 8px; padding: 10px; }
+        .mstat-label { font-size: 11px; color: var(--text-soft); }
+        .mstat-value { font-size: 18px; font-weight: 700; color: var(--text); }
+        .mstat-value.neg { color: var(--tdc-red); }
+        .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .field label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 5px; }
+        .field input, .field select, .field textarea { width: 100%; padding: 9px 11px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-family: inherit; font-size: 13px; background: var(--surface); color: var(--text); }
+        .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--tdc-red); box-shadow: 0 0 0 3px rgba(255,55,0,0.1); }
+        .reclist { display: flex; flex-direction: column; gap: 7px; }
+        .rec { display: flex; align-items: center; justify-content: space-between; gap: 10px; border: 1px solid var(--border); border-radius: 8px; padding: 8px 11px; font-size: 13px; }
+        .rec-left { display: flex; flex-direction: column; }
+        .rec-tag { font-size: 11px; font-weight: 600; padding: 2px 7px; border-radius: 20px; display: inline-block; margin-top: 3px; width: fit-content; }
+        .rec-tag.approved { background: rgba(29,158,117,0.12); color: var(--success); }
+        .rec-tag.pending { background: rgba(232,146,12,0.12); color: var(--warning); }
+        .rec-tag.rejected { background: rgba(255,55,0,0.1); color: var(--tdc-red); }
+        .rec-tag.med { background: rgba(79,143,204,0.12); color: var(--celeste); }
+        .icon-btn { background: none; border: none; cursor: pointer; color: var(--text-faint); padding: 4px; border-radius: 6px; display: inline-flex; }
+        .icon-btn:hover { background: rgba(255,55,0,0.1); color: var(--tdc-red); }
+        .icon-btn svg { width: 16px; height: 16px; }
+
+        .toast { position: fixed; bottom: 24px; right: 24px; background: var(--success); color: #fff; padding: 13px 18px; border-radius: var(--radius-sm); font-size: 14px; font-weight: 600; display: flex; align-items: center; gap: 9px; z-index: 2000; box-shadow: 0 8px 22px rgba(26,50,77,0.2); animation: tdcSlide 0.3s ease; }
+        .toast.error { background: var(--tdc-red); }
+        .toast svg { width: 18px; height: 18px; }
+
+        @media (max-width: 700px) { .topbar, .wrap { padding-left: 18px; padding-right: 18px; } }
+    
+}
+</style>
+<div class="tdc-vac-admin">
+
+    <div class="topbar">
+        <div class="topbar-left">
+            <img class="topbar-logo" alt="TDC" src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUIAAACMCAYAAAAJOKDsAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAABsESURBVHgB7Z1NcBvJdcdfN0Dtrj6ycKqSIkWnBB2cq0DKvlrkbS2TIuVLcokJVunkC8lTLtkiWM4luZC65OQqkTnZF5NcadepykGQTyknK2Kv9kFwVSTIdlUWW5L3Q8R05/1nMOQQwkcPMAApzftVQSKAmemeh5n/vH6vP5T9HhVJ0z0SBBcsbavf0DIJwluEJkEQhJQjQigIQuoRIRQEIfWIEAqCkHpECAVBSD0ihIIgpB4RQkEQUo8IoSAIqUeEUBCE1CNCKAhC6hEhFAQh9YgQCoKQekQIBUFIPSKEgiCkHhFCQRBSjwihIAipR4RQEITUI0IoCELqESEUBCH1iBAKgpB6RAgFQUg9IoSCIKQeEUJBEFKPCKEgCKlHhFAQhNQjQigIQuoRIRQEIfWIEAqCkHpECAVBSD0ihIIgpB4RQkEQUo8IoSAIqUeEUBCE1CNCKAhC6hEhFAQh9YgQCoKQekQIBUFIPSKEgiCkHhFCQRBSjwihIAipR4RQEITUI0IoCELqESEUBCH1iBAKgpB6RAgFQUg9IoSCIKQeEUJBEFKPCKEgCKlHhFAQhNQjQigIQuoRIRQEIfWIEAqCkHpECAVBSD0ihIIgpB4RQkEQUo8IoSAIqUeEUBCE1CNCKAhC6hEhFAQh9YgQCoKQekQIBUFIPSKEgiCkHhFCQRBSjwihIAipR4RQEITUI0IoCELqESEUBCH1iBAKgpB6RAgFQUg9IoSCIKQeEUJBEFKPCKEgCKlHhFAQhNQjQigIQuoRIRQEIfWIEAqCkHpECAVBSD0ihIIgpB4RQkEQUo8IoSAIqUeEUBCE1CNCKAhC6hEhFAQh9YgQCoKQekQIBUFIPSKEgiCkHhFCQRBSjwihIAipJ9v20zvr/CrRmeNxmegns8fvp2eI/u0hJcqLOtHzKtEzfv2uwmU+Cv7H52eJSzmi7y8S/e01ovE8/18gmsi/vl2784Edh8zl6fl7/F8xzj7W2nLt4MEs9cHkdZSnyk8//WgH7789fWvFkPnWs8cPSpRy+Lew3bewfGGoitZ253//50GZUkiWhJNAYC6xqHyHXzcWjz+HeHy8za8dOjVQt5tLQb3wEHDdp935PNoj+vXe0M7HGruvNFVf/0IvWrI5pez2a19ZW6V+y7M0Q2Sq4XtDlk9Y0Vnnb67PLRqilaef9vcAcIXts8c2r7T/VuVhP2NUkUVz25jMxvPKXjW6xXhhMZ/RZpftulN7fH+LRszk9HyR7XTNmszdsG747JXxKn+qfFKhAREhdAXCg9edUiAeEMValUYCxOzvVvm1EvydBBBFvO6UiH5WSlwQa5UHrLK01/o532h5vivz7KltkEDGmpylTJ6GjNZm7+mn3X/k8cLNolKZdd52hoVvNiqGGSKupy3wo2Vg0YkLRNiSd09BzLV3MHn91qrv+Sta4tje55RAnSRGGBc0PxE6QJMc4jRsIL7/fhCUmZQIRsH5fLhNtPukfdNaSA3PK59sW3s4y545hPNhrjBzdME9rexVDHuNX5oXazRistoswKN9dnD/tjKZWWNs6fL03IE1xMJsPqMEECHsF4jG2ubwBASit7YVCO4oBApl4FzulEhIL88r/1GFGLLnlzuvL66c+O7g/qN6pTzyYHnDvNrnOvkCDEFG/ciokrLeLOpLCSBCOCgQEHhs0fhbEsf0Pc4VGjnwPP9ldzjep/BG4IshET+F1WrUKzzN+kQFD38/q9zff5pAbDBEYoRJANGAePxsI4i3DUIogqfZTIWoX84HGfpTyJbnCou5i9osWYWEh+X4kKorUnuepx+FcStuGq0b09jpxyP49nfnZjyjFpSivOLETXj8MOMcZbwwN8N1uPK88vFOtF5PP72/3FdZVlWtauzXPv3VXq99XewwLM4ZffeV9krv6YtLfAXc9c+FM/HfmMajaHICdTyvzSopey08v0Pj3e2UwGhnD6WOs/1RWm1/opwuv1m0blH74TNuYpeNye602k88wiSBNzVI3PAsiGAIsuSnIILIBF7Q5omxtsQXrX/hcgqYEBdC3OqvCz9out6qRGrsSpxj48aYnL61xdnRh8raGbJUD4/PcbHty9O3niAwH91Ha7rBN2oRn/ONeBDWy+1cjsvifap+WZZyymZ3J6bmHraW1WKHVTc7DIdqZc+3DYtNIfyMM8ar5zLqWvg+tAlXbiU8P37lx3TmgB9UpejxWm0ftYer7VFO+JtxfLC5n99N6zUguEe/F29rrKpYo3hfVdTae9JaP/EIkwZxQ/Tbe9Tzgf86H947OyK4OfKYuH/z8z2/aY3d+opebNQPTsajJgo/XM3q7C57Cn11NTmvvHt+NxGimecHDx5FvxsvfJDX6txuM0kw1RoLw+fGmO3nFbdsNwsdJx7sQueyxjYVH1NRdouzsSf2ZVEo8WfrnewwXri1HtqB61OmIaEVVbhmHQUXNmFxqiCJEfl4A7+T0nqT61cO6zcE229MFhYLxN+xqFWjvRAm0CXJqN0j+1Vev460zqxPTM+/X3t837/Q2wvho/3+uoZ8f9EtVoaOvT/foti87NNDqVW5mTfTezuIEJq5YVeZ7xSoL/6JBe23lXg2vFNy7xsYBV4b+gNCvPB6+cWxJ4f6X74SHBe/jYvI1qpE/3ibRk3gDRhu7ppSJ7GpVT7eGi/M17XWbGBHt6wJPE3c1Mp4U8/bNNvQxM4XFme/Ie/gvL60yRY8avqyVzKDm8pVBP2yLC0YezjVrune/Oz25an5XaPUiSZEYAdvHZ5fp/KeVz7a4DJygR3oKg0JFuN6p76YbKvcK/Lyh9Z77WLB73S5MP/ka3rp2zm0vTGHVzvZI7T9e/rSOhd69BSG7bkmbR9ASJzwQ8OPZfJb/3vYT1njP0xrlfttn+bBdTRX0VrBs370x8qv9toLIYTqd33EIXGjuQghbtRRd0yu/d59GzwIQNhV5odFigXEFN7dTxwdl7CcOMCGv+Br4Bd3Ozdhw98R5wMPD+eBcjoJYq16anFBbq6sG2729BKb55X72xNT80uIMVEMOKa0jhuqW4AdzUG+QZb55oNnshb1JCwd3iVHUJaxZqtX/PKczSwfKvOEReKoHNgBzcZedhgzmY1DbYqIow3TK+zE19zaRVwtq979vN33SGaEf4e272aP0PZaqV22/QkvjgW0oy2M0Ttss9JfFW4WEJfMaG+GryOCJ0hdgM3QeTyrx3Dj7UmMsBu1KtFP2TG4fTW+hwwv7IdLbtt+eI9iAXH78VSQnIkjWugEjnPZWnt9P7yHCNaqdDrwk19Zp2YCNzljdcb2m1AcLEcQv9e2uEE4Lla/kLmwEPm46pqUQWwqCMw3ej7p/Tgc2b3oZ35MzsEO2JfjX/BqHC+y+HBdEIdre4Eh2QDBJjrc6hrrjGH7dylb4TKpxfb1brYPkx4ZlXm/WesVfkiWXbr5sNfNv5EtTEz96IrECF2oVQPhQZM3TjeZO6Xenm/YDHcFIjio14awBGKY0cTMPy+fmgiGzSwOZDs1Q3DD8Pbkiso2chwop3OaCpPTN3vGO3wPzar80fs4Q/+M5mSCdRZOTarCSYiZ8L0NhgbmuZ5F6oHxkyi2z/iNA4oKbIdqp6/9/oZq7KH243TzZWTDv/LeYRHaO/ZwM428Z91sf0iv+PyzrbaP1TSF/TzjlVy2bXqF7IV/MyNC6AqEB7EziIercEFk4BV2E8M4TeJaNbmmK44FcV9lUaw96S+5kxBhM8sVeEO4gF2xxuQxSMxSxtH1RvpC5agPDJlcnDHOlhpf+APYIvDenDTK9NyXPR9kk/uIYfXGH9ZmPc7ummKnbZpifxVD87TKLHA2/N557eXOR8YrYwhhXNsPilKZ2DeICGFcIIboQO2a3UVcrpMQ4hiuoho2XZOM3+FYPy3SaYMbBsLGN56T+KC5ZWN4hGTOVUh79KV58a1hj4xQZH7PN72ziFrSV07ur+qkvNVe44KHDXt5xeAv71GvbTE0j//Di8an5m9oslsctzvguN0sZ4+rllPFo7A9gP04TpjnP3vWu9kSIc/oqsQI4+KLh1Nf2gAI3USH7m5/H2PkCBIjtSq9raBvmNaZGaeNtRerOThGwSw479D5GzRkPHOuzP/lgs7AvQmyoscg7mesHl5z1wE/80qEi3M7bod1DMN7dvBgCp5qVmXWs42s77G+SxdHck6Yyg2z6Lhse6g9P871tX3xmQhhP4RdVVz5foe4oqs3WKsGiZG3GPYGd/jmK3YLvB9t62ch3Qk7B2ulV3tti/Jd6tCJZhKhzM3WnnXEFFzB9GHHZJTac7XDIPXsdky/3x4nSbpla3uVr5Qt8y+VO+qY7WAPdLoedEgf1/suHi7IIvfatnkdbcNTFSHslzjC1E7w0MXGtZ/iCCZSPW385pU/3Kqx2+0GQ0dlvoTLFBMO7C+zEBZaRxREwY3IIrDLdYiZxm8ty27gZuxWFs7Rs3oTHkz086zROywcddihmyig07VW3kGSY4GR8YYIYvYZJEK6eYPoG9g6Q81JVD78S9vMWi97NIfQHbynLu7SACABAuEd8zucd76OYD8+yVwo9hIj7Jdw1mqXyQnaCWGczto/d+7C9kZj7KvbYRZy8vqt0p89vY8MpD9mNNsoGOMLBy7eWa3HinGOjZt6vDC/prW6x2J6I5OhjXA25uPjm3uBCDQG6lGOm5HLWkZZHPu8Ep35ORwzy7HEFc+YrYz2Y4pH3lLQn+4DPxt7Xv/FwYWIHfA9xIqz6+tczxljVdE17matnuGsbdssjqHMNc0ZYmMIyREWksZyrybxmMnsfaO8ddTx4nfnlqPnd0EbjIwpWgqa/ej43M0eLbaPEXdqzzs2cxuds1uvI3x3ZD9jCw0u64/N8xSPsF8ggq6dzv1ZolsE8zvX3PaNU84bTjgFFDw+jCPlDOTnk9O3Psf/GKPKF2/5K/tiqt+pl9AZG6Mb/JQGHw9T2OMVHh/lDnL8tmVZWwjLCs8FY2YbXUbQdLIDjoFjGcMS44+Q+ShOQqWIzG27l7JUxDEx3yCWSnA5/6DJy3VETLPl/LjOS4jTIV7Yag+MRY7Y/skwbI+6sRhOsbBvY4RJO/th1A9GlIT7iEc4CBAo1zgf1hV5ERE0zO7iWsZbBCb2fE/95fudvm/eCMsY2fGuunSNrJfXpOtf0osTc+FZO5b/2v7fF5H3M19F3neaQLR5/Fl/fCuNXUN3l3bHPz7Oy7tc323qg2ZZU80s9xXOT+YyNPYZPKRwmz+bL/f4+A/JwQ74XKl3yrWDX/6eYgBbdfoONnP3KsdmvjTHNg6HCoa2xPmR0lUkH9odc1i2b70WQDXwAPGg2UAmO7Tf1/Tn/XZlKfs9KrJfOFBM5AjXRZ9aF2HqF4iQy+JNtWowoiJp0DXGdVQIxjo/jmT0/3W3cxIlCkaD/HTg1kJyWNpWv6EzVCFBGBxpGp8WFx1j3P1ONCEIgjMihIIgpB4RwtOiVnXbztVzFAShb0QIB6HTiJF2vPiC+kKEUBCGjmSNB+FvY/QFxKzVUWpVcsI1K/0GcbRuhT/rCiY3sHWlqK6s3msYvT/s9TgEoRXxCAfBtVM0+gK2TpZQc+wBEc6Y/RYAAcTaFMG6FVRsTvFUJkxFZRTWxNgK1pOYvzeM4WNCd2Dzies/WDwLK9eNGvEI+8WfTCHvtm27IXJxhs1N33jjh9lhSJMxdt0fuUAnO9uGoH8Z0bklrf0Fimb4xpwV73B0ZLS3Ym129ULmQpEf26c6+82oEY+wX1xnnwbtRKxWdZ9SCyvjvcHrDPvjOsn663D4IxfaiCAI1q/9aCMYgWD9RXveFM9wojC3ODE9v0pnHHTu7rTyG5nMDlna87zeU2+9bYgQ9oM/4WrRfftf77f/3J/GzQGI4Gks9p4AgZDZrosRtRIOMVNEuUEnQBgVSiPmSY7jJk8R/QrxnJl2X2HEC1akS2KY25uGCGE/uIxmCYE3WKu2/+7RPjkDr3BYS30O0dsMZjPpvRhRK7gZPdNYs1i/WBCGjMQI43KnFE+QMESuExBJjCV2SbpArDAs7x+mKFHulIhuLAxl9TokR9gTzHeb7r0bzZmPOzL5vZsF8qiAWZAbjWzVNZ6IGU/ey3wzo63KYd9wJpSky+lW/oWxV/mn//1JYgPJk65jEoR2xt8Zlan3svNpIkIYhzul+GuM9JpxHVNsuY5XhmBi2yTGHkNYsV5JGOuEl5uwGFqjsBpZ/Xkl2WnnEXPEDMrWs7mgHH8ZTJq8Plf2vOxyqwhcnp7DEpn+zCqT07e2LHkrZLP+6hjYl49XbZjDtehsJKC5gPg9LqcQLYePt/Hs8YMSFlhqXYuD42/F43e2hIXHo+UHdTdcd386fzV5fR7z/5WjC5S3EjxQ1MNnj++rfmwRTLbqPfG/P67n0eIgKB91i5bDx8USnKv897eo9+/xxBivFP7Ovt0y3ibWPIGdARaagp35rx3Yjs4Y0jR2AaIBoYi79vDPSr23gcdYq5IziE1GV5/rB2S8se5KNOEDkcVxk2wmKypgkkxKCHgYEA5MY4W5/DDrCG5avDCFFLrg4IYfL9xqm8mCCBprF7At1tDAfspkpjAFVFZnd6OzGvuLF2mzixXsGtYWjsox3jKXssKJkU2uQ9kvF7NMc5IB5xq+D+pzcklPX4StWbDGFrvNCONqCxaWg062sFZVm+uGFN7lh9FRPYNQQz1aT22zr83Uc85oTILZc8mBSV/4sXxpkGDx32OG6+a0XqGd/QSY8e76tpuaOzhrXXTEI+yGn6RYDRIVcQUCzV5XRwgeXpy4YzjrDoQ2jrOFc7hT6px4CcUwIc8Qc88pZbcpIc5rb9MY4qb24Wvz1jUz0bMsguta2y0WgM/+FFnMHTMkswjmMedddBqm5pRYyxNT8/ms0ps4Bj7ParPg8QnUOHlwohxurrM4VDH1fLMOfj3gCbJnVq89vt8h46ryQfkvp5JYxAi24OrlutjiEYtSfUxnHtZN/Wr9oNwUqptX2Yutd8rch2AaK7ZJOMV+ueOGipYwI1Ew8S0SYwYPiK3WmHCzjlvjhQ/2gklnL22yEc7MLEbiEYZAJOBlYd1iCAUE4T8/D7zAuCIYd4GnOKIZgrp+uE20yy2etc1AHNvVM8xw43x++aR39nkYnmECBAunU9FYb7X7gt8fbQQLB/midgJunXWc0TmcXj/0VIy/vnD7pTIxAzWakhQDFpR8t/Lj4GqLp4/vw9Pboz5ptUkrwZKfvle5jffsga4ba7omxoIeARY3R9F1gatRkA6PEGLwX5ZGRj+LpW+tBh2n4zZ5sb3vtTa7sEGEMXXXxVz/YpagZ9jv+sCtcLN3CbGsP1Q+6Zlqxw2stfLX04gITw8vKFvl5h2N0fk8v6n4C68rW2o5xiD09MJciWMLbpb27XVB8Lk5Xz+vL67Ug0lOT6C1WfJ7BPB5Bd6gdzQ9f6/j+t6m9mPIZToDiEeYNGiu9rNYelLrFoee7aAeHWbUxmsAcJOwEuYpARSpAv/jZFjcaFjf9kLmwsJxXWyl+z5BgoWzm/7s2eEiSliTY/L6raVBO3b3Kj8OsAV7mGUaAew+bHGJqx2+5linKeGPsUzDj6+6in1ztb5FOiOIECYJRHCQZTdr1aF0Y4lNKMoDLhPAzSrEmGYoGfJaWWfDWLIDGfFoTQ7COrkY8ocx0HMH356+tXLao1343HIce63SCOiUNMFSpNEkCTeJ8eStkiOWGn1OxzQcRAiTwI8JFpNZexji8+Op01vMHeUmIILAGIObJJdELCiusKkEmuSIZ6FpyQmTq34mllSZEyir3TLTo8LYZEIOvei0LrHHzXN6fQF45zopyr5PZwgRwkGBYEA4kuwqV6smJkaxCM8loXLDNWa11vf66S6BrhholuJvNLON1QWX/fwgPntNntFVSgg0+TgjvOaLolHsIdrtpLqA9IqjKntSYGALP1QwIlqTJr5HrGgxTJKApq1zE1M/uuJyTCSj0DWJzggihP0CLxBNYYz0GIZg1arBsV36IiZBeC4oN0GwuDeaUO/pS7E6YQbNT4V1jGfwvhlTKrqIDwfxi2EQn4YAMtOtMch+CUStuyflWXWiHNiC/3OaLgv9DWlAwpgrkiZ4H02StG6j1Ktir+M1f9sZLFVKZwQRwriEAvijq8k0hXuBMrACX7eheoOArju+4A7nXNBPzxqzxjf7KsfYSi77YGQCxigba+vGHPoVO05eXNrstm84yUMYxO8XjNjo1aRveCeb69ZSbNFBdpq6iFozHlmMfgZbsOhQr4cL9sWavm3OI3Y9g6SJDpMbxXb2NcbbQGIl2jG9Hehmg9mFkh5xNAgihK5AMDZXjwVwlAmNWjXolxgKIt4PAur+i61gidERNMFrlY+30Jzkm2Qdw7HC5m4rzdESJau9A9woSFaEMSjEqti7vM0CsNhp4lb0r8toc4CFvQe+yay9hiZ9u3L8OiJhQeaz8DMIGhJDcZvLoai1E/hgaJx5iFEr0c9hC8+Y28HDpbMtwn3hrR19Yc7hx44dtw2SJrbQnFItHyZJouB35t9tf0xnd9v9xvh9J6bmtrlOi9p6t+kMISNL2lGrBi8IxG8rwTRap53JBbXqcUdt9DlEfz90pMZi8d0mbsB+OA8sF4CuPb/7bOTng+bkeOGDHYwq4LfbGG5GylQsmlNEHJBHB2avwDdJnT3B0tf08m5r/z14l+wtzlrl7bLgLV6+Pl9mwcIxclpRgQVwxhq79bxyf40G5JzNLL8i89DPFl+f34uWg+Y6C3sxmiiAoH2jvFV0t7mAepEfB9uvffpgr1s5EDWck2LRYpHhhIzlEACWLlB5smaRM9bbmazd5/IWT9rzQXmiMHebU/Ob3WzxFb3YaLUh+vBB5HmfStP21W5jncN6BiNNLLzQ7U4duWsHD4oc28Wol21uAawiwXTifCz/3tabfVpJbsKJJEh2gXf0XbvomAxynaq+F3EWUHIhqXqdBu3sn/T5JLDA+/jU/A32nhb5WEfqze+rfONWvqKXOy4dmMcLN4taZRYs5izEzYz94f20nfka3o+90stLxOQIGB8cvcmj5QQVJW7qH95tJwSYYVvr7BKG0+E9i9gOBMulfOyr9NhKaBPYA8mIsLOy1o2ldmIVzOqtZ16rYwdbnDgvnbmBvz22+x8qD+52KwcgZGF1Y6HVRq7nE+f3HTXJCqHw9pOAEArCWUNihIIgpB4RQkEQUo8IoSAIqef/ATigMMaPBYQCAAAAAElFTkSuQmCC">
+        </div>
+        <span class="badge-admin">Admin</span>
+    </div>
+
+    <div class="wrap">
+        <div class="welcome">
+            <div class="welcome-left">
+                <div class="av av-lg" id="admin-avatar">A</div>
+                <div>
+                    <h1 id="admin-name">Hola</h1>
+                    <div class="role" id="admin-role"></div>
+                </div>
+            </div>
+            <button class="btn-primary" onclick="openRegister()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                Registrar vacaciones
+            </button>
+        </div>
+
+        <div class="stats" id="stats"></div>
+
+        <div class="card">
+            <div class="card-head">
+                <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Equipo</h2>
+            </div>
+            <div class="card-body"><div class="team-grid" id="team-grid"></div></div>
+        </div>
+
+        <div class="cal-row">
+        <div class="card">
+            <div class="card-head">
+                <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> Calendario del equipo</h2>
+                <div class="cal-nav">
+                    <button onclick="prevMonth()" aria-label="Mes anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg></button>
+                    <div class="month" id="cal-month"></div>
+                    <button onclick="nextMonth()" aria-label="Mes siguiente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg></button>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="cal-summary" id="cal-summary" style="margin-bottom:14px"></div>
+                <div class="cal-weekdays">
+                    <div class="cal-weekday">Lun</div><div class="cal-weekday">Mar</div><div class="cal-weekday">Mié</div>
+                    <div class="cal-weekday">Jue</div><div class="cal-weekday">Vie</div><div class="cal-weekday">Sáb</div><div class="cal-weekday">Dom</div>
+                </div>
+                <div class="cal-days" id="cal-days"></div>
+                <div class="legend">
+                    <div class="legend-item"><span class="legend-dot" style="background:var(--success)"></span> Aprobada</div>
+                    <div class="legend-item"><span class="legend-dot" style="background:var(--warning)"></span> Pendiente</div>
+                    <div class="legend-item"><span class="legend-dot" style="background:var(--celeste)"></span> Descanso médico</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-head">
+                <h2><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-6l-2 3h-4l-2-3H2"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg> Solicitudes del equipo <span class="count" id="req-count" style="display:none"></span></h2>
+            </div>
+            <div class="card-body"><div class="req-list" id="req-list"></div></div>
+        </div>
+        </div>
+    </div>
+
+    <div class="modal" id="member-modal">
+        <div class="modal-card">
+            <div class="modal-head" id="member-head"></div>
+            <div class="modal-body" id="member-body"></div>
+            <div class="modal-foot">
+                <button class="btn" onclick="closeMember()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="register-modal">
+        <div class="modal-card">
+            <div class="modal-head"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:19px;height:19px;color:var(--tdc-red)"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Registrar vacaciones</div>
+            <div class="modal-body">
+                <div class="field"><label>Miembro</label><select id="rg-member"></select></div>
+                <div class="field"><label>Tipo</label><select id="rg-type">
+                    <option value="vac">Vacaciones (se registra aprobada)</option>
+                    <option value="medical">Descanso médico</option>
+                    <option value="falta">Falta</option>
+                </select></div>
+                <div class="grid2">
+                    <div class="field"><label>Inicio</label><input type="date" id="rg-start"></div>
+                    <div class="field"><label>Fin</label><input type="date" id="rg-end"></div>
+                </div>
+                <div class="field"><label>Nota (opcional)</label><textarea id="rg-notes" rows="2" placeholder="Detalle del registro"></textarea></div>
+            </div>
+            <div class="modal-foot">
+                <button class="btn" onclick="closeRegister()">Cancelar</button>
+                <button class="btn btn-red" onclick="saveRegister()">Registrar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="stat-modal">
+        <div class="modal-card">
+            <div class="modal-head" id="stat-modal-head"></div>
+            <div class="modal-body" id="stat-modal-body"></div>
+            <div class="modal-foot">
+                <button class="btn" onclick="closeStatDetail()">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+
+const fbApp = initializeApp({apiKey:"AIzaSyDb5rQYu5_Ukf5AQ77zz8O6Si1MUdGcz_w",authDomain:"tdc-calendario-av.firebaseapp.com",projectId:"tdc-calendario-av",storageBucket:"tdc-calendario-av.firebasestorage.app",messagingSenderId:"393165602286",appId:"1:393165602286:web:702df05a4a4aa6ef3662ff",measurementId:"G-9NGVTJVFDQ"});
+const db = getFirestore(fbApp);
+const auth = getAuth(fbApp);
+const vacCol = collection(db, "vacaciones");
+const medCol = collection(db, "descansos_medicos");
+const notifCol = collection(db, "notificaciones");
+
+const colorPalette = ['#378ADD','#1D9E75','#D85A30','#7F77DD','#BA7517','#534AB7','#0F6E56','#993C1D'];
+const monthNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+const monthsShort = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+const VACATION_YEAR = 2026, DAYS_PER_MONTH = 2.5, MAX_ACCRUAL = 30;
+
+const MEMBERS = [
+    { name:'Johan Gálvez', email:'jgalvez@paraleloinmobiliaria.pe', role:'Coordinador Marca', joinDate:'2026-01-01', carryover:0, debt:0, color:colorPalette[0] },
+    { name:'Pablo Caillahua', email:'pcaillahua@paraleloinmobiliaria.pe', role:'Coordinador Audiovisual', joinDate:'2026-01-01', carryover:0, debt:0, color:colorPalette[1] },
+    { name:'Ana Paula Hurtado', email:'ahurtado@paraleloinmobiliaria.pe', role:'Asistente de Marketing', joinDate:'2026-01-01', carryover:0, debt:0, color:colorPalette[2] },
+    { name:'Diego David', email:'ddavid@paraleloinmobiliaria.pe', role:'Jefe de Publicidad', joinDate:'2026-01-01', carryover:9, debt:0, color:colorPalette[3] },
+    { name:'Eduardo Cornejo', email:'ecornejo@paraleloinmobiliaria.pe', role:'Sub gerente de marketing', joinDate:'2026-01-01', carryover:0, debt:0, color:colorPalette[4] },
+    { name:'Gabriela Curotto', email:'gcurotto@paraleloinmobiliaria.pe', role:'Jefe de Marketing', joinDate:'2026-01-01', carryover:0, debt:0, color:colorPalette[5] }
+];
+
+function sameEmail(a,b){ return (a||'').toLowerCase()===(b||'').toLowerCase(); }
+function memberByEmail(e){ return MEMBERS.find(m=>sameEmail(m.email,e)); }
+
+let vacations=[], medicalRests=[], currentDate=new Date(), editingEmail=null, ready=false;
+let ADMIN = memberByEmail('gcurotto@paraleloinmobiliaria.pe');
+
+function parseDate(s){ const [y,m,d]=s.split('-').map(Number); return new Date(y,m-1,d); }
+function toISO(d){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+function fmtNum(n){ return Number.isInteger(n)?n:Math.round(n*10)/10; }
+function daysBetween(a,b){ return Math.round((parseDate(b)-parseDate(a))/86400000)+1; }
+function fmtRange(s,e){ const a=parseDate(s),b=parseDate(e); return a.getMonth()===b.getMonth() ? `${a.getDate()} – ${b.getDate()} ${monthsShort[b.getMonth()]}` : `${a.getDate()} ${monthsShort[a.getMonth()]} – ${b.getDate()} ${monthsShort[b.getMonth()]}`; }
+function fmtDateLong(s){ const d=parseDate(s); return `${d.getDate()} ${monthsShort[d.getMonth()]} ${d.getFullYear()}`; }
+function monthsWorked(joinDate){ const today=new Date(), ys=new Date(VACATION_YEAR,0,1); let start=parseDate(joinDate); if(start<ys)start=ys; if(today<start)return 0; const m=(today.getFullYear()-start.getFullYear())*12+(today.getMonth()-start.getMonth())+1; return Math.max(0,Math.min(12,m)); }
+function accruedDays(m){ return Math.min(MAX_ACCRUAL, monthsWorked(m.joinDate)*DAYS_PER_MONTH); }
+function vacsOf(email){ return vacations.filter(v=>sameEmail(v.memberEmail,email)); }
+function medsOf(email){ return medicalRests.filter(r=>sameEmail(r.memberEmail,email)); }
+function balance(m){ const accrued=accruedDays(m); const total=accrued+(m.carryover||0)-Math.abs(m.debt||0); const taken=vacsOf(m.email).filter(v=>v.status==='approved').reduce((s,v)=>s+v.days,0); const medical=medsOf(m.email).filter(r=>r.type!=='falta').reduce((s,r)=>s+r.days,0); return { accrued, total, taken, remaining: total-taken, medical }; }
+function countWeekends(s,e){ let n=0,c=parseDate(s),end=parseDate(e); while(c<=end){const d=c.getDay(); if(d===0||d===6)n++; c.setDate(c.getDate()+1);} return n; }
+function memberWeekends(email){ return vacsOf(email).filter(v=>v.status==='approved').reduce((s,v)=>s+countWeekends(v.startDate,v.endDate),0); }
+
+function svg(p){ return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`; }
+const IC = {
+    users:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+    chart:'<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>',
+    clock:'<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>',
+    check:'<polyline points="20 6 9 17 4 12"/>',
+    x:'<line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>',
+    alert:'<path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/>',
+    trash:'<polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>',
+    stethoscope:'<path d="M4.8 2.3A.3.3 0 1 0 5 2H4a2 2 0 0 0-2 2v5a6 6 0 0 0 6 6 6 6 0 0 0 6-6V4a2 2 0 0 0-2-2h-1a.2.2 0 1 0 .3.3"/><path d="M8 15v1a6 6 0 0 0 6 6 6 6 0 0 0 6-6v-4"/><circle cx="20" cy="10" r="2"/>'
+};
+function initials(name){ return name.split(' ').map(n=>n[0]).join('').toUpperCase().slice(0,2); }
+
+const TEAM_ORDER = ['Eduardo Cornejo','Gabriela Curotto','Diego David','Pablo Caillahua','Johan Gálvez','Ana Paula Hurtado'];
+function orderedMembers(){ return MEMBERS.slice().sort((a,b)=>{ let ia=TEAM_ORDER.indexOf(a.name), ib=TEAM_ORDER.indexOf(b.name); if(ia===-1)ia=999; if(ib===-1)ib=999; return ia-ib; }); }
+
+// ===== Firebase =====
+onAuthStateChanged(auth, user => {
+    if (user) {
+        const em=(user.email||'').toLowerCase();
+        ADMIN = memberByEmail(em) || ADMIN;
+        if(!ready){ ready=true; subscribe(); }
+        renderAll();
+    } else { renderAll(); }
+});
+function subscribe(){
+    onSnapshot(vacCol, snap=>{ vacations=snap.docs.map(d=>({id:d.id,...d.data()})); renderAll(); }, ()=>{});
+    onSnapshot(medCol, snap=>{ medicalRests=snap.docs.map(d=>({id:d.id,...d.data()})); renderAll(); }, ()=>{});
+}
+
+// ===== Render =====
+function renderAll(){ renderHeader(); renderStats(); renderRequests(); renderTeam(); renderCalendar(); }
+function renderHeader(){
+    document.getElementById('admin-name').textContent = `Hola, ${ADMIN.name.split(' ')[0]}`;
+    document.getElementById('admin-role').innerHTML = `${ADMIN.name} · <span>${ADMIN.role}</span>`;
+    document.getElementById('admin-avatar').textContent = initials(ADMIN.name);
+}
+function renderStats(){
+    const n=MEMBERS.length;
+    const avgAccrued = n ? MEMBERS.reduce((s,m)=>s+accruedDays(m),0)/n : 0;
+    const pending = vacations.filter(v=>v.status==='pending').length;
+    const teamMedical = medicalRests.filter(r=>r.type!=='falta').reduce((s,r)=>s+r.days,0);
+    document.getElementById('stats').innerHTML = `
+        <div class="stat clickable" onclick="openStatDetail('members')">
+            <div class="stat-top"><span class="stat-label">Miembros del equipo</span><span class="stat-chip navy">${svg(IC.users)}</span></div>
+            <div class="stat-value">${n}</div>
+            <div class="stat-foot"><span>personas activas</span><span class="stat-see">Ver detalle ›</span></div>
+        </div>
+        <div class="stat clickable" onclick="openStatDetail('accrual')">
+            <div class="stat-top"><span class="stat-label">Acumulado promedio</span><span class="stat-chip">${svg(IC.chart)}</span></div>
+            <div class="stat-value">${fmtNum(avgAccrued)}</div>
+            <div class="stat-foot"><span>días por persona</span><span class="stat-see">Ver detalle ›</span></div>
+        </div>
+        <div class="stat clickable" onclick="openStatDetail('requests')">
+            <div class="stat-top"><span class="stat-label">Solicitudes pendientes</span><span class="stat-chip ${pending?'red':''}">${svg(IC.clock)}</span></div>
+            <div class="stat-value">${pending}</div>
+            <div class="stat-foot"><span>por revisar</span><span class="stat-see">Ver detalle ›</span></div>
+        </div>
+        <div class="stat clickable" onclick="openStatDetail('medical')">
+            <div class="stat-top"><span class="stat-label">Descansos médicos</span><span class="stat-chip">${svg(IC.stethoscope)}</span></div>
+            <div class="stat-value">${fmtNum(teamMedical)}</div>
+            <div class="stat-foot"><span>días del equipo</span><span class="stat-see">Ver detalle ›</span></div>
+        </div>`;
+}
+function renderRequests(){
+    const pending = vacations.filter(v=>v.status==='pending').sort((a,b)=>parseDate(a.startDate)-parseDate(b.startDate));
+    const cont = document.getElementById('req-list');
+    const cnt = document.getElementById('req-count');
+    if(pending.length){ cnt.style.display='inline-block'; cnt.textContent=pending.length; } else cnt.style.display='none';
+    if(!pending.length){ cont.innerHTML='<div class="empty">No hay solicitudes pendientes. Todo al día.</div>'; return; }
+    cont.innerHTML = pending.map(v=>{
+        const m=memberByEmail(v.memberEmail); const nm=m?m.name:(v.memberName||'Desconocido'); const col=m?m.color:'#999';
+        return `<div class="req-row">
+            <span class="av av-sm" style="background:${col}22;color:${col}">${initials(nm)}</span>
+            <div class="req-info"><div class="req-name">${nm}</div><div class="req-detail">${fmtRange(v.startDate,v.endDate)} · ${v.days} día(s)${v.notes?' · '+(''+v.notes).replace(/</g,'&lt;'):''}</div></div>
+            <div class="req-actions">
+                <button class="btn btn-green" onclick="approveReq('${v.id}')">${svg(IC.check)} Aprobar</button>
+                <button class="btn btn-ghost-red" onclick="rejectReq('${v.id}')">${svg(IC.x)} Rechazar</button>
+            </div>
+        </div>`;
+    }).join('');
+}
+function renderTeam(){
+    document.getElementById('team-grid').innerHTML = orderedMembers().map(m=>{
+        const b=balance(m); const wk=memberWeekends(m.email);
+        const flag = wk>4 ? `<div class="mcard-flag">${svg(IC.alert)} Excede fines de semana (${wk}/4)</div>` : '';
+        return `<div class="mcard" onclick="openMember('${m.email}')">
+            <div class="mcard-head">
+                <span class="av av-sm" style="background:${m.color}22;color:${m.color}">${initials(m.name)}</span>
+                <div><div class="mcard-name">${m.name}</div><div class="mcard-role">${m.role||'Equipo TDC'}</div></div>
+            </div>
+            <div class="mcard-stats">
+                <div class="mini"><div class="mini-label">Disponibles</div><div class="mini-value ${b.remaining<0?'neg':''}">${fmtNum(b.remaining)}</div></div>
+                <div class="mini"><div class="mini-label">Tomados</div><div class="mini-value">${fmtNum(b.taken)}</div></div>
+            </div>${flag}
+        </div>`;
+    }).join('');
+}
+function renderCalendar(){
+    const year=currentDate.getFullYear(), month=currentDate.getMonth();
+    document.getElementById('cal-month').textContent = `${monthNames[month]} ${year}`;
+    const first=new Date(year,month,1);
+    const today=new Date(); today.setHours(0,0,0,0);
+    const cont=document.getElementById('cal-days'); cont.innerHTML='';
+    const monthMembers=new Set(); let monthDays=0;
+    const mStart=toISO(new Date(year,month,1)), mEnd=toISO(new Date(year,month+1,0));
+    vacations.filter(v=>v.status==='approved').forEach(v=>{
+        if(v.endDate>=mStart && v.startDate<=mEnd){
+            monthMembers.add((v.memberEmail||'').toLowerCase());
+            let c=parseDate(v.startDate>mStart?v.startDate:mStart), e=parseDate(v.endDate<mEnd?v.endDate:mEnd);
+            while(c<=e){ monthDays++; c.setDate(c.getDate()+1); }
+        }
+    });
+    document.getElementById('cal-summary').innerHTML = monthMembers.size
+        ? `Este mes: <b>${monthMembers.size}</b> persona(s) de vacaciones · <b>${monthDays}</b> día(s) en total.`
+        : 'Este mes no hay vacaciones aprobadas.';
+    const offset=(first.getDay()+6)%7;
+    const daysInMonth=new Date(year,month+1,0).getDate();
+    for(let i=0;i<offset;i++){ cont.appendChild(document.createElement('div')); }
+    for(let d=1; d<=daysInMonth; d++){
+        const date=new Date(year,month,d), ds=toISO(date);
+        const cell=document.createElement('div'); cell.className='cal-day';
+        if(date.getTime()===today.getTime()) cell.classList.add('today');
+        const num=document.createElement('div'); num.className='cal-num'; num.textContent=d; cell.appendChild(num);
+        const vac=vacations.filter(v=>ds>=v.startDate&&ds<=v.endDate&&v.status!=='rejected');
+        const med=medicalRests.filter(r=>ds>=r.startDate&&ds<=r.endDate&&r.type!=='falta');
+        if(vac.length||med.length){
+            const dots=document.createElement('div'); dots.className='cal-dots'; const names=[];
+            vac.forEach(v=>{ const dd=document.createElement('span'); dd.className='cal-dot'; dd.style.background=v.status==='pending'?'var(--warning)':'var(--success)'; dots.appendChild(dd); const m=memberByEmail(v.memberEmail); names.push((m?m.name:(v.memberName||'?'))+(v.status==='pending'?' (pend.)':'')); });
+            med.forEach(r=>{ const dd=document.createElement('span'); dd.className='cal-dot'; dd.style.background='var(--celeste)'; dots.appendChild(dd); const m=memberByEmail(r.memberEmail); names.push((m?m.name:(r.memberName||'?'))+' (descanso)'); });
+            cell.appendChild(dots); cell.title=names.join('\n');
+        }
+        cont.appendChild(cell);
+    }
+}
+function prevMonth(){ currentDate.setMonth(currentDate.getMonth()-1); renderCalendar(); }
+function nextMonth(){ currentDate.setMonth(currentDate.getMonth()+1); renderCalendar(); }
+
+// ===== Aprobar / Rechazar =====
+async function decide(id, approved){
+    const v=vacations.find(x=>x.id===id); if(!v)return;
+    try{
+        await updateDoc(doc(db,'vacaciones',id), { status: approved?'approved':'rejected', decidedBy: (ADMIN.email||''), decidedAt: serverTimestamp() });
+        await addDoc(notifCol, { de: ADMIN.email, scope: v.memberEmail, icono: approved?'✅':'❌', titulo: approved?'Vacaciones aprobadas':'Vacaciones rechazadas', mensaje: `Tus vacaciones ${fmtRange(v.startDate,v.endDate)} fueron ${approved?'aprobadas':'rechazadas'}.`, link: 7, readBy: [], createdAt: serverTimestamp() });
+        toast(approved?'Solicitud aprobada':'Solicitud rechazada');
+    }catch(e){ toast('No se pudo guardar (revisa permisos).','error'); }
+}
+function approveReq(id){ decide(id,true); }
+function rejectReq(id){ decide(id,false); }
+
+// ===== Detalle de miembro =====
+function openMember(email){
+    const m=memberByEmail(email); if(!m)return; editingEmail=email;
+    const b=balance(m); const wk=memberWeekends(email);
+    document.getElementById('member-head').innerHTML = `<span class="av av-lg" style="background:${m.color}22;color:${m.color}">${initials(m.name)}</span><div><div style="font-size:16px;font-weight:600">${m.name}</div><div style="font-size:13px;color:var(--text-soft)">${m.role||'Equipo TDC'}</div></div>`;
+    const recs = [
+        ...vacsOf(email).map(v=>({...v, kind:'vac'})),
+        ...medsOf(email).map(r=>({...r, kind:'med'}))
+    ].sort((a,b)=>parseDate(b.startDate)-parseDate(a.startDate));
+    const recHtml = recs.length ? recs.map(r=>{
+        let tag, cls;
+        if(r.kind==='med'){ tag = r.type==='falta'?'Falta':r.type==='personal'?'Asunto personal':r.type==='other'?'Otro':'Descanso médico'; cls='med'; }
+        else { tag = r.status==='approved'?'Aprobado':r.status==='pending'?'Pendiente':'Rechazado'; cls=r.status; }
+        return `<div class="rec"><div class="rec-left"><span>${fmtRange(r.startDate,r.endDate)} · ${r.days}d</span><span class="rec-tag ${cls}">${tag}</span></div>
+            <button class="icon-btn" title="Eliminar" onclick="deleteRecord('${r.kind}','${r.id}')">${svg(IC.trash)}</button></div>`;
+    }).join('') : '<div class="empty" style="padding:14px">Sin registros.</div>';
+    document.getElementById('member-body').innerHTML = `
+        <div>
+            <div class="section-label">Resumen</div>
+            <div class="mstats">
+                <div class="mstat"><div class="mstat-label">Disponibles</div><div class="mstat-value ${b.remaining<0?'neg':''}">${fmtNum(b.remaining)}</div></div>
+                <div class="mstat"><div class="mstat-label">Tomados</div><div class="mstat-value">${fmtNum(b.taken)}</div></div>
+                <div class="mstat"><div class="mstat-label">Acumulado</div><div class="mstat-value">${fmtNum(b.accrued)}</div></div>
+                <div class="mstat"><div class="mstat-label">Descanso méd.</div><div class="mstat-value">${fmtNum(b.medical)}</div></div>
+                <div class="mstat"><div class="mstat-label">Findes</div><div class="mstat-value ${wk>4?'neg':''}">${wk}/4</div></div>
+            </div>
+        </div>
+        <div>
+            <div class="section-label">Registrar ausencia</div>
+            <div class="grid2">
+                <div class="field"><label>Tipo</label><select id="ab-type">
+                    <option value="vac">Vacaciones (aprobada)</option>
+                    <option value="medical">Descanso médico</option>
+                    <option value="falta">Falta</option>
+                </select></div>
+                <div class="field"><label>&nbsp;</label><button class="btn btn-red" style="width:100%;justify-content:center" onclick="registerAbsence()">Registrar</button></div>
+                <div class="field"><label>Inicio</label><input type="date" id="ab-start"></div>
+                <div class="field"><label>Fin</label><input type="date" id="ab-end"></div>
+            </div>
+        </div>
+        <div>
+            <div class="section-label">Registros</div>
+            <div class="reclist">${recHtml}</div>
+        </div>`;
+    document.getElementById('member-modal').classList.add('active');
+}
+function closeMember(){ document.getElementById('member-modal').classList.remove('active'); editingEmail=null; }
+
+async function registerAbsence(){
+    const type=document.getElementById('ab-type').value;
+    const s=document.getElementById('ab-start').value, e=document.getElementById('ab-end').value;
+    if(!s||!e){ toast('Completa las fechas','error'); return; }
+    const n=daysBetween(s,e);
+    if(n<=0){ toast('La fecha de fin debe ser posterior','error'); return; }
+    const m=memberByEmail(editingEmail); if(!m)return;
+    try{
+        if(type==='vac') await addDoc(vacCol,{ memberEmail:m.email, memberName:m.name, startDate:s, endDate:e, days:n, status:'approved', notes:'Registrada por admin', createdAt:serverTimestamp() });
+        else await addDoc(medCol,{ memberEmail:m.email, memberName:m.name, startDate:s, endDate:e, days:n, type, notes:'', createdAt:serverTimestamp() });
+        toast('Ausencia registrada'); openMember(editingEmail);
+    }catch(err){ toast('No se pudo registrar (permisos).','error'); }
+}
+async function deleteRecord(kind, id){
+    if(!confirm('¿Eliminar este registro?'))return;
+    try{ await deleteDoc(doc(db, kind==='med'?'descansos_medicos':'vacaciones', id)); toast('Registro eliminado'); if(editingEmail) openMember(editingEmail); }
+    catch(e){ toast('No se pudo eliminar (permisos).','error'); }
+}
+
+// ===== Registrar vacaciones (admin, cualquier miembro) =====
+function openRegister(){
+    const sel=document.getElementById('rg-member');
+    sel.innerHTML=MEMBERS.map(m=>`<option value="${m.email}">${m.name}</option>`).join('');
+    document.getElementById('rg-type').value='vac';
+    document.getElementById('rg-start').value='';
+    document.getElementById('rg-end').value='';
+    document.getElementById('rg-notes').value='';
+    document.getElementById('register-modal').classList.add('active');
+}
+function closeRegister(){ document.getElementById('register-modal').classList.remove('active'); }
+async function saveRegister(){
+    const email=document.getElementById('rg-member').value;
+    const type=document.getElementById('rg-type').value;
+    const s=document.getElementById('rg-start').value, e=document.getElementById('rg-end').value;
+    const notes=document.getElementById('rg-notes').value;
+    if(!email||!s||!e){ toast('Completa miembro y fechas','error'); return; }
+    const n=daysBetween(s,e);
+    if(n<=0){ toast('La fecha de fin debe ser posterior','error'); return; }
+    const m=memberByEmail(email); if(!m)return;
+    try{
+        if(type==='vac') await addDoc(vacCol,{ memberEmail:m.email, memberName:m.name, startDate:s, endDate:e, days:n, status:'approved', notes:notes||'Registrada por admin', createdAt:serverTimestamp() });
+        else await addDoc(medCol,{ memberEmail:m.email, memberName:m.name, startDate:s, endDate:e, days:n, type, notes, createdAt:serverTimestamp() });
+        closeRegister(); toast('Registro guardado');
+    }catch(err){ toast('No se pudo guardar (permisos).','error'); }
+}
+
+// ===== Detalle de tarjetas de resumen =====
+function monthSummaryHtml(records, isReq){
+    const byMonth={};
+    records.forEach(r=>{
+        const k=parseDate(r.startDate).getMonth();
+        if(!byMonth[k]) byMonth[k]={count:0,days:0,pending:0,approved:0,names:[]};
+        byMonth[k].count++; byMonth[k].days+=r.days;
+        if(isReq){ if(r.status==='pending')byMonth[k].pending++; else if(r.status==='approved')byMonth[k].approved++; }
+        const m=memberByEmail(r.memberEmail); byMonth[k].names.push(m?m.name:(r.memberName||'Desconocido'));
+    });
+    const months=Object.keys(byMonth).map(Number).sort((a,b)=>a-b);
+    if(!months.length) return `<div class="dl-empty">Sin registros este año.</div>`;
+    const rows=months.map(k=>{
+        const o=byMonth[k];
+        const sub = isReq ? `${o.names.join(', ')} · ${o.approved} aprob. / ${o.pending} pend.` : o.names.join(', ');
+        return `<div class="dl-row"><div class="dl-main"><div class="dl-name">${monthNames[k]}</div><div class="dl-sub">${sub}</div></div><div class="dl-val">${fmtNum(o.days)} <small>días</small></div></div>`;
+    }).join('');
+    return `<div class="dl">${rows}</div>`;
+}
+function openStatDetail(type){
+    const head=document.getElementById('stat-modal-head');
+    const body=document.getElementById('stat-modal-body');
+    if(type==='members'){
+        head.innerHTML = `${svg(IC.users)} Equipo (${MEMBERS.length})`;
+        body.innerHTML = `<div class="dl">` + orderedMembers().map(m=>`
+            <div class="dl-row">
+                <span class="av av-sm" style="background:${m.color}22;color:${m.color}">${initials(m.name)}</span>
+                <div class="dl-main"><div class="dl-name">${m.name}</div><div class="dl-sub">${m.role||'Equipo TDC'} · Ingreso ${fmtDateLong(m.joinDate)}</div></div>
+                <div class="dl-val">${fmtNum(accruedDays(m))} <small>acum.</small></div>
+            </div>`).join('') + `</div>`;
+    } else if(type==='accrual'){
+        head.innerHTML = `${svg(IC.chart)} Acumulación de días`;
+        const curM=new Date().getMonth(); let rows='';
+        for(let i=0;i<12;i++){
+            const cum=Math.min(MAX_ACCRUAL,(i+1)*DAYS_PER_MONTH);
+            const cls = i<curM ? '' : (i===curM ? 'current' : 'muted');
+            rows += `<div class="dl-row ${cls}"><div class="dl-main"><div class="dl-name">${monthNames[i]}</div><div class="dl-sub">+${DAYS_PER_MONTH} este mes</div></div><div class="dl-val">${fmtNum(cum)} <small>acum.</small></div></div>`;
+        }
+        body.innerHTML = `<div class="dl-intro">Cada miembro acumula <b>${DAYS_PER_MONTH} días por mes</b> trabajado (máximo ${MAX_ACCRUAL} al año).</div><div class="dl">${rows}</div>`;
+    } else if(type==='requests'){
+        head.innerHTML = `${svg(IC.clock)} Solicitudes por mes`;
+        body.innerHTML = monthSummaryHtml(vacations.filter(v=>v.status!=='rejected'), true);
+    } else if(type==='medical'){
+        head.innerHTML = `${svg(IC.stethoscope)} Descansos por mes`;
+        body.innerHTML = monthSummaryHtml(medicalRests.filter(r=>r.type!=='falta'), false);
+    }
+    document.getElementById('stat-modal').classList.add('active');
+}
+function closeStatDetail(){ document.getElementById('stat-modal').classList.remove('active'); }
+
+function toast(msg,type){ const t=document.createElement('div'); t.className='toast'+(type==='error'?' error':''); t.innerHTML=svg(type==='error'?IC.alert:IC.check)+`<span>${msg}</span>`; document.body.appendChild(t); setTimeout(()=>t.remove(),3000); }
+
+document.getElementById('member-modal').addEventListener('click', e=>{ if(e.target.id==='member-modal') closeMember(); });
+document.getElementById('register-modal').addEventListener('click', e=>{ if(e.target.id==='register-modal') closeRegister(); });
+document.getElementById('stat-modal').addEventListener('click', e=>{ if(e.target.id==='stat-modal') closeStatDetail(); });
+
+renderAll();
+Object.assign(window, { openRegister, prevMonth, nextMonth, closeMember, closeRegister, saveRegister, closeStatDetail, openStatDetail, approveReq, rejectReq, openMember, deleteRecord, registerAbsence });
+</script>
+</body>
+</html>

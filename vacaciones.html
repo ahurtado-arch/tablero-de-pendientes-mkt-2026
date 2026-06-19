@@ -406,6 +406,7 @@
         const db = getFirestore(fbApp);
         const auth = getAuth(fbApp);
         const vacCol = collection(db, "vacaciones");
+        const medCol = collection(db, "descansos_medicos");
         const notifCol = collection(db, "notificaciones");
         const APROBADORES = ["gcurotto@paraleloinmobiliaria.pe","ecornejo@paraleloinmobiliaria.pe"];
 
@@ -449,6 +450,7 @@
         });
         function subscribe(){
             onSnapshot(vacCol, snap => { vacations = snap.docs.map(d => ({ id: d.id, ...d.data() })); render(); }, () => {});
+            onSnapshot(medCol, snap => { medicalRests = snap.docs.map(d => ({ id: d.id, ...d.data() })); render(); }, () => {});
         }
 
         function parseDate(s) { const [y,m,d] = s.split('-').map(Number); return new Date(y, m-1, d); }
