@@ -265,6 +265,16 @@
         .toast svg { width: 18px; height: 18px; }
         @keyframes slideIn { from { transform: translateX(60px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
 
+        /* Panel admin: solicitudes por aprobar */
+        .admin-req { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+        .admin-req .who { font-size: 13px; font-weight: 700; color: var(--text); }
+        .admin-actions { display: flex; gap: 8px; }
+        .btn-approve, .btn-reject { border: none; border-radius: var(--radius-sm); padding: 8px 14px; font-family: inherit; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+        .btn-approve { background: var(--success); color: #fff; }
+        .btn-approve:hover { filter: brightness(1.07); }
+        .btn-reject { background: #fff; color: var(--tdc-red); border: 1px solid var(--border); }
+        .btn-reject:hover { background: rgba(255,55,0,0.08); border-color: var(--tdc-red); }
+
         @media (max-width: 700px) {
             .topbar, .wrap { padding-left: 18px; padding-right: 18px; }
             .welcome h1 { font-size: 22px; }
@@ -334,6 +344,17 @@
             <div class="req-body" id="requests-list"></div>
         </div>
         </div>
+
+        <!-- Panel de administrador (solo Gabriela y Eduardo) -->
+        <div class="card" id="admin-card" style="display:none;">
+            <div class="card-head">
+                <h2>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="9"/></svg>
+                    Solicitudes por aprobar <span id="admin-pending-count" style="font-size:12px;color:var(--text-faint);font-weight:500;"></span>
+                </h2>
+            </div>
+            <div class="req-body" id="admin-pending"></div>
+        </div>
     </div>
 
     <div class="modal" id="request-modal">
@@ -376,9 +397,19 @@
         </div>
     </div>
 
-    <script>
-        // ====== Persona logueada: llega por ?member=<nombre> desde la plataforma ======
-        const CURRENT_MEMBER_ID = 1; // fallback si no llega el parámetro
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+        import { getFirestore, collection, doc, addDoc, updateDoc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
+
+        const fbApp = initializeApp({apiKey:"AIzaSyDb5rQYu5_Ukf5AQ77zz8O6Si1MUdGcz_w",authDomain:"tdc-calendario-av.firebaseapp.com",projectId:"tdc-calendario-av",storageBucket:"tdc-calendario-av.firebasestorage.app",messagingSenderId:"393165602286",appId:"1:393165602286:web:702df05a4a4aa6ef3662ff",measurementId:"G-9NGVTJVFDQ"});
+        const db = getFirestore(fbApp);
+        const auth = getAuth(fbApp);
+        const vacCol = collection(db, "vacaciones");
+        const notifCol = collection(db, "notificaciones");
+        const APROBADORES = ["gcurotto@paraleloinmobiliaria.pe","ecornejo@paraleloinmobiliaria.pe"];
+
+        // ====== Persona logueada (sesión de Firebase, mismo origen que el tablero) ======
         const REQUESTED_MEMBER = new URLSearchParams((location.hash||'').replace(/^#/,'')).get('member') || new URLSearchParams(location.search).get('member');
         function normName(s){ return (s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().trim(); }
 
@@ -386,32 +417,39 @@
         const monthNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
         const VACATION_YEAR = 2026, DAYS_PER_MONTH = 2.5, MAX_ACCRUAL = 30;
 
-        const initialMembers = [
-            { id: 1, name: 'Johan Gálvez', role: 'Coordinador Marca', joinDate: '2026-01-01', carryover: 0, debt: 0, color: colorPalette[0] },
-            { id: 2, name: 'Pablo Caillahua', role: 'Coordinador Audiovisual', joinDate: '2026-01-01', carryover: 0, debt: 0, color: colorPalette[1] },
-            { id: 3, name: 'Ana Paula Hurtado', role: 'Asistente de Marketing', joinDate: '2026-01-01', carryover: 0, debt: 0, color: colorPalette[2] },
-            { id: 4, name: 'Diego David', role: 'Jefe de Publicidad', joinDate: '2026-01-01', carryover: 9, debt: 0, color: colorPalette[3] },
-            { id: 5, name: 'Eduardo Cornejo', role: 'Sub gerente de marketing', joinDate: '2026-01-01', carryover: 0, debt: 0, color: colorPalette[4] },
-            { id: 6, name: 'Gabriela Curotto', role: 'Jefe de Marketing', joinDate: '2026-01-01', carryover: 0, debt: 0, color: colorPalette[5] }
+        const MEMBERS = [
+            { name: 'Johan Gálvez', email: 'jgalvez@paraleloinmobiliaria.pe', role: 'Coordinador Marca', joinDate: '2026-01-01', carryover: 0, debt: 0, color: colorPalette[0] },
+            { name: 'Pablo Caillahua', email: 'pcaillahua@paraleloinmobiliaria.pe', role: 'Coordinador Audiovisual', joinDate: '2026-01-01', carryover: 0, debt: 0, color: colorPalette[1] },
+            { name: 'Ana Paula Hurtado', email: 'ahurtado@paraleloinmobiliaria.pe', role: 'Asistente de Marketing', joinDate: '2026-01-01', carryover: 0, debt: 0, color: colorPalette[2] },
+            { name: 'Diego David', email: 'ddavid@paraleloinmobiliaria.pe', role: 'Jefe de Publicidad', joinDate: '2026-01-01', carryover: 9, debt: 0, color: colorPalette[3] },
+            { name: 'Eduardo Cornejo', email: 'ecornejo@paraleloinmobiliaria.pe', role: 'Sub gerente de marketing', joinDate: '2026-01-01', carryover: 0, debt: 0, color: colorPalette[4] },
+            { name: 'Gabriela Curotto', email: 'gcurotto@paraleloinmobiliaria.pe', role: 'Jefe de Marketing', joinDate: '2026-01-01', carryover: 0, debt: 0, color: colorPalette[5] }
         ];
 
+        function sameEmail(a, b){ return (a||'').toLowerCase() === (b||'').toLowerCase(); }
+        function memberByEmail(e){ return MEMBERS.find(m => sameEmail(m.email, e)); }
+        function memberByName(n){ return MEMBERS.find(m => normName(m.name) === normName(n)); }
+
+        let currentEmail = null, currentMember = MEMBERS[0], isApprover = false, ready = false;
+        let vacations = [], medicalRests = [];
         let currentDate = new Date();
 
-        function loadData() {
-            const d = localStorage.getItem('vacationData');
-            const parsed = d ? JSON.parse(d) : { members: initialMembers, vacations: [], medicalRests: [] };
-            if (!parsed.members) parsed.members = [];
-            if (!parsed.vacations) parsed.vacations = [];
-            if (!parsed.medicalRests) parsed.medicalRests = [];
-            // sincroniza nombre/cargo/color desde la config (y agrega miembros faltantes)
-            initialMembers.forEach(im => {
-                const m = parsed.members.find(x => x.id === im.id);
-                if (m) { m.name = im.name; m.role = im.role; m.color = im.color; }
-                else parsed.members.push({ ...im });
-            });
-            return parsed;
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                currentEmail = (user.email || '').toLowerCase();
+                currentMember = memberByEmail(currentEmail) || memberByName(REQUESTED_MEMBER) || MEMBERS[0];
+                isApprover = APROBADORES.includes(currentEmail);
+                if (!ready) { ready = true; subscribe(); }
+                render();
+            } else {
+                currentMember = memberByName(REQUESTED_MEMBER) || MEMBERS[0];
+                isApprover = false;
+                render();
+            }
+        });
+        function subscribe(){
+            onSnapshot(vacCol, snap => { vacations = snap.docs.map(d => ({ id: d.id, ...d.data() })); render(); }, () => {});
         }
-        function saveData(d) { localStorage.setItem('vacationData', JSON.stringify(d)); }
 
         function parseDate(s) { const [y,m,d] = s.split('-').map(Number); return new Date(y, m-1, d); }
         function toISO(date) { return `${date.getFullYear()}-${String(date.getMonth()+1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`; }
@@ -428,14 +466,6 @@
             return Math.max(0, Math.min(12, m));
         }
         function accruedDays(member) { return Math.min(MAX_ACCRUAL, monthsWorked(member.joinDate) * DAYS_PER_MONTH); }
-
-        function getMember(data) {
-            if (REQUESTED_MEMBER) {
-                const found = data.members.find(m => normName(m.name) === normName(REQUESTED_MEMBER));
-                if (found) return found;
-            }
-            return data.members.find(m => m.id === CURRENT_MEMBER_ID) || data.members[0];
-        }
 
         function svg(paths) {
             return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${paths}</svg>`;
@@ -462,8 +492,7 @@
         }
 
         function render() {
-            const data = loadData();
-            const member = getMember(data);
+            const member = currentMember;
 
             const initials = member.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0,2);
             const av = document.getElementById('welcome-avatar');
@@ -476,9 +505,9 @@
             // Métricas
             const accrued = accruedDays(member);
             const total = accrued + (member.carryover||0) - Math.abs(member.debt||0);
-            const taken = data.vacations.filter(v => v.memberId === member.id && v.status === 'approved').reduce((s,v) => s+v.days, 0);
+            const taken = vacations.filter(v => sameEmail(v.memberEmail, member.email) && v.status === 'approved').reduce((s,v) => s+v.days, 0);
             const remaining = total - taken;
-            const medical = data.medicalRests.filter(r => r.memberId === member.id && r.type !== 'falta').reduce((s,r) => s+r.days, 0);
+            const medical = medicalRests.filter(r => sameEmail(r.memberEmail, member.email) && r.type !== 'falta').reduce((s,r) => s+r.days, 0);
 
             document.getElementById('metrics').innerHTML = `
                 <div class="metric">
@@ -514,14 +543,15 @@
                     <div class="metric-link">${svg(IC.list)} Ver detalle</div>
                 </div>`;
 
-            renderCalendar(data, member);
-            renderRequests(data, member);
+            renderCalendar(member);
+            renderRequests(member);
+            renderAdmin();
         }
 
-        function renderRequests(data, member) {
+        function renderRequests(member) {
             const cont = document.getElementById('requests-list');
-            const mine = data.vacations
-                .filter(v => v.memberId === member.id)
+            const mine = vacations
+                .filter(v => sameEmail(v.memberEmail, member.email))
                 .sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
 
             if (mine.length === 0) {
@@ -540,7 +570,7 @@
             }).join('');
         }
 
-        function renderCalendar(data, member) {
+        function renderCalendar(member) {
             const year = currentDate.getFullYear(), month = currentDate.getMonth();
             document.getElementById('cal-month').textContent = `${monthNames[month]} ${year}`;
             const first = new Date(year, month, 1);
@@ -566,9 +596,9 @@
                 num.textContent = d;
                 cell.appendChild(num);
 
-                const dayVacs = data.vacations.filter(v => dateStr >= v.startDate && dateStr <= v.endDate && v.status !== 'rejected');
-                const dayMed = data.medicalRests.filter(r => dateStr >= r.startDate && dateStr <= r.endDate && r.type !== 'falta');
-                const mineToday = dayVacs.some(v => v.memberId === member.id);
+                const dayVacs = vacations.filter(v => dateStr >= v.startDate && dateStr <= v.endDate && v.status !== 'rejected');
+                const dayMed = medicalRests.filter(r => dateStr >= r.startDate && dateStr <= r.endDate && r.type !== 'falta');
+                const mineToday = dayVacs.some(v => sameEmail(v.memberEmail, member.email));
                 if (mineToday) cell.classList.add('mine');
 
                 if (dayVacs.length || dayMed.length) {
@@ -578,19 +608,19 @@
                     dayVacs.forEach(v => {
                         const dot = document.createElement('span');
                         dot.className = 'cal-dot';
-                        const mine = v.memberId === member.id;
+                        const mine = sameEmail(v.memberEmail, member.email);
                         dot.style.background = v.status === 'pending' ? 'var(--warning)' : (mine ? 'var(--celeste)' : 'var(--text-faint)');
                         dots.appendChild(dot);
-                        const mb = data.members.find(m => m.id === v.memberId);
-                        names.push((mb ? mb.name : '?') + (v.status === 'pending' ? ' (pendiente)' : ''));
+                        const mb = memberByEmail(v.memberEmail);
+                        names.push((mb ? mb.name : (v.memberName || '?')) + (v.status === 'pending' ? ' (pendiente)' : ''));
                     });
                     dayMed.forEach(r => {
                         const dot = document.createElement('span');
                         dot.className = 'cal-dot';
                         dot.style.background = 'var(--success)';
                         dots.appendChild(dot);
-                        const mb = data.members.find(m => m.id === r.memberId);
-                        names.push((mb ? mb.name : '?') + ' (descanso)');
+                        const mb = memberByEmail(r.memberEmail);
+                        names.push((mb ? mb.name : (r.memberName || '?')) + ' (descanso)');
                     });
                     cell.appendChild(dots);
                     cell.title = names.join('\n');
@@ -601,17 +631,16 @@
 
         // ===== Detalle de tomados / descanso médico =====
         function openDetail(type) {
-            const data = loadData();
-            const member = getMember(data);
+            const member = currentMember;
             const titleEl = document.getElementById('detail-title');
             const listEl = document.getElementById('detail-list');
             let records, title, totalLabel;
 
             if (type === 'medical') {
-                records = data.medicalRests.filter(r => r.memberId === member.id && r.type !== 'falta');
+                records = medicalRests.filter(r => sameEmail(r.memberEmail, member.email) && r.type !== 'falta');
                 title = `${svg(IC.stethoscope)} Descanso médico`;
             } else {
-                records = data.vacations.filter(v => v.memberId === member.id && v.status === 'approved');
+                records = vacations.filter(v => sameEmail(v.memberEmail, member.email) && v.status === 'approved');
                 title = `${svg(IC.plane)} Días tomados`;
             }
             records = records.slice().sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
@@ -665,18 +694,59 @@
             } else hint.textContent = '';
         }
 
-        function submitRequest() {
+        async function submitRequest() {
             const s = document.getElementById('req-start').value, e = document.getElementById('req-end').value;
             const notes = document.getElementById('req-notes').value;
             if (!s || !e) { toast('Completa las fechas de inicio y fin', 'error'); return; }
             const n = daysBetween(s, e);
             if (n <= 0) { toast('La fecha de fin debe ser posterior a la de inicio', 'error'); return; }
-            const data = loadData();
-            data.vacations.push({ id: Date.now(), memberId: getMember(data).id, startDate: s, endDate: e, days: n, status: 'pending', notes, requestedAt: toISO(new Date()) });
-            saveData(data);
-            closeRequest();
-            render();
-            toast('Solicitud enviada. Queda pendiente de aprobación.');
+            const m = currentMember;
+            try {
+                await addDoc(vacCol, { memberEmail: m.email, memberName: m.name, startDate: s, endDate: e, days: n, status: 'pending', notes, createdAt: serverTimestamp() });
+                for (const ap of APROBADORES) {
+                    await addDoc(notifCol, { de: m.email, scope: ap, icono: '🏖️', titulo: 'Solicitud de vacaciones', mensaje: `${m.name} solicitó vacaciones: ${fmtRange(s, e)} (${n} día(s)).`, link: 7, readBy: [], createdAt: serverTimestamp() });
+                }
+                closeRequest();
+                toast('Solicitud enviada. Queda pendiente de aprobación.');
+            } catch (err) {
+                toast('No se pudo enviar (revisa permisos de Firestore).', 'error');
+            }
+        }
+
+        // ===== Aprobación (solo Gabriela y Eduardo) =====
+        function renderAdmin() {
+            const card = document.getElementById('admin-card');
+            if (!isApprover) { card.style.display = 'none'; return; }
+            card.style.display = '';
+            const pending = vacations.filter(v => v.status === 'pending').sort((a, b) => new Date(a.startDate) - new Date(b.startDate));
+            document.getElementById('admin-pending-count').textContent = pending.length ? `· ${pending.length}` : '';
+            const cont = document.getElementById('admin-pending');
+            if (!pending.length) { cont.innerHTML = '<div class="req-empty">No hay solicitudes pendientes. 🎉</div>'; return; }
+            cont.innerHTML = pending.map(v => `
+                <div class="req-item pending">
+                    <div class="admin-req">
+                        <div>
+                            <div class="who">${(v.memberName || '—').replace(/</g,'&lt;')}</div>
+                            <div class="req-range">${fmtRange(v.startDate, v.endDate)} · ${v.days} día(s)</div>
+                            ${v.notes ? `<div class="req-meta">${(v.notes + '').replace(/</g,'&lt;')}</div>` : ''}
+                        </div>
+                        <div class="admin-actions">
+                            <button class="btn-approve" onclick="approveReq('${v.id}')">Aprobar</button>
+                            <button class="btn-reject" onclick="rejectReq('${v.id}')">Rechazar</button>
+                        </div>
+                    </div>
+                </div>`).join('');
+        }
+        async function decide(id, approved) {
+            if (!isApprover) return;
+            const v = vacations.find(x => x.id === id); if (!v) return;
+            try {
+                await updateDoc(doc(db, 'vacaciones', id), { status: approved ? 'approved' : 'rejected', decidedBy: currentEmail, decidedAt: serverTimestamp() });
+                await addDoc(notifCol, { de: currentEmail, scope: v.memberEmail, icono: approved ? '✅' : '❌', titulo: approved ? 'Vacaciones aprobadas' : 'Vacaciones rechazadas', mensaje: `Tus vacaciones ${fmtRange(v.startDate, v.endDate)} fueron ${approved ? 'aprobadas' : 'rechazadas'}.`, link: 7, readBy: [], createdAt: serverTimestamp() });
+                toast(approved ? 'Solicitud aprobada ✓' : 'Solicitud rechazada');
+            } catch (err) {
+                toast('No se pudo guardar (revisa permisos).', 'error');
+            }
         }
 
         function toast(msg, type) {
@@ -686,6 +756,10 @@
             document.body.appendChild(t);
             setTimeout(() => t.remove(), 3200);
         }
+
+        window.approveReq = id => decide(id, true);
+        window.rejectReq = id => decide(id, false);
+        Object.assign(window, { openRequest, closeRequest, submitRequest, prevMonth, nextMonth, openDetail, closeDetail });
 
         document.getElementById('req-start').addEventListener('change', updateDaysHint);
         document.getElementById('req-end').addEventListener('change', updateDaysHint);
