@@ -463,6 +463,8 @@ window.clearPF=()=>{$('pfBuscar').value='';$('pfEstado').value='';$('pfPri').val
 
 function renderProyectos(){
   if(!$('proyList'))return;
+  const adminEdit=isAdmin();
+  ['btnNewProy','btnSeedProy','btnLoadUnid'].forEach(id=>{const b=$(id);if(b)b.style.display=adminEdit?'':'none';});
   $('pTotal').textContent=proyectos.length;
   $('pPrev').textContent=proyectos.filter(p=>p.estado==='Preventa').length;
   $('pConstr').textContent=proyectos.filter(p=>p.estado==='En construcción').length;
@@ -487,12 +489,12 @@ function renderProyectos(){
       unidCell=`<div class="unid-cell">
         <span class="unid-count"><span class="${dispU>0?'uc-disp':'uc-zero'}">${dispU}</span> / ${totU} disp.</span>
         <div class="unid-bar"><div class="unid-bar-fill" style="width:${pct}%;${dispU===0?'background:var(--red)':''}"></div></div>
-        <button class="btn-unid" onclick="openUnidModal('${p.id}')">Ver / editar</button>
+        <button class="btn-unid" onclick="openUnidModal('${p.id}')">${adminEdit?'Ver / editar':'Ver'}</button>
       </div>`;
     }else{
       unidCell=`<div class="unid-cell">
         <span class="unid-count" style="color:var(--muted);font-weight:600;">${totU?totU+' und. (sin cargar)':'—'}</span>
-        <button class="btn-unid" onclick="openUnidModal('${p.id}')">+ Agregar</button>
+        ${adminEdit?`<button class="btn-unid" onclick="openUnidModal('${p.id}')">+ Agregar</button>`:''}
       </div>`;
     }
     const tr=document.createElement('tr');
@@ -507,8 +509,8 @@ function renderProyectos(){
       <td><div class="proy-dir">${esc(p.direccion||'—')}</div></td>
       <td>${resp}</td>
       <td class="proy-acts">
-        <button class="btn-edit" onclick="openEditProy('${p.id}')">Editar</button>
-        <button class="btn-del" onclick="deleteProy('${p.id}','${(p.comercial||'').replace(/'/g,"\\'")}')">🗑</button>
+        ${adminEdit?`<button class="btn-edit" onclick="openEditProy('${p.id}')">Editar</button>
+        <button class="btn-del" onclick="deleteProy('${p.id}','${(p.comercial||'').replace(/'/g,"\\'")}')">🗑</button>`:'<span style="color:var(--text-faint);font-size:11px;">Solo lectura</span>'}
       </td>`;
     tbody.appendChild(tr);
   });
@@ -551,7 +553,9 @@ function fillProy(p){
   else if(nombre){$('pRespSel').value='__otro';$('pRespNombreRow').style.display='block';}
   else{$('pRespSel').value='';$('pRespNombreRow').style.display='none';}
 }
+const guardAdmin=()=>{if(!isAdmin()){showToast('Solo los administradores pueden editar','🔒');return false;}return true;};
 window.openProyModal=()=>{
+  if(!guardAdmin())return;
   editProyId=null;
   $('proyMTitle').textContent='Nuevo Proyecto';
   fillProy({});
@@ -559,6 +563,7 @@ window.openProyModal=()=>{
   setTimeout(()=>$('pComercial').focus(),100);
 };
 window.openEditProy=id=>{
+  if(!guardAdmin())return;
   editProyId=id;const p=proyectos.find(x=>x.id===id)||{};
   $('proyMTitle').textContent='Editar Proyecto';
   fillProy(p);
@@ -567,6 +572,7 @@ window.openEditProy=id=>{
 window.closeProyModal=()=>{$('proyModal').style.display='none';editProyId=null;};
 
 window.saveProy=async()=>{
+  if(!guardAdmin())return;
   const comercial=$('pComercial').value.trim();
   if(!comercial){$('pComercial').focus();showToast('El nombre comercial es obligatorio','⚠️');return;}
   const btn=$('btnSaveProy');btn.disabled=true;btn.textContent='Guardando...';setSync('s');
@@ -590,6 +596,7 @@ window.saveProy=async()=>{
 };
 
 window.deleteProy=async(id,nombre)=>{
+  if(!guardAdmin())return;
   if(!confirm(`¿Eliminar el proyecto "${nombre}"?`))return;
   setSync('s');try{await deleteDoc(doc(db,'proyectos',id));showToast('Proyecto eliminado','🗑');setSync('ok');}catch(e){showToast('Error','⚠️');setSync('error');}
 };
@@ -629,15 +636,25 @@ window.addUnidRow=(u)=>{
 };
 window.openUnidModal=id=>{
   unidProyId=id;const p=proyectos.find(x=>x.id===id)||{};
-  $('unidProyName').textContent=p.comercial||'Proyecto';
+  const ro=!isAdmin();
+  $('unidProyName').textContent=(p.comercial||'Proyecto')+(ro?' (solo lectura)':'');
   const tbody=$('unidList');tbody.innerHTML='';
   (p.unidades||[]).forEach(u=>tbody.insertAdjacentHTML('beforeend',unidRowHTML(u)));
-  if(!tbody.children.length)tbody.innerHTML='<tr class="unid-empty-row"><td colspan="8" class="unid-empty">Aún no hay unidades. Usa «+ Agregar unidad» para crearlas.</td></tr>';
+  if(!tbody.children.length)tbody.innerHTML=`<tr class="unid-empty-row"><td colspan="9" class="unid-empty">Aún no hay unidades${ro?'.':'. Usa «+ Agregar unidad» para crearlas.'}</td></tr>`;
   refreshUnidSummary();
+  // permisos: no-admin solo visualiza
+  $('btnSaveUnid').style.display=ro?'none':'';
+  document.querySelector('#unidModal .btn-add-unid').style.display=ro?'none':'';
+  $('btnCancelUnid').textContent=ro?'Cerrar':'Cancelar';
+  if(ro){
+    document.querySelectorAll('#unidList input,#unidList select').forEach(el=>{el.disabled=true;});
+    document.querySelectorAll('#unidList .unid-rm').forEach(b=>{b.style.display='none';});
+  }
   $('unidModal').style.display='block';
 };
 window.closeUnidModal=()=>{$('unidModal').style.display='none';unidProyId=null;};
 window.saveUnid=async()=>{
+  if(!guardAdmin())return;
   if(!unidProyId)return;
   const unidades=[...document.querySelectorAll('#unidList tr')].filter(r=>!r.classList.contains('unid-empty-row')).map(r=>({
     codigo:r.querySelector('.u-cod').value.trim(),
@@ -667,6 +684,7 @@ const SEED_PROYECTOS=[
   {comercial:'Las Moras 3',tecnico:'LM 3',estado:'Preventa',prioridad:'Alta',anio:'2026',pisos:'5',totalUnidades:'14',metraje:'145 m² - 371 m²',tipologias:'Flats, dúplex y tríplex · 3 – 5 dorm',direccion:'Ca. Las Moras, Miraflores',precios:'$ 366,000 - $ 779,000',descripcion:'Las Moras 3, en Miraflores — nueva etapa con flats, dúplex y tríplex desde 145 m² hasta 371 m². (Verificar dirección y datos en ficha oficial.)',unidades:[]}
 ];
 window.seedProyectos=async()=>{
+  if(!guardAdmin())return;
   const existentes=new Set(proyectos.map(p=>(p.comercial||'').toLowerCase()));
   const faltan=SEED_PROYECTOS.filter(p=>!existentes.has(p.comercial.toLowerCase()));
   if(!faltan.length){showToast('Los proyectos ya están cargados','ℹ️');return;}
@@ -689,6 +707,7 @@ const UNITS_BY_PROYECTO={
   "Las Moras 3": [{codigo:"S01",tipologia:"Flat",area:"178 m²",dorm:"3",vista:"Exterior",precio:"$385.000",estado:"Disponible"},{codigo:"S02",tipologia:"Dúplex",area:"305 m²",dorm:"4 + Escritorio",vista:"Exterior",precio:"$638.000",estado:"Disponible"},{codigo:"101",tipologia:"Flat",area:"145 m²",dorm:"3",vista:"Exterior",precio:"$366.000",estado:"Disponible"},{codigo:"102",tipologia:"Flat",area:"150 m²",dorm:"3",vista:"Exterior",precio:"$379.000",estado:"Disponible"},{codigo:"201",tipologia:"Flat",area:"150 m²",dorm:"3",vista:"Exterior",precio:"$385.000",estado:"Disponible"},{codigo:"202",tipologia:"Flat",area:"185 m²",dorm:"4",vista:"Exterior",precio:"$477.000",estado:"Disponible"},{codigo:"203",tipologia:"Dúplex",area:"146 m²",dorm:"3",vista:"Exterior",precio:"$376.000",estado:"Disponible"},{codigo:"301",tipologia:"Flat",area:"150 m²",dorm:"3",vista:"Exterior",precio:"$392.000",estado:"Disponible"},{codigo:"302",tipologia:"Flat",area:"185 m²",dorm:"4",vista:"Exterior",precio:"$485.000",estado:"Disponible"},{codigo:"401",tipologia:"Flat",area:"150 m²",dorm:"3",vista:"Exterior",precio:"$399.000",estado:"Disponible"},{codigo:"402",tipologia:"Flat",area:"185 m²",dorm:"4",vista:"Exterior",precio:"$494.000",estado:"Disponible"},{codigo:"403",tipologia:"Tríplex",area:"219 m²",dorm:"3",vista:"Exterior",precio:"$520.000",estado:"Disponible"},{codigo:"501",tipologia:"Dúplex",area:"299 m²",dorm:"4",vista:"Exterior",precio:"$629.000",estado:"Disponible"},{codigo:"502",tipologia:"Dúplex",area:"371 m²",dorm:"5",vista:"Exterior",precio:"$779.000",estado:"Disponible"}]
 };
 window.loadUnidadesPrecios=async()=>{
+  if(!guardAdmin())return;
   const objetivo=proyectos.filter(p=>UNITS_BY_PROYECTO[p.comercial]);
   if(!objetivo.length){showToast('Primero crea los proyectos (Cargar proyectos iniciales)','ℹ️');return;}
   const resumen=objetivo.map(p=>`${p.comercial} (${UNITS_BY_PROYECTO[p.comercial].length})`).join(', ');
