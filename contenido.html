@@ -1016,8 +1016,34 @@ function copyHash(id,btn){const f=findRow(id);if(!f)return;copyMini(f.r.h||'',bt
 function copyCopyTags(id,btn){const f=findRow(id);if(!f)return;const c=f.r.c||'';const h=f.r.h||'';copyMini((c+(h?'\n\n'+h:'')).trim(),btn);}
 function delRow(id){const f=findRow(id);if(!f)return;f.w.rows=f.w.rows.filter(x=>x.id!==id);renderParrilla();renderGoals();}
 function addPiece(wi){weeks[wi].rows.push({id:++rid,dia:"Lun",num:"",fmt:"Reel",pilar:"El proyecto, desde la vida",t:"",c:"",h:"",red:["pend","pend","na"],st:"pendiente",r:"Pablo"});renderParrilla();renderGoals();}
-function setWeekField(wi,fld,v){if(!weeks[wi])return;weeks[wi][fld]=v;if(fld==='label')renderParrilla();}
-function addWeek(){weeks.push({label:'Semana '+(weeks.length+1),range:'',rows:[]});renderParrilla();renderGoals();}
+function parseWeekRange(str){
+  const s=String(str||'');
+  const nums=(s.match(/\d+/g)||[]).map(Number);
+  let ab=MESab[curM];
+  const mon=s.match(/[A-Za-z]{3,}/g);
+  if(mon&&mon.length){const last=mon[mon.length-1].slice(0,3).toLowerCase();const idx=MESab.findIndex(m=>m.toLowerCase()===last);if(idx>=0)ab=MESab[idx];}
+  const start=nums.length?nums[0]:1;
+  const end=nums.length>1?nums[1]:start;
+  return {start,end,ab};
+}
+function cascadeWeeks(fromIndex){
+  const dim=daysInMonth(curY,curM);
+  const p=parseWeekRange(weeks[fromIndex].range);
+  let prevEnd=p.end,ab=p.ab;
+  for(let j=fromIndex+1;j<weeks.length;j++){
+    let start=Math.min(prevEnd+1,dim);
+    let end=Math.min(start+6,dim);
+    weeks[j].range=start+' – '+end+' '+ab;
+    prevEnd=end;
+  }
+}
+function setWeekField(wi,fld,v){if(!weeks[wi])return;weeks[wi][fld]=v;if(fld==='range')cascadeWeeks(wi);if(fld==='label'||fld==='range')renderParrilla();}
+function addWeek(){
+  const dim=daysInMonth(curY,curM);let range;
+  if(weeks.length){const p=parseWeekRange(weeks[weeks.length-1].range);const start=Math.min(p.end+1,dim);const end=Math.min(start+6,dim);range=start+' – '+end+' '+p.ab;}
+  else{range='1 – '+Math.min(7,dim)+' '+MESab[curM];}
+  weeks.push({label:'Semana '+(weeks.length+1),range,rows:[]});renderParrilla();renderGoals();
+}
 function delWeek(wi){const w=weeks[wi];if(!w)return;if(w.rows.length&&!confirm('Esta semana tiene '+w.rows.length+' pieza(s). ¿Eliminar la semana y todo su contenido?'))return;weeks.splice(wi,1);renderParrilla();renderGoals();}
 function dragRow(e,id){dragData={type:'prow',id};e.dataTransfer.effectAllowed='move';const r=e.currentTarget.closest('.prow');if(r)r.classList.add('dragging');}
 function dragRowEnd(e){const r=e.currentTarget.closest('.prow');if(r)r.classList.remove('dragging');}
