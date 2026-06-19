@@ -146,7 +146,7 @@ window.switchSection=n=>{
   if(n===4){const f=$('kpisFrame');if(f&&!f.src)f.src=f.dataset.src;}
   if(n===5){const f=$('contenidoFrame');if(f&&!f.src)f.src=f.dataset.src;}
   if(n===6)renderProyectos();
-  if(n===7){const f=$('vacacionesFrame');if(f&&!f.src)f.src=f.dataset.src;}
+  if(n===7){const f=$('vacacionesFrame');if(f&&!f.src){const nm=getUserFullName();f.src=f.dataset.src+(nm?'#member='+encodeURIComponent(nm):'');}}
 };
 
 // BOARD FILTERS

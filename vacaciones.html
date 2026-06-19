@@ -377,8 +377,10 @@
     </div>
 
     <script>
-        // ====== Persona fija para diseñar (luego será el login) ======
-        const CURRENT_MEMBER_ID = 1;
+        // ====== Persona logueada: llega por ?member=<nombre> desde la plataforma ======
+        const CURRENT_MEMBER_ID = 1; // fallback si no llega el parámetro
+        const REQUESTED_MEMBER = new URLSearchParams((location.hash||'').replace(/^#/,'')).get('member') || new URLSearchParams(location.search).get('member');
+        function normName(s){ return (s||'').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase().trim(); }
 
         const colorPalette = ['#378ADD','#1D9E75','#D85A30','#7F77DD','#BA7517','#534AB7'];
         const monthNames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
@@ -389,7 +391,8 @@
             { id: 2, name: 'Pablo Caillahua', role: 'Diseñador', joinDate: '2026-01-01', carryover: 0, debt: 0, color: colorPalette[1] },
             { id: 3, name: 'Ana Paula Hurtado', role: 'Community manager', joinDate: '2026-01-01', carryover: 0, debt: 0, color: colorPalette[2] },
             { id: 4, name: 'Diego David', role: 'Audiovisual', joinDate: '2026-01-01', carryover: 9, debt: 0, color: colorPalette[3] },
-            { id: 5, name: 'Eduardo Cornejo', role: 'Performance', joinDate: '2026-01-01', carryover: 0, debt: 0, color: colorPalette[4] }
+            { id: 5, name: 'Eduardo Cornejo', role: 'Performance', joinDate: '2026-01-01', carryover: 0, debt: 0, color: colorPalette[4] },
+            { id: 6, name: 'Gabriela Curotto', role: 'Dirección de marketing', joinDate: '2026-01-01', carryover: 0, debt: 0, color: colorPalette[5] }
         ];
 
         let currentDate = new Date();
@@ -419,7 +422,13 @@
         }
         function accruedDays(member) { return Math.min(MAX_ACCRUAL, monthsWorked(member.joinDate) * DAYS_PER_MONTH); }
 
-        function getMember(data) { return data.members.find(m => m.id === CURRENT_MEMBER_ID) || data.members[0]; }
+        function getMember(data) {
+            if (REQUESTED_MEMBER) {
+                const found = data.members.find(m => normName(m.name) === normName(REQUESTED_MEMBER));
+                if (found) return found;
+            }
+            return data.members.find(m => m.id === CURRENT_MEMBER_ID) || data.members[0];
+        }
 
         function svg(paths) {
             return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${paths}</svg>`;
@@ -656,7 +665,7 @@
             const n = daysBetween(s, e);
             if (n <= 0) { toast('La fecha de fin debe ser posterior a la de inicio', 'error'); return; }
             const data = loadData();
-            data.vacations.push({ id: Date.now(), memberId: CURRENT_MEMBER_ID, startDate: s, endDate: e, days: n, status: 'pending', notes, requestedAt: toISO(new Date()) });
+            data.vacations.push({ id: Date.now(), memberId: getMember(data).id, startDate: s, endDate: e, days: n, status: 'pending', notes, requestedAt: toISO(new Date()) });
             saveData(data);
             closeRequest();
             render();
