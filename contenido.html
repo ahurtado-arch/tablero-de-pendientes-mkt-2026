@@ -961,7 +961,7 @@ function rowRead(p){
     <div><button class="ddbtn dd-resp plain" onclick="openDD(event,${p.id},'r')"><span class="ravatar sm" style="background:${rs[0]};color:${rs[1]}">${inits(p.r)}</span><span class="dd-lbl">${escT(p.r)}</span>${chev()}</button></div>
     ${[0,1,2].map(i=>{const c=redSoft[p.red[i]]||['#fff','var(--ink)'];return `<div><button class="ddbtn dd-net" style="background:${c[0]};color:${c[1]}" onclick="openDD(event,${p.id},'red',${i})"><span class="dd-lbl">${redLbl[p.red[i]]||'—'}</span>${chev()}</button></div>`;}).join('')}
     <div class="ractions">
-      ${p.st==='retrasado'?`<button class="ract" onclick="moveToNextMonth(${p.id})" title="Mandar al mes siguiente"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 5l7 7-7 7M5 12h15"/></svg></button>`:''}
+      <button class="ract" onclick="moveToNextMonth(${p.id})" title="Mandar al mes siguiente"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M13 5l7 7-7 7M5 12h15"/></svg></button>
       <button class="ract" onclick="copyCopyTags(${p.id},this)" title="Copiar copy y hashtags"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 012-2h10"/></svg></button>
       <button class="ract del" onclick="delRow(${p.id})" title="Eliminar"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></button>
     </div>
