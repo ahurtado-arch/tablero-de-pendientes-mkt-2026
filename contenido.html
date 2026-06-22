@@ -599,7 +599,7 @@ select.cell-input{cursor:pointer}
 
       <div class="toolbar">
         <div class="filter">Pilar <select><option>Todos</option><option>El proyecto, desde la vida</option><option>Vida de barrio</option><option>Cómo construimos</option><option>Asesoría que da confianza</option></select></div>
-        <div class="filter">Estado <select><option>Todos</option><option>Publicado</option><option>En proceso</option><option>Pendiente</option></select></div>
+        <div class="filter">Estado <select><option>Todos</option><option>Publicado</option><option>Programado</option><option>En proceso</option><option>Pendiente</option></select></div>
         <div class="filter">Responsable <select><option>Todos</option><option>Pablo</option><option>Johan</option><option>Ana Paula</option><option>Gabriela</option><option>Diego</option><option>Eduardo</option></select></div>
         <div class="spacer"></div>
         <button class="btn-ghost"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="15" height="15"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>Exportar</button>
@@ -821,8 +821,8 @@ function pickMonth(y,m){closeMonthPanel();switchToMonth(y,m);}
 function closeMonthPanel(){const el=document.getElementById('month-panel');if(el)el.innerHTML='';document.removeEventListener('mousedown',mpOutside,true);}
 function mpOutside(e){if(!e.target.closest('#month-panel')&&!e.target.closest('#monthPick'))closeMonthPanel();}
 
-const stMap={publicado:'Publicado',proceso:'En proceso',pendiente:'Pendiente'};
-const stBadge={publicado:'b-green',proceso:'b-amber',pendiente:'b-gray'};
+const stMap={publicado:'Publicado',programado:'Programado',proceso:'En proceso',pendiente:'Pendiente'};
+const stBadge={publicado:'b-green',programado:'b-blue',proceso:'b-amber',pendiente:'b-gray'};
 const pubMap={pub:'Publicado',no:'Sin publicar',prog:'Programado'};
 const pubBadge={pub:'b-green',no:'b-gray',prog:'b-blue'};
 const NET=['FB','IG','LK'];
@@ -830,7 +830,7 @@ const fmtList=['Reel','Diseño','Foto','Carrusel','GIF','Video'];
 const respList=['Pablo','Johan','Ana Paula','Gabriela','Diego','Eduardo'];
 const respColor={'Pablo':['#EAF1F8','#2E5B8A'],'Johan':['#EEE9F8','#7A5CC0'],'Ana Paula':['#E7F6EF','#1BA572'],'Gabriela':['#FCF3E3','#B07410'],'Diego':['#FBEAEE','#C43B63'],'Eduardo':['#E2F1F0','#1E8A7A']};
 function respBadge(name){const c=respColor[name]||['var(--bg)','var(--muted)'];return `<span class="badge" style="background:${c[0]};color:${c[1]}">${name}</span>`;}
-const stList=[['publicado','Publicado'],['proceso','En proceso'],['pendiente','Pendiente']];
+const stList=[['publicado','Publicado'],['programado','Programado'],['proceso','En proceso'],['pendiente','Pendiente']];
 const pubList=[['pub','Publicado'],['no','Sin publicar'],['prog','Programado']];
 function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/"/g,'&quot;');}
 function escT(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
@@ -840,7 +840,7 @@ function optn(v,l,sel){return `<option value="${esc(v)}" ${sel?'selected':''}>${
 const dias=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
 const redList=[['na','No va'],['pend','Pendiente'],['prog','Programado'],['pub','Publicado']];
 const redSoft={na:['#FAFBFC','#9AA8B8'],pend:['#F1F4F8','#6B7A8D'],prog:['#EAF1F8','#2E5B8A'],pub:['#E7F6EF','#1BA572']};
-const stSoft={publicado:['#E7F6EF','#1BA572'],proceso:['#FCF3E3','#B07410'],pendiente:['#F1F4F8','#6B7A8D']};
+const stSoft={publicado:['#E7F6EF','#1BA572'],programado:['#EAF1F8','#2E5B8A'],proceso:['#FCF3E3','#B07410'],pendiente:['#F1F4F8','#6B7A8D']};
 const pilarSoft={'El proyecto, desde la vida':['#FDEAE9','#C4140C'],'Vida de barrio':['#E7F0FA','#2E5B8A'],'Cómo construimos':['#EFEAF8','#6A4FB0'],'Asesoría que da confianza':['#FCF1DF','#B07410']};
 function selOpts(list,val){return list.map(o=>optn(o[0],o[1],o[0]===val)).join('');}
 function rowHTML(p){return rowRead(p);}
