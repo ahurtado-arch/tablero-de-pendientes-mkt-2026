@@ -210,6 +210,15 @@ window.switchSection=n=>{
   if(n===8){const f=$('inventarioFrame');if(f&&!f.src)f.src=f.dataset.src;}
 };
 
+// Oscurecer todo el tablero (incluido el sidebar) cuando un iframe abre un modal
+window.addEventListener('message',e=>{
+  if(!e.data||e.data.type!=='iframeModal')return;
+  const dim=$('frameDim');let fr=null;
+  document.querySelectorAll('iframe').forEach(f=>{if(f.contentWindow===e.source)fr=f;});
+  if(e.data.open){if(dim)dim.style.display='block';if(fr){fr.style.position='relative';fr.style.zIndex='260';}}
+  else{if(dim)dim.style.display='none';if(fr){fr.style.zIndex='';fr.style.position='';}}
+});
+
 // BOARD FILTERS
 function applyFilterVisibility(){
   const bf=$('boardFilters');if(bf)bf.style.display=myFilter==='mios'?'none':'contents';

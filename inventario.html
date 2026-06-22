@@ -259,9 +259,10 @@ window.openModal=id=>{
   document.getElementById('f-unidad').value=it?it.unidad||'':'';
   document.getElementById('f-notas').value=it?it.notas||'':'';
   document.getElementById('overlay').classList.add('open');
+  try{parent.postMessage({type:'iframeModal',open:true},'*');}catch(e){}
   setTimeout(()=>document.getElementById('f-nombre').focus(),50);
 };
-window.closeModal=()=>{document.getElementById('overlay').classList.remove('open');editId=null;};
+window.closeModal=()=>{document.getElementById('overlay').classList.remove('open');editId=null;try{parent.postMessage({type:'iframeModal',open:false},'*');}catch(e){}};
 
 window.saveItem=async()=>{
   const nombre=document.getElementById('f-nombre').value.trim();
