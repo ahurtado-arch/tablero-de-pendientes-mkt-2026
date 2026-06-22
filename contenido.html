@@ -119,6 +119,7 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .prow.row-late{background:#FDECEA;box-shadow:inset 3px 0 0 #E8261C}
 .prow.row-late:hover{background:#FCE0DD}
 .mini-toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:11px 20px;border-radius:11px;font-size:13px;font-weight:600;z-index:9999;box-shadow:0 12px 32px rgba(22,38,62,.3)}
+.parrilla-loading{padding:60px 20px;text-align:center;color:var(--muted);font-size:13.5px;font-weight:500}
 .prow:hover{background:#FBFCFE}
 /* ===== menús desplegables personalizados (edicion directa) ===== */
 .ddbtn{display:inline-flex;align-items:center;gap:6px;max-width:100%;width:100%;font-family:inherit;font-size:11.5px;font-weight:600;border:1px solid transparent;border-radius:20px;padding:6px 9px 6px 11px;cursor:pointer;line-height:1.2;transition:filter .12s,border-color .12s}
@@ -803,6 +804,9 @@ function findRow(id){for(const w of weeks){const r=w.rows.find(x=>x.id===id);if(
 const MES=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 const MESab=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
 let parrillas={},curY=2026,curM=4;          // curM 0-based (4 = Mayo)
+let dataLoaded=false;                         // true cuando Firestore ya respondio
+window.isLoaded=()=>dataLoaded;
+window.finishLoad=function(){ if(dataLoaded)return; dataLoaded=true; loadMonth(); updateMonthLabel(); renderParrilla(); renderGoals(); };
 function curKey(){return curY+'-'+String(curM+1).padStart(2,'0');}
 function daysInMonth(y,m){return new Date(y,m+1,0).getDate();}
 function weeksFor(y,m){const dim=daysInMonth(y,m),ab=MESab[m],ws=[];let s=1,n=1;while(s<=dim){const e=Math.min(s+6,dim);ws.push({label:'Semana '+n,range:s+' – '+e+' '+ab,rows:[]});s+=7;n++;}return ws;}
@@ -957,6 +961,7 @@ function styleResp(el){const c=respColor[el.value]||['#fff','var(--ink)'];el.sty
 function setRed(id,i,el){const f=findRow(id);if(f)f.r.red[i]=el.value;const c=redSoft[el.value]||['#fff','var(--ink)'];el.style.backgroundColor=c[0];el.style.color=c[1];}
 function setRedModal(id,i,v){const f=findRow(id);if(f)f.r.red[i]=v;renderEditModal();}
 function renderParrilla(){
+  if(!dataLoaded){const b=document.getElementById('parrilla-body');if(b)b.innerHTML='<div class="parrilla-loading">Cargando contenido…</div>';return;}
   const c=document.querySelector('.parrilla');const sx=c?c.scrollLeft:0;
   document.getElementById('parrilla-body').innerHTML=weeks.map((w,wi)=>{
     const cnt=w.rows.length;
@@ -1485,6 +1490,7 @@ window.PLAT={
   },
   setState(s){
     if(!s)return;
+    dataLoaded=true;
     if(s.parrillas&&typeof s.parrillas==='object'){parrillas=s.parrillas;}
     else if(Array.isArray(s.weeks)){parrillas={};parrillas['2026-05']={weeks:s.weeks,goalTotal:s.goalTotal||20};curY=2026;curM=4;}
     if(typeof s.curY==='number')curY=s.curY;
@@ -1506,8 +1512,7 @@ window.PLAT={
   }
 };
 
-// inicializa el mes actual (Mayo 2026) con los datos de ejemplo
-parrillas['2026-05']={weeks:JSON.parse(JSON.stringify(weeks)),goalTotal:20};
+// no se siembra contenido demo: se espera a Firestore (evita el "parpadeo" de contenido al cargar)
 loadMonth();updateMonthLabel();
 
 renderExtras();
@@ -1569,12 +1574,15 @@ onAuthStateChanged(auth,async user=>{
   try{
     const snap=await getDoc(REF);
     if(snap.exists()&&snap.data().json)window.PLAT.setState(JSON.parse(snap.data().json));
-  }catch(e){console.error('Error cargando:',e);}
+    else if(window.finishLoad)window.finishLoad();
+  }catch(e){console.error('Error cargando:',e);if(window.finishLoad)window.finishLoad();}
   lastSaved=JSON.stringify(window.PLAT.getState());
   ready=true;
   // cualquier interacción que cambie el estado dispara un guardado (con comparación previa)
   ['input','change','click','drop'].forEach(ev=>document.addEventListener(ev,scheduleSave,true));
 });
+// Respaldo: si no hay sesión/datos en unos segundos, mostrar la parrilla (sin quedarse en "Cargando…")
+setTimeout(()=>{ if(window.isLoaded&&!window.isLoaded()&&window.finishLoad)window.finishLoad(); }, 7000);
 </script>
 </body>
 </html>
