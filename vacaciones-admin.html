@@ -315,9 +315,9 @@ const MEMBERS = [
     { name:'Johan Gálvez', email:'jgalvez@paraleloinmobiliaria.pe', role:'Coordinador Marca', joinDate:'2026-01-01', carryover:0, debt:0, color:colorPalette[0] },
     { name:'Pablo Caillahua', email:'pcaillahua@paraleloinmobiliaria.pe', role:'Coordinador Audiovisual', joinDate:'2026-01-01', carryover:0, debt:0, color:colorPalette[1] },
     { name:'Ana Paula Hurtado', email:'ahurtado@paraleloinmobiliaria.pe', role:'Asistente de Marketing', joinDate:'2026-01-01', carryover:0, debt:0, color:colorPalette[2] },
-    { name:'Diego David', email:'ddavid@paraleloinmobiliaria.pe', role:'Jefe de Publicidad', joinDate:'2026-01-01', carryover:9, debt:0, color:colorPalette[3] },
-    { name:'Eduardo Cornejo', email:'ecornejo@paraleloinmobiliaria.pe', role:'Sub gerente de marketing', joinDate:'2026-01-01', carryover:0, debt:0, color:colorPalette[4] },
-    { name:'Gabriela Curotto', email:'gcurotto@paraleloinmobiliaria.pe', role:'Jefe de Marketing', joinDate:'2026-01-01', carryover:0, debt:0, color:colorPalette[5] }
+    { name:'Diego David', email:'ddavid@paraleloinmobiliaria.pe', role:'Jefe de Publicidad', joinDate:'2026-01-01', carryover:11, debt:0, color:colorPalette[3] },
+    { name:'Eduardo Cornejo', email:'ecornejo@paraleloinmobiliaria.pe', role:'Sub gerente de marketing', joinDate:'2026-01-01', carryover:-3, debt:0, color:colorPalette[4] },
+    { name:'Gabriela Curotto', email:'gcurotto@paraleloinmobiliaria.pe', role:'Jefe de Marketing', joinDate:'2026-01-01', carryover:7, debt:0, color:colorPalette[5] }
 ];
 
 function sameEmail(a,b){ return (a||'').toLowerCase()===(b||'').toLowerCase(); }
@@ -533,7 +533,8 @@ function openMember(email){
             <div class="mstats">
                 <div class="mstat"><div class="mstat-label">Disponibles</div><div class="mstat-value ${b.remaining<0?'neg':''}">${fmtNum(b.remaining)}</div></div>
                 <div class="mstat"><div class="mstat-label">Tomados</div><div class="mstat-value">${fmtNum(b.taken)}</div></div>
-                <div class="mstat"><div class="mstat-label">Acumulado</div><div class="mstat-value">${fmtNum(b.accrued)}</div></div>
+                <div class="mstat"><div class="mstat-label">Acumulado 2026</div><div class="mstat-value">${fmtNum(b.accrued)}</div></div>
+                <div class="mstat"><div class="mstat-label">Saldo 2025</div><div class="mstat-value" style="color:${(m.carryover||0)<0?'var(--tdc-red,#E8261C)':((m.carryover||0)>0?'#1BA572':'inherit')}">${(m.carryover||0)>0?'+':''}${fmtNum(m.carryover||0)}</div></div>
                 <div class="mstat"><div class="mstat-label">Descanso méd.</div><div class="mstat-value">${fmtNum(b.medical)}</div></div>
                 <div class="mstat"><div class="mstat-label">Findes</div><div class="mstat-value ${wk>4?'neg':''}">${wk}/4</div></div>
             </div>

@@ -433,9 +433,9 @@
             { name: 'Johan Gálvez', email: 'jgalvez@paraleloinmobiliaria.pe', role: 'Coordinador Marca', joinDate: '2026-01-01', carryover: 0, debt: 0, color: colorPalette[0] },
             { name: 'Pablo Caillahua', email: 'pcaillahua@paraleloinmobiliaria.pe', role: 'Coordinador Audiovisual', joinDate: '2026-01-01', carryover: 0, debt: 0, color: colorPalette[1] },
             { name: 'Ana Paula Hurtado', email: 'ahurtado@paraleloinmobiliaria.pe', role: 'Asistente de Marketing', joinDate: '2026-01-01', carryover: 0, debt: 0, color: colorPalette[2] },
-            { name: 'Diego David', email: 'ddavid@paraleloinmobiliaria.pe', role: 'Jefe de Publicidad', joinDate: '2026-01-01', carryover: 9, debt: 0, color: colorPalette[3] },
-            { name: 'Eduardo Cornejo', email: 'ecornejo@paraleloinmobiliaria.pe', role: 'Sub gerente de marketing', joinDate: '2026-01-01', carryover: 0, debt: 0, color: colorPalette[4] },
-            { name: 'Gabriela Curotto', email: 'gcurotto@paraleloinmobiliaria.pe', role: 'Jefe de Marketing', joinDate: '2026-01-01', carryover: 0, debt: 0, color: colorPalette[5] }
+            { name: 'Diego David', email: 'ddavid@paraleloinmobiliaria.pe', role: 'Jefe de Publicidad', joinDate: '2026-01-01', carryover: 11, debt: 0, color: colorPalette[3] },
+            { name: 'Eduardo Cornejo', email: 'ecornejo@paraleloinmobiliaria.pe', role: 'Sub gerente de marketing', joinDate: '2026-01-01', carryover: -3, debt: 0, color: colorPalette[4] },
+            { name: 'Gabriela Curotto', email: 'gcurotto@paraleloinmobiliaria.pe', role: 'Jefe de Marketing', joinDate: '2026-01-01', carryover: 7, debt: 0, color: colorPalette[5] }
         ];
 
         function sameEmail(a, b){ return (a||'').toLowerCase() === (b||'').toLowerCase(); }
@@ -542,6 +542,14 @@
                     </div>
                     <div class="metric-value">${fmtNum(accrued)}</div>
                     <div class="metric-foot">${monthsWorked(member.joinDate)} meses · 2.5 por mes</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-top">
+                        <span class="metric-label">Saldo 2025</span>
+                        <span class="metric-chip ${(member.carryover||0)<0?'red':'navy'}">${svg(IC.chart)}</span>
+                    </div>
+                    <div class="metric-value ${(member.carryover||0)<0?'neg':''}" style="${(member.carryover||0)>0?'color:#1BA572':''}">${(member.carryover||0)>0?'+':''}${fmtNum(member.carryover||0)}</div>
+                    <div class="metric-foot">${(member.carryover||0)<0?'días adelantados (se descuentan de 2026)':((member.carryover||0)>0?'días que vienen del 2025':'sin saldo del año anterior')}</div>
                 </div>
                 <div class="metric clickable" onclick="openDetail('taken')">
                     <div class="metric-top">
