@@ -798,6 +798,7 @@ const weeks=[
     {id:++rid,dia:"Vie",num:"29",fmt:"Reel",pilar:"Vida de barrio",t:"Entrevista a Híbrido",c:"(Copy en redacción)",h:"#TDC #VidaEnElBarrio #Miraflores",red:['pend','pend','na'],st:"proceso",r:"Pablo"}
   ]}
 ];
+const ORIGINAL_WEEKS=JSON.parse(JSON.stringify(weeks)); // copia intacta para restaurar si la base queda vacia
 function findRow(id){for(const w of weeks){const r=w.rows.find(x=>x.id===id);if(r)return{r,w};}return null;}
 
 /* ===== parrilla por mes/año ===== */
@@ -807,6 +808,17 @@ let parrillas={},curY=2026,curM=4;          // curM 0-based (4 = Mayo)
 let dataLoaded=false;                         // true cuando Firestore ya respondio
 window.isLoaded=()=>dataLoaded;
 window.finishLoad=function(){ if(dataLoaded)return; dataLoaded=true; loadMonth(); updateMonthLabel(); renderParrilla(); renderGoals(); };
+let restoredV1=false;                          // marca: ya se restauro la parrilla original
+function totalPieces(){ let n=0; for(const k in parrillas){ (parrillas[k].weeks||[]).forEach(w=>n+=(w.rows||[]).length); } return n; }
+window.maybeRestore=function(){
+  if(restoredV1) return;                        // ya se restauro antes
+  if(totalPieces()>0){ restoredV1=true; return; } // hay contenido: no tocar
+  parrillas['2026-05']={weeks:JSON.parse(JSON.stringify(ORIGINAL_WEEKS)),goalTotal:20};
+  curY=2026; curM=4; restoredV1=true; dataLoaded=true;
+  loadMonth(); updateMonthLabel(); renderParrilla(); renderGoals();
+  if(window.saveNow) window.saveNow();
+  if(typeof miniToast==='function') miniToast('Parrilla original restaurada en Mayo 2026');
+};
 function curKey(){return curY+'-'+String(curM+1).padStart(2,'0');}
 function daysInMonth(y,m){return new Date(y,m+1,0).getDate();}
 function weeksFor(y,m){const dim=daysInMonth(y,m),ab=MESab[m],ws=[];let s=1,n=1;while(s<=dim){const e=Math.min(s+6,dim);ws.push({label:'Semana '+n,range:s+' – '+e+' '+ab,rows:[]});s+=7;n++;}return ws;}
@@ -1481,7 +1493,7 @@ function sendFecha(id){const f=fechas.find(x=>x.id===id);if(!f||f.sent)return;we
 window.PLAT={
   getState(){
     syncCurrentMonth();
-    const s=JSON.parse(JSON.stringify({parrillas,stories,trends,extras,banco,fechas,curY,curM}));
+    const s=JSON.parse(JSON.stringify({parrillas,stories,trends,extras,banco,fechas,curY,curM,restoredV1}));
     Object.values(s.parrillas).forEach(pm=>(pm.weeks||[]).forEach(w=>(w.rows||[]).forEach(r=>{delete r._exp;})));
     s.stories.forEach(x=>x.editing=false);
     s.trends.forEach(x=>{delete x.editing;});
@@ -1491,6 +1503,7 @@ window.PLAT={
   setState(s){
     if(!s)return;
     dataLoaded=true;
+    if(typeof s.restoredV1==='boolean')restoredV1=s.restoredV1;
     if(s.parrillas&&typeof s.parrillas==='object'){parrillas=s.parrillas;}
     else if(Array.isArray(s.weeks)){parrillas={};parrillas['2026-05']={weeks:s.weeks,goalTotal:s.goalTotal||20};curY=2026;curM=4;}
     if(typeof s.curY==='number')curY=s.curY;
@@ -1557,6 +1570,14 @@ function scheduleSave(){
     }catch(e){console.error('Error guardando:',e);flashError();}
   },700);
 }
+async function saveNow(){
+  try{
+    const json=JSON.stringify(window.PLAT.getState());
+    await setDoc(REF,{json,updatedAt:serverTimestamp(),updatedBy:auth.currentUser?auth.currentUser.email:''});
+    lastSaved=json;flashSaved();
+  }catch(e){console.error('Error guardando:',e);flashError();}
+}
+window.saveNow=saveNow;
 
 let started=false;
 onAuthStateChanged(auth,async user=>{
@@ -1580,6 +1601,8 @@ onAuthStateChanged(auth,async user=>{
   ready=true;
   // cualquier interacción que cambie el estado dispara un guardado (con comparación previa)
   ['input','change','click','drop'].forEach(ev=>document.addEventListener(ev,scheduleSave,true));
+  // si la base quedó vacía, restaurar la parrilla original (una sola vez) y guardarla
+  if(window.maybeRestore)window.maybeRestore();
 });
 // Respaldo: si no hay sesión/datos en unos segundos, mostrar la parrilla (sin quedarse en "Cargando…")
 setTimeout(()=>{ if(window.isLoaded&&!window.isLoaded()&&window.finishLoad)window.finishLoad(); }, 7000);
