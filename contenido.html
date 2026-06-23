@@ -580,7 +580,7 @@ select.cell-input{cursor:pointer}
     <div class="top-right">
       <span id="save-ind" style="font-size:11px;color:var(--green);font-weight:600;opacity:0;transition:opacity .3s">● Guardado</span>
       <div class="mp-wrap">
-        <div class="month-pick" id="monthPick" onclick="toggleMonthPanel(event)"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg><span id="monthLbl">Mayo 2026</span><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+        <div class="month-pick" id="monthPick" onclick="toggleMonthPanel(event)"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg><span id="monthLbl"></span><svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
         <div id="month-panel"></div>
       </div>
       <div class="avatar" id="avatar">—</div>
@@ -600,7 +600,7 @@ select.cell-input{cursor:pointer}
       </div>
 
       <div class="toolbar">
-        <div class="filter">Pilar <select><option>Todos</option><option>El proyecto, desde la vida</option><option>Vida de barrio</option><option>Cómo construimos</option><option>Asesoría que da confianza</option></select></div>
+        <div class="filter">Pilar <select><option>Todos</option><option>Producto (ventas)</option><option>Vida en el barrio</option><option>Diseño y construcción</option><option>Historias</option></select></div>
         <div class="filter">Estado <select><option>Todos</option><option>Pendiente</option><option>En proceso</option><option>Listo</option><option>Publicado</option><option>Retrasado</option></select></div>
         <div class="filter">Responsable <select><option>Todos</option><option>Pablo</option><option>Johan</option><option>Ana Paula</option><option>Gabriela</option><option>Diego</option><option>Eduardo</option></select></div>
         <div class="spacer"></div>
@@ -692,11 +692,11 @@ select.cell-input{cursor:pointer}
         </div>
         <div class="card">
           <div class="section-title"><span class="dot"></span>Rendimiento por pilar</div>
-          <div class="byp-row"><div class="pn"><span class="tag-dot" style="background:var(--p-diseno)"></span>Cómo construimos</div><div class="byp-track"><div class="byp-fill" style="width:100%;background:var(--p-diseno)"></div></div><div class="byp-val">1,240</div></div>
+          <div class="byp-row"><div class="pn"><span class="tag-dot" style="background:var(--p-diseno)"></span>Diseño y construcción</div><div class="byp-track"><div class="byp-fill" style="width:100%;background:var(--p-diseno)"></div></div><div class="byp-val">1,240</div></div>
           <div class="byp-row"><div class="pn"><span class="tag-dot" style="background:var(--p-historias)"></span>Asesoría</div><div class="byp-track"><div class="byp-fill" style="width:64%;background:var(--p-historias)"></div></div><div class="byp-val">795</div></div>
           <div class="byp-row"><div class="pn"><span class="tag-dot" style="background:var(--p-producto)"></span>El proyecto</div><div class="byp-track"><div class="byp-fill" style="width:61%;background:var(--p-producto)"></div></div><div class="byp-val">760</div></div>
-          <div class="byp-row"><div class="pn"><span class="tag-dot" style="background:var(--p-barrio)"></span>Vida de barrio</div><div class="byp-track"><div class="byp-fill" style="width:0%;background:var(--p-barrio)"></div></div><div class="byp-val" style="color:var(--muted)">—</div></div>
-          <div class="calc-note">Promedio de interacción por pieza. El contenido de obra (Cómo construimos) rinde el doble del promedio.</div>
+          <div class="byp-row"><div class="pn"><span class="tag-dot" style="background:var(--p-barrio)"></span>Vida en el barrio</div><div class="byp-track"><div class="byp-fill" style="width:0%;background:var(--p-barrio)"></div></div><div class="byp-val" style="color:var(--muted)">—</div></div>
+          <div class="calc-note">Promedio de interacción por pieza. El contenido de obra (Diseño y construcción) rinde el doble del promedio.</div>
         </div>
       </div>
 
@@ -774,25 +774,25 @@ document.querySelectorAll('.tab').forEach(b=>{
   };
 });
 
-const pColor={"El proyecto, desde la vida":"var(--p-producto)","Vida de barrio":"var(--p-barrio)","Cómo construimos":"var(--p-diseno)","Asesoría que da confianza":"var(--p-historias)"};
+const pColor={"Producto (ventas)":"var(--p-producto)","Vida en el barrio":"var(--p-barrio)","Diseño y construcción":"var(--p-diseno)","Historias":"var(--p-historias)"};
 
 /* plat = redes asignadas [fb,ig,lk]; pub = estado por red ['pub'|'no'|'prog'] */
 let rid=0;
 const weeks=[
   {label:"Semana 1",range:"1 – 7 May",rows:[
-    {id:++rid,dia:"Vie",num:"1",fmt:"Reel",pilar:"Asesoría que da confianza",t:"Día del trabajador",c:"Detrás de cada proyecto hay personas que cuidan cada detalle, que entienden que hacer las cosas con criterio toma tiempo, y vale la pena.\n\nSon ellos los que convierten una idea en un hogar. Los que ponen oficio donde otros solo verían trabajo. Los que construyen, con sus manos y su tiempo, los espacios donde otros empiezan nuevas historias.\n\nHoy es su día. Y queremos agradecerles.\n\nFeliz Día del Trabajador.",h:"#DíaDelTrabajador #TDC #TuLugarEnElMundo #FelizDíaDelTrabajador",red:['pub','pub','pub'],st:"publicado",r:"Pablo"}
+    {id:++rid,dia:"Vie",num:"1",fmt:"Reel",pilar:"Historias",t:"Día del trabajador",c:"Detrás de cada proyecto hay personas que cuidan cada detalle, que entienden que hacer las cosas con criterio toma tiempo, y vale la pena.\n\nSon ellos los que convierten una idea en un hogar. Los que ponen oficio donde otros solo verían trabajo. Los que construyen, con sus manos y su tiempo, los espacios donde otros empiezan nuevas historias.\n\nHoy es su día. Y queremos agradecerles.\n\nFeliz Día del Trabajador.",h:"#DíaDelTrabajador #TDC #TuLugarEnElMundo #FelizDíaDelTrabajador",red:['pub','pub','pub'],st:"publicado",r:"Pablo"}
   ]},
   {label:"Semana 2",range:"8 – 14 May",rows:[
-    {id:++rid,dia:"Dom",num:"10",fmt:"Diseño",pilar:"Asesoría que da confianza",t:"Día de la madre",c:"Gracias mamá, por construir hogar, recuerdos y esa sensación de tranquilidad que nos acompaña incluso cuando estamos lejos.\n\nPorque más allá de cualquier espacio, eres tú quien hace que un lugar se sienta cálido, cercano y lleno de vida.\n\n¡Feliz día!",h:"#DíaDeLaMadre #TDC #TuLugarEnElMundo",red:['pub','pub','pub'],st:"publicado",r:"Pablo"}
+    {id:++rid,dia:"Dom",num:"10",fmt:"Diseño",pilar:"Historias",t:"Día de la madre",c:"Gracias mamá, por construir hogar, recuerdos y esa sensación de tranquilidad que nos acompaña incluso cuando estamos lejos.\n\nPorque más allá de cualquier espacio, eres tú quien hace que un lugar se sienta cálido, cercano y lleno de vida.\n\n¡Feliz día!",h:"#DíaDeLaMadre #TDC #TuLugarEnElMundo",red:['pub','pub','pub'],st:"publicado",r:"Pablo"}
   ]},
   {label:"Semana 3",range:"15 – 21 May",rows:[]},
   {label:"Semana 4",range:"22 – 28 May",rows:[
-    {id:++rid,dia:"Vie",num:"22",fmt:"Reel",pilar:"El proyecto, desde la vida",t:"Intriga LM3",c:"Tu nuevo lugar en el mundo está por comenzar a construirse en Miraflores.\n\nMuy pronto, más detalles.",h:"#TDC #TuLugarEnElMundo #Miraflores",red:['pub','pub','pub'],st:"publicado",r:"Pablo"}
+    {id:++rid,dia:"Vie",num:"22",fmt:"Reel",pilar:"Producto (ventas)",t:"Intriga LM3",c:"Tu nuevo lugar en el mundo está por comenzar a construirse en Miraflores.\n\nMuy pronto, más detalles.",h:"#TDC #TuLugarEnElMundo #Miraflores",red:['pub','pub','pub'],st:"publicado",r:"Pablo"}
   ]},
   {label:"Semana 5",range:"25 – 31 May",rows:[
-    {id:++rid,dia:"Lun",num:"25",fmt:"Reel",pilar:"Cómo construimos",t:"Avance de obra LM2",c:"Las Moras continúa avanzando y tomando forma desde sus primeras etapas de construcción.\n\nActualmente, los trabajos de obra avanzan en la base estructural del edificio, consolidando los espacios que darán vida a este nuevo proyecto y marcando el inicio de una nueva etapa en su construcción.\n\nDetrás de cada avance hay planificación, coordinación y un equipo comprometido con construir espacios pensados para perdurar en el tiempo, cuidando cada detalle desde el inicio del proyecto.\n\nAsí comienza una nueva historia en la ciudad.",h:"#TDCInmobiliaria #LasMoras #AvanceDeObra #Miraflores #ConstruimosConfianza",red:['pub','pub','pub'],st:"publicado",r:"Pablo"},
-    {id:++rid,dia:"Mar",num:"26",fmt:"Reel",pilar:"Cómo construimos",t:"Proyectos EDGE",c:"Hoy, construir también significa pensar en el futuro.\n\nEDGE es una certificación internacional que reconoce proyectos diseñados para ser más eficientes y sostenibles, optimizando el uso de energía, agua y recursos durante su funcionamiento.\n\nEn TDC, esa visión se refleja en Cochrane 366 y Boloña 675, nuestros proyectos EDGE en Miraflores.\n\nPorque el futuro de la ciudad también se construye a través de espacios más responsables.",h:"#TDCInmobiliaria #EDGE #Cochrane366 #Boloña675 #Miraflores #Sostenibilidad",red:['pend','pend','na'],st:"proceso",r:"Pablo"},
-    {id:++rid,dia:"Vie",num:"29",fmt:"Reel",pilar:"Vida de barrio",t:"Entrevista a Híbrido",c:"(Copy en redacción)",h:"#TDC #VidaEnElBarrio #Miraflores",red:['pend','pend','na'],st:"proceso",r:"Pablo"}
+    {id:++rid,dia:"Lun",num:"25",fmt:"Reel",pilar:"Diseño y construcción",t:"Avance de obra LM2",c:"Las Moras continúa avanzando y tomando forma desde sus primeras etapas de construcción.\n\nActualmente, los trabajos de obra avanzan en la base estructural del edificio, consolidando los espacios que darán vida a este nuevo proyecto y marcando el inicio de una nueva etapa en su construcción.\n\nDetrás de cada avance hay planificación, coordinación y un equipo comprometido con construir espacios pensados para perdurar en el tiempo, cuidando cada detalle desde el inicio del proyecto.\n\nAsí comienza una nueva historia en la ciudad.",h:"#TDCInmobiliaria #LasMoras #AvanceDeObra #Miraflores #ConstruimosConfianza",red:['pub','pub','pub'],st:"publicado",r:"Pablo"},
+    {id:++rid,dia:"Mar",num:"26",fmt:"Reel",pilar:"Diseño y construcción",t:"Proyectos EDGE",c:"Hoy, construir también significa pensar en el futuro.\n\nEDGE es una certificación internacional que reconoce proyectos diseñados para ser más eficientes y sostenibles, optimizando el uso de energía, agua y recursos durante su funcionamiento.\n\nEn TDC, esa visión se refleja en Cochrane 366 y Boloña 675, nuestros proyectos EDGE en Miraflores.\n\nPorque el futuro de la ciudad también se construye a través de espacios más responsables.",h:"#TDCInmobiliaria #EDGE #Cochrane366 #Boloña675 #Miraflores #Sostenibilidad",red:['pend','pend','na'],st:"proceso",r:"Pablo"},
+    {id:++rid,dia:"Vie",num:"29",fmt:"Reel",pilar:"Vida en el barrio",t:"Entrevista a Híbrido",c:"(Copy en redacción)",h:"#TDC #VidaEnElBarrio #Miraflores",red:['pend','pend','na'],st:"proceso",r:"Pablo"}
   ]}
 ];
 const ORIGINAL_WEEKS=JSON.parse(JSON.stringify(weeks)); // copia intacta para restaurar si la base queda vacia
@@ -801,7 +801,8 @@ function findRow(id){for(const w of weeks){const r=w.rows.find(x=>x.id===id);if(
 /* ===== parrilla por mes/año ===== */
 const MES=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 const MESab=['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
-let parrillas={},curY=2026,curM=4;          // curM 0-based (4 = Mayo)
+const _hoy=new Date();
+let parrillas={},curY=_hoy.getFullYear(),curM=_hoy.getMonth();   // arranca en el mes actual (curM 0-based)
 let dataLoaded=false;                         // true cuando Firestore ya respondio
 window.isLoaded=()=>dataLoaded;
 window.finishLoad=function(){ if(dataLoaded)return; dataLoaded=true; loadMonth(); updateMonthLabel(); renderParrilla(); renderGoals(); };
@@ -858,7 +859,7 @@ const dias=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
 const redList=[['na','No va'],['pend','Pendiente'],['prog','Programado'],['pub','Publicado']];
 const redSoft={na:['#FAFBFC','#9AA8B8'],pend:['#F1F4F8','#6B7A8D'],prog:['#EAF1F8','#2E5B8A'],pub:['#E7F6EF','#1BA572']};
 const stSoft={pendiente:['#F1F4F8','#6B7A8D'],proceso:['#FCF3E3','#B07410'],listo:['#EAF1F8','#2E5B8A'],publicado:['#E7F6EF','#1BA572'],retrasado:['#FCEBEA','#C4140C']};
-const pilarSoft={'El proyecto, desde la vida':['#FDEAE9','#C4140C'],'Vida de barrio':['#E7F0FA','#2E5B8A'],'Cómo construimos':['#EFEAF8','#6A4FB0'],'Asesoría que da confianza':['#FCF1DF','#B07410']};
+const pilarSoft={'Producto (ventas)':['#FDEAE9','#C4140C'],'Vida en el barrio':['#E7F0FA','#2E5B8A'],'Diseño y construcción':['#EFEAF8','#6A4FB0'],'Historias':['#FCF1DF','#B07410']};
 function selOpts(list,val){return list.map(o=>optn(o[0],o[1],o[0]===val)).join('');}
 function rowHTML(p){return rowRead(p);}
 const fmtIcon={
@@ -870,7 +871,7 @@ const fmtIcon={
  'GIF':'<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M8 12h3M11 9v6M14 9v6h3"/>'
 };
 const fmtColor={'Reel':['#EFEAF8','#7A5CC0'],'Video':['#EFEAF8','#7A5CC0'],'Diseño':['#FBEAEE','#C43B63'],'Foto':['#E2F1F0','#1E8A7A'],'Carrusel':['#EAF1F8','#2E5B8A'],'GIF':['#FCF3E3','#B07410']};
-const pilarShortMap={'El proyecto, desde la vida':'El proyecto','Vida de barrio':'Vida de barrio','Cómo construimos':'Cómo construimos','Asesoría que da confianza':'Asesoría'};
+const pilarShortMap={'Producto (ventas)':'Producto','Vida en el barrio':'Vida en el barrio','Diseño y construcción':'Diseño y construcción','Historias':'Historias'};
 function inits(n){return (n||'').trim().split(/\s+/).slice(0,2).map(w=>w[0]||'').join('').toUpperCase();}
 function netChip(state){
   if(state==='na'||!state)return '<span class="rnet off">—</span>';
@@ -1034,7 +1035,7 @@ function copyCell(id,btn){const f=findRow(id);if(!f)return;copyMini(f.r.t+'\n\n'
 function copyHash(id,btn){const f=findRow(id);if(!f)return;copyMini(f.r.h||'',btn);}
 function copyCopyTags(id,btn){const f=findRow(id);if(!f)return;const c=f.r.c||'';const h=f.r.h||'';copyMini((c+(h?'\n\n'+h:'')).trim(),btn);}
 function delRow(id){const f=findRow(id);if(!f)return;f.w.rows=f.w.rows.filter(x=>x.id!==id);renderParrilla();renderGoals();}
-function addPiece(wi){weeks[wi].rows.push({id:++rid,dia:"Lun",num:"",fmt:"Reel",pilar:"El proyecto, desde la vida",t:"",c:"",h:"",red:["pend","pend","na"],st:"pendiente",r:"Pablo"});renderParrilla();renderGoals();}
+function addPiece(wi){weeks[wi].rows.push({id:++rid,dia:"Lun",num:"",fmt:"Reel",pilar:"Producto (ventas)",t:"",c:"",h:"",red:["pend","pend","na"],st:"pendiente",r:"Pablo"});renderParrilla();renderGoals();}
 function parseWeekRange(str){
   const s=String(str||'');
   const nums=(s.match(/\d+/g)||[]).map(Number);
@@ -1086,10 +1087,10 @@ function dropRow(e,wi){const g=e.currentTarget;g.classList.remove('drop-over');i
 
 /* OBJETIVOS POR PILAR */
 const pillars=[
-  {name:"El proyecto, desde la vida",short:"El proyecto",pct:30,color:"var(--p-producto)"},
-  {name:"Vida de barrio",short:"Vida de barrio",pct:25,color:"var(--p-barrio)"},
-  {name:"Cómo construimos",short:"Cómo construimos",pct:25,color:"var(--p-diseno)"},
-  {name:"Asesoría que da confianza",short:"Asesoría",pct:20,color:"var(--p-historias)"}
+  {name:"Producto (ventas)",short:"El proyecto",pct:30,color:"var(--p-producto)"},
+  {name:"Vida en el barrio",short:"Vida en el barrio",pct:25,color:"var(--p-barrio)"},
+  {name:"Diseño y construcción",short:"Diseño y construcción",pct:25,color:"var(--p-diseno)"},
+  {name:"Historias",short:"Asesoría",pct:20,color:"var(--p-historias)"}
 ];
 function planned(name){let n=0;weeks.forEach(w=>w.rows.forEach(r=>{if(r.pilar===name)n++;}));return n;}
 function stepGoal(n){const i=document.getElementById('goal-total');i.value=Math.max(1,(+i.value||0)+n);renderGoals();}
@@ -1246,17 +1247,17 @@ function renderHeat(){
 
 /* ====== TENDENCIAS ====== */
 let tid=0;
-const pilarGrad={"El proyecto, desde la vida":"var(--grad-red)","Vida de barrio":"linear-gradient(135deg,#3D90D6,#2E7DC4)","Cómo construimos":"linear-gradient(135deg,#8B6BD0,#7A5CC0)","Asesoría que da confianza":"linear-gradient(135deg,#F2B255,#E9A23B)"};
+const pilarGrad={"Producto (ventas)":"var(--grad-red)","Vida en el barrio":"linear-gradient(135deg,#3D90D6,#2E7DC4)","Diseño y construcción":"linear-gradient(135deg,#8B6BD0,#7A5CC0)","Historias":"linear-gradient(135deg,#F2B255,#E9A23B)"};
 let trends=[
-  {id:++tid,fuente:'formato',cat:'Formato · Reels',color:'var(--grad-red)',title:'Recorridos POV en primera persona',desc:'Caminar por el inmueble grabando a la altura del pecho, sin hablar, con música de fondo. Es el formato de mayor engagement (≈3.7%) y casi no requiere edición.',src:'Reel-E · Jamil Academy',url:'https://www.reel-e.ai/blog/real-estate-instagram-reels',pilar:'El proyecto, desde la vida',saved:true,sent:false,own:false},
-  {id:++tid,fuente:'global',cat:'Contenido lifestyle',color:'linear-gradient(135deg,#3D90D6,#2E7DC4)',title:'Mostrar el barrio, no solo el depa',desc:'Contar cómo se vive la zona: el café cercano, qué tan cerca está la oficina o la universidad. Conecta más que una ficha técnica y lo reparte el propio negocio etiquetado.',src:'Ciencuadras · Luxury Presence',url:'https://www.ciencuadras.com/blog/consejos/marketing-inmobiliario-en-2026-publicar-inmuebles-una-experiencia-digital',pilar:'Vida de barrio',saved:true,sent:false,own:false},
-  {id:++tid,fuente:'global',cat:'Tecnología',color:'var(--grad-red)',title:'Recorridos virtuales 360° y RA',desc:'Tours inmersivos y realidad aumentada para visitar la propiedad desde casa. Acelera el ciclo de venta y llega a quien no puede ir en persona.',src:'Wasi · Inmogesco',url:'https://blog.wasi.co/tendencias-inmobiliarias-2026/',pilar:'El proyecto, desde la vida',saved:false,sent:false,own:false},
-  {id:++tid,fuente:'formato',cat:'Formato · educativo',color:'linear-gradient(135deg,#8B6BD0,#7A5CC0)',title:'Reels educativos de un solo tip',desc:'Clips cortos con una idea útil ("2 cosas que revisar antes de comprar"). Fáciles de grabar en lote y el algoritmo los distribuye bien.',src:'Postful · Propphy',url:'https://blog.postful.ai/instagram-reel-trends/',pilar:'Cómo construimos',saved:false,sent:false,own:false},
-  {id:++tid,fuente:'formato',cat:'Conversión',color:'var(--grad-red)',title:'Micro-CTA y medir guardados',desc:'Cada post con una acción clara (guárdalo, escríbeme tu distrito). Guardados, compartidos y visitas al perfil pesan más que los likes, para el algoritmo y para vender.',src:'Luxury Presence',url:'https://www.luxurypresence.com/blogs/50-real-estate-instagram-post-ideas/',pilar:'El proyecto, desde la vida',saved:false,sent:false,own:false},
-  {id:++tid,fuente:'global',cat:'Historias humanas',color:'linear-gradient(135deg,#F2B255,#E9A23B)',title:'Testimonios de clientes en video',desc:'Un cliente contando su experiencia genera mucha más confianza que un texto. Basta un smartphone; transmite cercanía y prueba social.',src:'FlippingBook',url:'https://flippingbook.com/blog/marketing-tips/real-estate-marketing-trends',pilar:'Asesoría que da confianza',saved:false,sent:false,own:false},
-  {id:++tid,fuente:'global',cat:'Estrategia',color:'var(--grad-red)',title:'Hipersegmentación por comprador',desc:'Mensajes distintos según el perfil (primera vivienda, inversor, familia) en lugar de una comunicación genérica para todos.',src:'Tinsa',url:'https://www.tinsamexico.mx/4-tendencias-de-marketing-inmobiliario-para-poner-atencion-en-el-2026/',pilar:'El proyecto, desde la vida',saved:false,sent:false,own:false},
-  {id:++tid,fuente:'global',cat:'Conversión',color:'var(--grad-red)',title:'Información autónoma: planos, precios, recorridos',desc:'El comprador 2026 quiere todo a la mano antes de contactar: planos, precios estimados, videos. Si no los encuentra, descarta el proyecto.',src:'Lima Digital · Óptima',url:'https://limadigital.pe/marketing-inmobiliario/',pilar:'El proyecto, desde la vida',saved:false,sent:false,own:false},
-  {id:++tid,fuente:'global',cat:'Sostenibilidad',color:'linear-gradient(135deg,#8B6BD0,#7A5CC0)',title:'Sostenibilidad como argumento de venta',desc:'Eficiencia, ahorro y certificaciones se vuelven tema de contenido. Encaja directo con tus proyectos EDGE (Cochrane 366, Boloña 675).',src:'Wasi',url:'https://blog.wasi.co/tendencias-inmobiliarias-2026/',pilar:'Cómo construimos',saved:false,sent:false,own:false}
+  {id:++tid,fuente:'formato',cat:'Formato · Reels',color:'var(--grad-red)',title:'Recorridos POV en primera persona',desc:'Caminar por el inmueble grabando a la altura del pecho, sin hablar, con música de fondo. Es el formato de mayor engagement (≈3.7%) y casi no requiere edición.',src:'Reel-E · Jamil Academy',url:'https://www.reel-e.ai/blog/real-estate-instagram-reels',pilar:'Producto (ventas)',saved:true,sent:false,own:false},
+  {id:++tid,fuente:'global',cat:'Contenido lifestyle',color:'linear-gradient(135deg,#3D90D6,#2E7DC4)',title:'Mostrar el barrio, no solo el depa',desc:'Contar cómo se vive la zona: el café cercano, qué tan cerca está la oficina o la universidad. Conecta más que una ficha técnica y lo reparte el propio negocio etiquetado.',src:'Ciencuadras · Luxury Presence',url:'https://www.ciencuadras.com/blog/consejos/marketing-inmobiliario-en-2026-publicar-inmuebles-una-experiencia-digital',pilar:'Vida en el barrio',saved:true,sent:false,own:false},
+  {id:++tid,fuente:'global',cat:'Tecnología',color:'var(--grad-red)',title:'Recorridos virtuales 360° y RA',desc:'Tours inmersivos y realidad aumentada para visitar la propiedad desde casa. Acelera el ciclo de venta y llega a quien no puede ir en persona.',src:'Wasi · Inmogesco',url:'https://blog.wasi.co/tendencias-inmobiliarias-2026/',pilar:'Producto (ventas)',saved:false,sent:false,own:false},
+  {id:++tid,fuente:'formato',cat:'Formato · educativo',color:'linear-gradient(135deg,#8B6BD0,#7A5CC0)',title:'Reels educativos de un solo tip',desc:'Clips cortos con una idea útil ("2 cosas que revisar antes de comprar"). Fáciles de grabar en lote y el algoritmo los distribuye bien.',src:'Postful · Propphy',url:'https://blog.postful.ai/instagram-reel-trends/',pilar:'Diseño y construcción',saved:false,sent:false,own:false},
+  {id:++tid,fuente:'formato',cat:'Conversión',color:'var(--grad-red)',title:'Micro-CTA y medir guardados',desc:'Cada post con una acción clara (guárdalo, escríbeme tu distrito). Guardados, compartidos y visitas al perfil pesan más que los likes, para el algoritmo y para vender.',src:'Luxury Presence',url:'https://www.luxurypresence.com/blogs/50-real-estate-instagram-post-ideas/',pilar:'Producto (ventas)',saved:false,sent:false,own:false},
+  {id:++tid,fuente:'global',cat:'Historias humanas',color:'linear-gradient(135deg,#F2B255,#E9A23B)',title:'Testimonios de clientes en video',desc:'Un cliente contando su experiencia genera mucha más confianza que un texto. Basta un smartphone; transmite cercanía y prueba social.',src:'FlippingBook',url:'https://flippingbook.com/blog/marketing-tips/real-estate-marketing-trends',pilar:'Historias',saved:false,sent:false,own:false},
+  {id:++tid,fuente:'global',cat:'Estrategia',color:'var(--grad-red)',title:'Hipersegmentación por comprador',desc:'Mensajes distintos según el perfil (primera vivienda, inversor, familia) en lugar de una comunicación genérica para todos.',src:'Tinsa',url:'https://www.tinsamexico.mx/4-tendencias-de-marketing-inmobiliario-para-poner-atencion-en-el-2026/',pilar:'Producto (ventas)',saved:false,sent:false,own:false},
+  {id:++tid,fuente:'global',cat:'Conversión',color:'var(--grad-red)',title:'Información autónoma: planos, precios, recorridos',desc:'El comprador 2026 quiere todo a la mano antes de contactar: planos, precios estimados, videos. Si no los encuentra, descarta el proyecto.',src:'Lima Digital · Óptima',url:'https://limadigital.pe/marketing-inmobiliario/',pilar:'Producto (ventas)',saved:false,sent:false,own:false},
+  {id:++tid,fuente:'global',cat:'Sostenibilidad',color:'linear-gradient(135deg,#8B6BD0,#7A5CC0)',title:'Sostenibilidad como argumento de venta',desc:'Eficiencia, ahorro y certificaciones se vuelven tema de contenido. Encaja directo con tus proyectos EDGE (Cochrane 366, Boloña 675).',src:'Wasi',url:'https://blog.wasi.co/tendencias-inmobiliarias-2026/',pilar:'Diseño y construcción',saved:false,sent:false,own:false}
 ];
 let trendFilter='all',savedOnly=false;
 function findTrend(id){return trends.find(t=>t.id===id);}
@@ -1302,7 +1303,7 @@ function setTrendFilter(v){trendFilter=v;renderTrends();}
 function toggleSavedOnly(){savedOnly=!savedOnly;renderTrends();}
 function toggleSave(id){const t=findTrend(id);if(t){t.saved=!t.saved;renderTrends();}}
 function setTrend(id,f,v){const t=findTrend(id);if(t){t[f]=v;if(f==='pilar')t.color=pilarGrad[v];}}
-function addTrend(){trends.unshift({id:++tid,fuente:'formato',cat:'Idea del equipo',color:'var(--grad-navy)',title:'',desc:'',src:'',pilar:'El proyecto, desde la vida',saved:false,sent:false,own:true,editing:true});renderTrends();}
+function addTrend(){trends.unshift({id:++tid,fuente:'formato',cat:'Idea del equipo',color:'var(--grad-navy)',title:'',desc:'',src:'',pilar:'Producto (ventas)',saved:false,sent:false,own:true,editing:true});renderTrends();}
 function editTrend(id){const t=findTrend(id);if(t){t.editing=true;renderTrends();}}
 function saveTrend(id){const t=findTrend(id);if(t){t.editing=false;t.cat=t.cat||'Idea del equipo';renderTrends();}}
 function delTrend(id){trends=trends.filter(t=>t.id!==id);renderTrends();}
@@ -1413,9 +1414,9 @@ function moduleReporteBody(){
       <div class="rep-kpi"><div class="n">5.4%</div><div class="l">Engagement</div></div>
     </div></div>
     <div class="rep-sec"><h3>Cumplimiento por pilar</h3>${pillarRows}</div>
-    <div class="rep-sec"><h3>Rendimiento destacado</h3><p style="font-size:13px;line-height:1.65;color:var(--ink)">Pieza top del mes: <b>Avance de obra LM2</b> (Cómo construimos), con ~2× la interacción promedio. Mejor franja para publicar: <b>jueves y martes, 6–9 p.m.</b> Seguidores: <b>12,550</b> (+323 en el mes), con Instagram como principal motor de crecimiento.</p></div>
+    <div class="rep-sec"><h3>Rendimiento destacado</h3><p style="font-size:13px;line-height:1.65;color:var(--ink)">Pieza top del mes: <b>Avance de obra LM2</b> (Diseño y construcción), con ~2× la interacción promedio. Mejor franja para publicar: <b>jueves y martes, 6–9 p.m.</b> Seguidores: <b>12,550</b> (+323 en el mes), con Instagram como principal motor de crecimiento.</p></div>
     <div class="rep-sec"><h3>Equipo</h3><p style="font-size:13px;color:var(--ink)">Reparto de piezas — ${cargaTxt}.</p></div>
-    <div class="rep-sec"><h3>Aprendizajes y próximos pasos</h3><div style="font-size:13px;line-height:1.75;color:var(--ink)">• Reforzar el contenido de obra y proceso (Cómo construimos), que rinde por encima del promedio.<br>• Subir la producción de El proyecto, desde la vida para alcanzar el 30% objetivo.<br>• Repartir mejor la carga del equipo.<br>• Programar reels e historias clave entre semana, de 6 a 9 p.m.</div></div>
+    <div class="rep-sec"><h3>Aprendizajes y próximos pasos</h3><div style="font-size:13px;line-height:1.75;color:var(--ink)">• Reforzar el contenido de obra y proceso (Diseño y construcción), que rinde por encima del promedio.<br>• Subir la producción de Producto (ventas) para alcanzar el 30% objetivo.<br>• Repartir mejor la carga del equipo.<br>• Programar reels e historias clave entre semana, de 6 a 9 p.m.</div></div>
     <div style="border-top:1px solid var(--line);padding-top:14px;font-size:11px;color:var(--muted)">Generado desde la plataforma de contenido TDC · Tu lugar en el mundo.</div>
   </div>`;
 }
@@ -1473,12 +1474,12 @@ function copyText(txt,btn){
 /* calendario de fechas clave */
 let fid=0;
 let fechas=[
-  {id:++fid,d:'01',m:'May',name:'Día del Trabajador',pilar:'Asesoría que da confianza',sent:false},
-  {id:++fid,d:'10',m:'May',name:'Día de la Madre',pilar:'Asesoría que da confianza',sent:false},
-  {id:++fid,d:'21',m:'Jun',name:'Día del Padre',pilar:'Asesoría que da confianza',sent:false},
-  {id:++fid,d:'28',m:'Jul',name:'Fiestas Patrias',pilar:'Vida de barrio',sent:false},
-  {id:++fid,d:'25',m:'Oct',name:'Día del Trabajador de Construcción Civil',pilar:'Asesoría que da confianza',sent:false},
-  {id:++fid,d:'02',m:'Ene',name:'Aniversario de Miraflores',pilar:'Vida de barrio',sent:false}
+  {id:++fid,d:'01',m:'May',name:'Día del Trabajador',pilar:'Historias',sent:false},
+  {id:++fid,d:'10',m:'May',name:'Día de la Madre',pilar:'Historias',sent:false},
+  {id:++fid,d:'21',m:'Jun',name:'Día del Padre',pilar:'Historias',sent:false},
+  {id:++fid,d:'28',m:'Jul',name:'Fiestas Patrias',pilar:'Vida en el barrio',sent:false},
+  {id:++fid,d:'25',m:'Oct',name:'Día del Trabajador de Construcción Civil',pilar:'Historias',sent:false},
+  {id:++fid,d:'02',m:'Ene',name:'Aniversario de Miraflores',pilar:'Vida en el barrio',sent:false}
 ];
 function renderFechas(){
   const el=document.getElementById('fechas-body');if(!el)return;
@@ -1503,8 +1504,7 @@ window.PLAT={
     if(typeof s.restoredV1==='boolean')restoredV1=s.restoredV1;
     if(s.parrillas&&typeof s.parrillas==='object'){parrillas=s.parrillas;}
     else if(Array.isArray(s.weeks)){parrillas={};parrillas['2026-05']={weeks:s.weeks,goalTotal:s.goalTotal||20};curY=2026;curM=4;}
-    if(typeof s.curY==='number')curY=s.curY;
-    if(typeof s.curM==='number')curM=s.curM;
+    curY=_hoy.getFullYear();curM=_hoy.getMonth();   // abrir siempre en el mes actual, sin importar el mes guardado
     if(Array.isArray(s.stories))stories=s.stories;
     if(Array.isArray(s.trends))trends=s.trends;
     if(Array.isArray(s.extras))extras=s.extras;
