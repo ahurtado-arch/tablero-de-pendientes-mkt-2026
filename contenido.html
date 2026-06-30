@@ -568,12 +568,82 @@ select.cell-input{cursor:pointer}
   .rend-grid{grid-template-columns:1fr}
   .stories-week{grid-template-columns:repeat(2,1fr)}
 }
+
+/* ===== REFERENCIAS (banco de ideas) ===== */
+.ref-kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:18px}
+.ref-kpi{background:var(--white);border:1px solid var(--line);border-radius:14px;padding:13px 16px;box-shadow:var(--shadow)}
+.ref-kpi .n{font-size:24px;font-weight:700;letter-spacing:-.5px;color:var(--ink)}
+.ref-kpi .l{font-size:11px;color:var(--muted);font-weight:500;margin-top:2px}
+.ref-search{display:flex;align-items:center;gap:8px;background:var(--white);border:1px solid var(--line);border-radius:10px;padding:8px 12px;flex:1;min-width:180px;max-width:300px}
+.ref-search svg{width:15px;height:15px;color:var(--muted);flex-shrink:0}
+.ref-search input{border:none;background:none;font-family:inherit;font-size:13px;color:var(--ink);outline:none;width:100%}
+.ref-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:16px}
+.ref-empty{grid-column:1/-1;color:var(--muted);font-size:13px;padding:30px 4px;text-align:center}
+.ref-card{background:var(--white);border:1px solid var(--line);border-left:4px solid var(--line);border-radius:16px;padding:16px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:10px;cursor:pointer;transition:transform .18s,box-shadow .18s}
+.ref-card:hover{box-shadow:var(--shadow-lg);transform:translateY(-2px)}
+.ref-top{display:flex;align-items:center;gap:8px}
+.ref-fmt{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;padding:4px 9px;border-radius:13px}
+.ref-prio{margin-left:auto;display:flex;align-items:center;gap:5px;font-size:10.5px;font-weight:700}
+.ref-prio .pd{width:4px;height:11px;border-radius:2px;background:var(--line);display:inline-block}
+.ref-prio.rp-alta{color:var(--red)}.ref-prio.rp-media{color:var(--amber)}.ref-prio.rp-baja{color:var(--slate)}
+.ref-prio.rp-alta .pd.on{background:var(--red)}
+.ref-prio.rp-media .pd.on{background:var(--amber)}
+.ref-prio.rp-baja .pd.on{background:var(--slate)}
+.ref-prio .pbars{display:inline-flex;gap:2px;align-items:flex-end}
+.ref-title{font-size:14.5px;font-weight:600;color:var(--ink);line-height:1.3}
+.ref-desc{font-size:12.5px;color:var(--muted);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ref-meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.ref-chip{font-size:10.5px;font-weight:600;color:var(--slate);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:3px 8px;display:inline-flex;align-items:center;gap:4px}
+.ref-pilar{font-size:10.5px;font-weight:600;border-radius:8px;padding:3px 9px}
+.ref-estado{font-size:10.5px;font-weight:600;border-radius:20px;padding:4px 10px}
+.re-idea{background:#F1F4F8;color:#6B7A8D}
+.re-investigando{background:var(--steel-soft);color:var(--steel)}
+.re-materiales{background:#FCF3E3;color:var(--amber)}
+.re-lista{background:#E7F6EF;color:var(--green)}
+.re-parrilla{background:#EFEAF8;color:#7A5CC0}
+.re-publicada{background:#E2F1F0;color:#1E8A7A}
+.re-archivada{background:#F1F4F8;color:#9AA8B8}
+.ref-prog-wrap{display:flex;align-items:center;gap:8px}
+.ref-prog{height:6px;background:var(--bg);border-radius:6px;overflow:hidden;flex:1}
+.ref-prog-fill{height:100%;border-radius:6px;transition:width .2s}
+.ref-prog-pct{font-size:10.5px;font-weight:700;color:var(--muted);min-width:30px;text-align:right}
+.ref-tags{display:flex;flex-wrap:wrap;gap:5px}
+.ref-tag{font-size:10px;font-weight:600;color:var(--steel);background:var(--steel-soft);border-radius:6px;padding:2px 7px}
+.ref-foot{display:flex;align-items:center;gap:8px;border-top:1px solid var(--line);padding-top:10px}
+.ref-av{width:24px;height:24px;border-radius:7px;background:var(--grad-navy);color:#fff;display:grid;place-items:center;font-size:10px;font-weight:600;flex-shrink:0}
+.ref-date{font-size:11px;color:var(--muted)}
+.ref-move{margin-left:auto;font-size:11px;font-weight:600;color:var(--steel);background:var(--steel-soft);border:1px solid #D6E5F2;border-radius:8px;padding:6px 10px;display:inline-flex;align-items:center;gap:5px;transition:.15s}
+.ref-move:hover{background:var(--steel);color:#fff;border-color:var(--steel)}
+.ref-move.done{background:#EFEAF8;color:#7A5CC0;border-color:#E0D6F4}
+/* drawer lateral */
+.drawer-overlay{position:fixed;inset:0;background:rgba(22,38,62,.45);z-index:100;display:flex;justify-content:flex-end;animation:fade .2s ease}
+.drawer{background:#fff;width:100%;max-width:470px;height:100%;box-shadow:var(--shadow-lg);display:flex;flex-direction:column;animation:drawerIn .25s ease}
+@keyframes drawerIn{from{transform:translateX(40px);opacity:.4}to{transform:none;opacity:1}}
+.drawer-head{display:flex;align-items:center;justify-content:space-between;padding:16px 22px;border-bottom:1px solid var(--line);flex-shrink:0}
+.drawer-head h3{font-size:16px;font-weight:600}
+.drawer-body{padding:18px 22px;display:flex;flex-direction:column;gap:14px;overflow-y:auto;flex:1}
+.drawer-foot{display:flex;align-items:center;gap:10px;padding:14px 22px;border-top:1px solid var(--line);flex-shrink:0}
+.drawer-sub{font-size:11px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.4px;display:flex;align-items:center;gap:7px;margin-top:4px}
+.drawer-sub span{width:7px;height:15px;border-radius:4px;background:var(--grad-navy)}
+.range-row{display:flex;align-items:center;gap:10px}
+.range-row input[type=range]{flex:1;accent-color:var(--steel)}
+.range-row b{font-size:13px;font-weight:700;color:var(--steel);min-width:38px;text-align:right}
+.insp-add{display:flex;gap:8px}
+.insp-add select{flex:0 0 116px}
+.insp-list{display:flex;flex-direction:column;gap:7px}
+.insp-item{display:flex;align-items:center;gap:8px;background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:7px 10px;font-size:12px}
+.insp-tag{font-size:9.5px;font-weight:700;text-transform:uppercase;letter-spacing:.3px;color:var(--slate);background:#fff;border:1px solid var(--line);border-radius:6px;padding:2px 6px;flex-shrink:0}
+.insp-item a{color:var(--steel);font-weight:600;text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.insp-x{color:var(--muted);width:22px;height:22px;display:grid;place-items:center;border-radius:6px;flex-shrink:0}
+.insp-x:hover{background:var(--red-soft);color:var(--red)}
+@media(max-width:1080px){.ref-kpis{grid-template-columns:repeat(2,1fr)}.drawer{max-width:100%}}
 </style>
 </head>
 <body>
   <div class="brandbar">
     <div class="logo"><div class="logo-txt"><b>Contenido</b><span>Taller de Diseño Constructivo</span></div></div>
     <nav class="tabs">
+      <button class="tab" data-view="referencias"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M3 5a2 2 0 012-2h6l2 2h6a2 2 0 012 2v10a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><path d="M9 13l2 2 4-4"/></svg>Referencias</button>
       <button class="tab active" data-view="parrilla"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>Parrilla</button>
       <button class="tab" data-view="historias"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 010 18"/></svg>Historias</button>
     </nav>
@@ -588,6 +658,25 @@ select.cell-input{cursor:pointer}
   </div>
 
   <div class="content">
+
+    <!-- REFERENCIAS -->
+    <section class="view" id="referencias">
+      <p class="subtitle">Aquí nacen todas las ideas de contenido. Guarda referencias, inspírate y conviértelas en publicaciones cuando llegue el momento.</p>
+      <div class="ref-kpis" id="ref-kpis"></div>
+      <div class="toolbar">
+        <div class="ref-search">
+          <svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input id="ref-q" placeholder="Buscar ideas…" oninput="setRefFilter('q',this.value)">
+        </div>
+        <div class="filter">Proyecto <select id="ref-f-proyecto" onchange="setRefFilter('proyecto',this.value)"></select></div>
+        <div class="filter">Pilar <select id="ref-f-pilar" onchange="setRefFilter('pilar',this.value)"></select></div>
+        <div class="filter">Formato <select id="ref-f-formato" onchange="setRefFilter('formato',this.value)"></select></div>
+        <div class="filter">Estado <select id="ref-f-estado" onchange="setRefFilter('estado',this.value)"></select></div>
+        <div class="spacer"></div>
+        <button class="btn-primary" onclick="newRef()"><svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Nueva referencia</button>
+      </div>
+      <div class="ref-grid" id="ref-grid"></div>
+    </section>
 
     <!-- PARRILLA -->
     <section class="view active" id="parrilla">
@@ -759,6 +848,7 @@ select.cell-input{cursor:pointer}
   </div>
 
 <div id="edit-modal"></div>
+<div id="ref-drawer"></div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
@@ -1487,11 +1577,191 @@ function renderFechas(){
 }
 function sendFecha(id){const f=fechas.find(x=>x.id===id);if(!f||f.sent)return;weeks[2].rows.push({id:++rid,dia:f.m,num:f.d,fmt:'Diseño',pilar:f.pilar,t:f.name,c:'(Contenido de fecha clave — pendiente de desarrollar)',h:'',red:['pend','pend','na'],st:'pendiente',r:'Pablo'});f.sent=true;renderFechas();renderParrilla();renderGoals();}
 
+/* ====== REFERENCIAS (banco de ideas de contenido) ====== */
+let refid=0;
+const refProyectos=['General','Las Moras','Cochrane 366','Boloña 675','Las Viñas','Aurora'];
+const refFormatos=['Reel','Carrusel','Historia','Foto','Video','Diseño','GIF'];
+const refEstados=[['idea','Idea','re-idea'],['investigando','Investigando','re-investigando'],['materiales','Esperando materiales','re-materiales'],['lista','Lista','re-lista'],['parrilla','En Parrilla','re-parrilla'],['publicada','Publicada','re-publicada'],['archivada','Archivada','re-archivada']];
+const refPrios=[['alta','Alta'],['media','Media'],['baja','Baja']];
+const refLinkTipos=['Instagram','TikTok','Pinterest','YouTube','Behance','Drive','Otro'];
+function refEstadoMeta(k){return refEstados.find(e=>e[0]===k)||refEstados[0];}
+function todayISO(){const d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function refDateFmt(iso){if(!iso)return '';const d=new Date(iso+'T00:00:00');if(isNaN(d))return iso;return d.getDate()+' '+MESab[d.getMonth()].toLowerCase()+' '+d.getFullYear();}
+let referencias=[
+  {id:++refid,titulo:'Recorrido POV del depa modelo · Las Viñas',fmt:'Reel',proyecto:'Las Viñas',pilar:'Producto (ventas)',objetivo:'Mostrar el departamento terminado y captar interesados',resp:'Pablo',prio:'alta',estado:'lista',desc:'Reel en primera persona caminando por el depa modelo, sin hablar, con música trend. Cerrar con CTA "Escríbenos tu distrito".',notas:'Grabar con luz natural de mañana. Pedir llaves a obra el lunes.',tags:['LasViñas','POV','lanzamiento'],links:[{tipo:'Instagram',url:'https://www.instagram.com/reel/ejemplo'}],prog:80,creada:'2026-06-18'},
+  {id:++refid,titulo:'Café de la semana en Miraflores',fmt:'Carrusel',proyecto:'General',pilar:'Vida en el barrio',objetivo:'Conectar con la zona y el estilo de vida del barrio',resp:'Johan',prio:'media',estado:'investigando',desc:'Carrusel mostrando un café cercano a los proyectos: ambiente, distancia caminando, por qué nos gusta. Etiquetar al negocio para que lo comparta.',notas:'Shortlist de 3 cafés. Coordinar foto con el local.',tags:['VidaEnElBarrio','Miraflores','lovemark'],links:[{tipo:'Pinterest',url:'https://www.pinterest.com/ejemplo'}],prog:40,creada:'2026-06-20'},
+  {id:++refid,titulo:'Avance de obra · base estructural LM2',fmt:'Reel',proyecto:'Las Moras',pilar:'Diseño y construcción',objetivo:'Transmitir confianza y avance real del proyecto',resp:'Pablo',prio:'media',estado:'materiales',desc:'Timelapse del avance de obra con texto sobre los hitos de la etapa. Cierre con "Así comienza una nueva historia en la ciudad".',notas:'Esperando los videos del dron de la última visita.',tags:['LasMoras','AvanceDeObra','Miraflores'],links:[{tipo:'Drive',url:'https://drive.google.com/ejemplo'}],prog:55,creada:'2026-06-22'},
+  {id:++refid,titulo:'Quiz: ¿qué tanto sabes de EDGE?',fmt:'Historia',proyecto:'Cochrane 366',pilar:'Historias',objetivo:'Educar sobre sostenibilidad de forma ligera',resp:'Ana Paula',prio:'baja',estado:'idea',desc:'Secuencia de historias con preguntas (encuesta/quiz) sobre eficiencia y certificación EDGE, conectando con Cochrane 366 y Boloña 675.',notas:'',tags:['EDGE','Sostenibilidad','Cochrane366'],links:[],prog:15,creada:'2026-06-24'}
+];
+let refFilters={q:'',proyecto:'Todos',pilar:'Todos',formato:'Todos',estado:'Todos'};
+let refDrawerId=null,refMoveId=null;
+function findRef(id){return referencias.find(r=>r.id===id);}
+function setRefFilter(k,v){refFilters[k]=v;renderReferencias();}
+function refFilteredList(){
+  const q=(refFilters.q||'').toLowerCase().trim();
+  return referencias.filter(r=>{
+    if(refFilters.proyecto!=='Todos'&&r.proyecto!==refFilters.proyecto)return false;
+    if(refFilters.pilar!=='Todos'&&r.pilar!==refFilters.pilar)return false;
+    if(refFilters.formato!=='Todos'&&r.fmt!==refFilters.formato)return false;
+    if(refFilters.estado!=='Todos'&&r.estado!==refFilters.estado)return false;
+    if(q){const hay=(r.titulo+' '+r.desc+' '+r.proyecto+' '+(r.tags||[]).join(' ')).toLowerCase();if(!hay.includes(q))return false;}
+    return true;
+  });
+}
+function ensureRefFilters(){
+  const simple=(id,opts)=>{const el=document.getElementById(id);if(!el||el.dataset.filled)return;el.innerHTML='<option value="Todos">Todos</option>'+opts.map(o=>`<option value="${esc(o)}">${escT(o)}</option>`).join('');el.dataset.filled='1';};
+  simple('ref-f-proyecto',refProyectos);
+  simple('ref-f-pilar',Object.keys(pColor));
+  simple('ref-f-formato',refFormatos);
+  const es=document.getElementById('ref-f-estado');
+  if(es&&!es.dataset.filled){es.innerHTML='<option value="Todos">Todos</option>'+refEstados.map(e=>`<option value="${e[0]}">${e[1]}</option>`).join('');es.dataset.filled='1';}
+}
+function prioBars(prio){
+  const n={alta:3,media:2,baja:1}[prio]||1;const lbl={alta:'Alta',media:'Media',baja:'Baja'}[prio]||'Baja';
+  return `<span class="ref-prio rp-${prio}"><span class="pbars">${[1,2,3].map(i=>`<span class="pd ${i<=n?'on':''}" style="height:${4+i*3}px"></span>`).join('')}</span>${lbl}</span>`;
+}
+function refCard(r){
+  const pc=pColor[r.pilar]||'var(--line)';
+  const ps=pilarSoft[r.pilar]||['#F1F4F8','var(--ink)'];
+  const est=refEstadoMeta(r.estado);
+  const tags=(r.tags||[]).slice(0,4).map(t=>`<span class="ref-tag">#${escT(t)}</span>`).join('');
+  let moveBtn='';
+  if(r.estado==='parrilla')moveBtn='<span class="ref-move done"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="13" height="13"><path d="M5 13l4 4L19 7"/></svg>En parrilla</span>';
+  else if(r.estado!=='archivada'&&r.estado!=='publicada')moveBtn=`<button class="ref-move" onclick="event.stopPropagation();moveRefToParrilla(${r.id})"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="13" height="13"><path d="M13 5l7 7-7 7M5 12h15"/></svg>A Parrilla</button>`;
+  return `<div class="ref-card" style="border-left-color:${pc}" onclick="openRef(${r.id})">
+    <div class="ref-top">
+      <span class="ref-fmt" style="background:${ps[0]};color:${ps[1]}">${escT(r.fmt)}</span>
+      ${prioBars(r.prio)}
+    </div>
+    <div class="ref-title">${escT(r.titulo)||'<span style="color:var(--muted)">Sin título…</span>'}</div>
+    ${r.desc?`<div class="ref-desc">${escT(r.desc)}</div>`:''}
+    <div class="ref-meta">
+      <span class="ref-pilar" style="background:${ps[0]};color:${ps[1]}">${escT(pilarShortMap[r.pilar]||r.pilar)}</span>
+      <span class="ref-chip">${escT(r.proyecto)}</span>
+      <span class="ref-estado ${est[2]}">${est[1]}</span>
+    </div>
+    ${tags?`<div class="ref-tags">${tags}</div>`:''}
+    <div class="ref-foot">
+      <span class="ref-av">${inits(r.resp)}</span>
+      <span class="ref-date">${refDateFmt(r.creada)}</span>
+      ${moveBtn}
+    </div>
+  </div>`;
+}
+function renderReferencias(){
+  const grid=document.getElementById('ref-grid');if(!grid)return;
+  ensureRefFilters();
+  const list=refFilteredList();
+  grid.innerHTML=list.length?list.map(refCard).join(''):'<div class="ref-empty">No hay referencias con estos filtros todavía. Crea una idea con “Nueva referencia”.</div>';
+  const kpisEl=document.getElementById('ref-kpis');
+  if(kpisEl){
+    const has=e=>referencias.filter(r=>r.estado===e).length;
+    const pend=referencias.filter(r=>['idea','investigando','materiales'].includes(r.estado)).length;
+    const kpi=(n,l)=>`<div class="ref-kpi"><div class="n">${n}</div><div class="l">${l}</div></div>`;
+    kpisEl.innerHTML=kpi(referencias.length,'Ideas totales')+kpi(pend,'Pendientes')+kpi(has('lista'),'Listas para publicar')+kpi(has('parrilla'),'En Parrilla')+kpi(has('archivada'),'Archivadas');
+  }
+}
+function newRef(){
+  const r={id:++refid,titulo:'',fmt:'Reel',proyecto:'General',pilar:'Producto (ventas)',objetivo:'',resp:'Pablo',prio:'media',estado:'idea',desc:'',notas:'',tags:[],links:[],prog:0,creada:todayISO()};
+  referencias.unshift(r);renderReferencias();openRef(r.id);
+}
+function openRef(id){refDrawerId=id;renderRefDrawer();}
+function closeRefDrawer(){refDrawerId=null;const h=document.getElementById('ref-drawer');if(h)h.innerHTML='';renderReferencias();}
+function setRef(id,f,v){const r=findRef(id);if(r)r[f]=v;}
+function setRefTags(id,v){const r=findRef(id);if(r)r.tags=v.split(',').map(t=>t.trim().replace(/^#/,'')).filter(Boolean);}
+function addRefLink(id){
+  const r=findRef(id);if(!r)return;
+  const t=document.getElementById('ref-link-tipo').value;const u=(document.getElementById('ref-link-url').value||'').trim();
+  if(!u)return;r.links.push({tipo:t,url:u});renderRefDrawer();
+}
+function delRefLink(id,i){const r=findRef(id);if(!r)return;r.links.splice(i,1);renderRefDrawer();}
+function saveRef(id){const r=findRef(id);if(r&&!(r.titulo||'').trim())r.titulo='Idea sin título';closeRefDrawer();if(window.saveNow)window.saveNow();}
+function delRef(id){referencias=referencias.filter(r=>r.id!==id);closeRefDrawer();if(window.saveNow)window.saveNow();}
+function renderRefDrawer(){
+  const host=document.getElementById('ref-drawer');if(!host)return;
+  if(refDrawerId==null){host.innerHTML='';return;}
+  const r=findRef(refDrawerId);if(!r){host.innerHTML='';return;}
+  const opt=(arr,val)=>arr.map(x=>`<option value="${esc(x)}" ${x===val?'selected':''}>${escT(x)}</option>`).join('');
+  const links=r.links.length?r.links.map((l,i)=>`<div class="insp-item"><span class="insp-tag">${escT(l.tipo)}</span><a href="${esc(l.url)}" target="_blank" rel="noopener">${escT(l.url)}</a><button class="insp-x" onclick="delRefLink(${r.id},${i})"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="14" height="14"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>`).join(''):'<div style="font-size:12px;color:var(--muted)">Aún no hay enlaces de inspiración.</div>';
+  host.innerHTML=`<div class="drawer-overlay" onclick="if(event.target===this)saveRef(${r.id})"><div class="drawer">
+    <div class="drawer-head"><h3>Referencia</h3><button class="modal-close" onclick="saveRef(${r.id})"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="18" height="18"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+    <div class="drawer-body">
+      <div class="fld"><label>Título</label><input value="${esc(r.titulo)}" oninput="setRef(${r.id},'titulo',this.value)" placeholder="Nombre de la idea"></div>
+      <div class="fld-row">
+        <div class="fld"><label>Tipo de contenido</label><select onchange="setRef(${r.id},'fmt',this.value)">${opt(refFormatos,r.fmt)}</select></div>
+        <div class="fld"><label>Proyecto</label><select onchange="setRef(${r.id},'proyecto',this.value)">${opt(refProyectos,r.proyecto)}</select></div>
+      </div>
+      <div class="fld-row">
+        <div class="fld"><label>Pilar</label><select onchange="setRef(${r.id},'pilar',this.value)">${Object.keys(pColor).map(x=>`<option value="${esc(x)}" ${x===r.pilar?'selected':''}>${escT(x)}</option>`).join('')}</select></div>
+        <div class="fld"><label>Responsable</label><select onchange="setRef(${r.id},'resp',this.value)">${opt(respList,r.resp)}</select></div>
+      </div>
+      <div class="fld"><label>Objetivo</label><input value="${esc(r.objetivo)}" oninput="setRef(${r.id},'objetivo',this.value)" placeholder="¿Qué buscas con esta pieza?"></div>
+      <div class="fld-row">
+        <div class="fld"><label>Prioridad</label><select onchange="setRef(${r.id},'prio',this.value)">${refPrios.map(p=>`<option value="${p[0]}" ${p[0]===r.prio?'selected':''}>${p[1]}</option>`).join('')}</select></div>
+        <div class="fld"><label>Estado</label><select onchange="setRef(${r.id},'estado',this.value)">${refEstados.map(e=>`<option value="${e[0]}" ${e[0]===r.estado?'selected':''}>${e[1]}</option>`).join('')}</select></div>
+      </div>
+      <div class="fld"><label>Descripción de la idea</label><textarea style="min-height:150px" oninput="setRef(${r.id},'desc',this.value)" placeholder="Escribe libremente: concepto, hooks, copy, CTA, referencias, observaciones…">${escT(r.desc)}</textarea></div>
+      <div class="fld"><label>Notas</label><textarea style="min-height:70px" oninput="setRef(${r.id},'notas',this.value)" placeholder="Notas de producción, pendientes, materiales…">${escT(r.notas)}</textarea></div>
+      <div class="fld"><label>Etiquetas (separadas por coma)</label><input value="${esc((r.tags||[]).join(', '))}" oninput="setRefTags(${r.id},this.value)" placeholder="LasViñas, POV, lanzamiento"></div>
+      <div class="drawer-sub"><span></span>Inspiración</div>
+      <div class="insp-list">${links}</div>
+      <div class="insp-add">
+        <select id="ref-link-tipo" style="font-family:inherit;font-size:13px;border:1px solid var(--line);border-radius:9px;padding:9px 11px;outline:none;color:var(--ink);background:#fff">${opt(refLinkTipos,'Instagram')}</select>
+        <input id="ref-link-url" placeholder="Pega un enlace…" style="flex:1;font-family:inherit;font-size:13px;border:1px solid var(--line);border-radius:9px;padding:9px 11px;outline:none;color:var(--ink);background:#fff" onkeydown="if(event.key==='Enter'){event.preventDefault();addRefLink(${r.id});}">
+        <button class="btn-ghost" onclick="addRefLink(${r.id})">Añadir</button>
+      </div>
+    </div>
+    <div class="drawer-foot">
+      <button class="btn-primary" onclick="saveRef(${r.id})">Guardar</button>
+      <button class="btn-ghost" onclick="moveRefToParrilla(${r.id})"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="14" height="14"><path d="M13 5l7 7-7 7M5 12h15"/></svg>Mover a Parrilla</button>
+      <button class="modal-del" onclick="delRef(${r.id})"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="15" height="15"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></button>
+    </div>
+  </div></div>`;
+}
+/* Mover a Parrilla: elige semana / día / fecha / responsable y crea la pieza */
+function moveRefToParrilla(id){
+  const r=findRef(id);if(!r)return;
+  refMoveId=id;
+  const wkOpts=weeks.length?weeks.map((w,i)=>`<option value="${i}">${escT(w.label)}${w.range?' · '+escT(w.range):''}</option>`).join(''):'<option value="0">Semana 1</option>';
+  document.getElementById('edit-modal').innerHTML=`<div class="modal-overlay" style="z-index:130;align-items:center" onclick="if(event.target===this)closeRefMove()"><div class="modal" style="max-width:420px">
+    <div class="modal-head"><h3>Mover a Parrilla</h3><button class="modal-close" onclick="closeRefMove()"><svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="18" height="18"><path d="M18 6L6 18M6 6l12 12"/></svg></button></div>
+    <div class="modal-body">
+      <p style="font-size:12.5px;color:var(--muted);line-height:1.5;margin:-2px 0 2px">Se creará una pieza en la parrilla de <b>${MES[curM]} ${curY}</b> copiando título, descripción, pilar, formato, hashtags y proyecto.</p>
+      <div class="fld"><label>Semana</label><select id="rm-week">${wkOpts}</select></div>
+      <div class="fld-row">
+        <div class="fld"><label>Día</label><select id="rm-dia">${['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'].map(d=>`<option>${d}</option>`).join('')}</select></div>
+        <div class="fld"><label>Fecha (día)</label><input id="rm-num" placeholder="p. ej. 15"></div>
+      </div>
+      <div class="fld"><label>Responsable</label><select id="rm-resp">${respList.map(x=>`<option ${x===r.resp?'selected':''}>${x}</option>`).join('')}</select></div>
+    </div>
+    <div class="modal-foot"><button class="btn-primary" onclick="confirmRefMove()">Crear pieza en parrilla</button><button class="btn-ghost" onclick="closeRefMove()">Cancelar</button></div>
+  </div></div>`;
+}
+function closeRefMove(){const el=document.getElementById('edit-modal');if(el)el.innerHTML='';refMoveId=null;}
+function confirmRefMove(){
+  const r=findRef(refMoveId);if(!r){closeRefMove();return;}
+  let wi=+document.getElementById('rm-week').value||0;
+  wi=Math.min(Math.max(0,wi),Math.max(0,weeks.length-1));
+  const dia=document.getElementById('rm-dia').value;
+  const num=(document.getElementById('rm-num').value||'').trim();
+  const resp=document.getElementById('rm-resp').value;
+  const fmt=fmtList.includes(r.fmt)?r.fmt:'Reel';
+  const h=(r.tags||[]).map(t=>'#'+t.replace(/\s+/g,'')).join(' ');
+  if(!weeks[wi])weeks.push({label:'Semana '+(weeks.length+1),range:'',rows:[]});
+  weeks[wi].rows.push({id:++rid,dia,num,fmt,pilar:r.pilar,t:r.titulo||'Idea de Referencias',c:r.desc||'(Idea traída del banco de Referencias)',h,red:['pend','pend','na'],st:'pendiente',r:resp,proyecto:r.proyecto});
+  r.estado='parrilla';
+  closeRefMove();refDrawerId=null;const dh=document.getElementById('ref-drawer');if(dh)dh.innerHTML='';
+  renderParrilla();renderGoals();renderReferencias();
+  if(window.saveNow)window.saveNow();
+  miniToast('Pieza creada en la parrilla de '+MES[curM]+' '+curY);
+  const tab=document.querySelector('.tab[data-view="parrilla"]');if(tab)tab.click();
+}
+
 /* ====== PUENTE DE ESTADO (persistencia en Firestore, ver script de abajo) ====== */
 window.PLAT={
   getState(){
     syncCurrentMonth();
-    const s=JSON.parse(JSON.stringify({parrillas,stories,trends,extras,banco,fechas,curY,curM,restoredV1}));
+    const s=JSON.parse(JSON.stringify({parrillas,stories,trends,extras,banco,fechas,referencias,curY,curM,restoredV1}));
     Object.values(s.parrillas).forEach(pm=>(pm.weeks||[]).forEach(w=>(w.rows||[]).forEach(r=>{delete r._exp;})));
     s.stories.forEach(x=>x.editing=false);
     s.trends.forEach(x=>{delete x.editing;});
@@ -1510,6 +1780,7 @@ window.PLAT={
     if(Array.isArray(s.extras))extras=s.extras;
     if(Array.isArray(s.banco))banco=s.banco;
     if(Array.isArray(s.fechas))fechas=s.fechas;
+    if(Array.isArray(s.referencias))referencias=s.referencias;
     loadMonth();updateMonthLabel();
     // counters: evitar colisiones de id con datos guardados
     sid=Math.max(0,...stories.map(x=>+x.id||0));
@@ -1517,8 +1788,9 @@ window.PLAT={
     eid=Math.max(0,...extras.map(x=>+x.id||0));
     bid=Math.max(0,...banco.map(x=>+x.id||0));
     fid=Math.max(0,...fechas.map(x=>+x.id||0));
+    refid=Math.max(0,...referencias.map(x=>+x.id||0));
     if(openMod)backToBoard();
-    renderExtras();renderTrends();renderStories();renderParrilla();renderGoals();
+    renderExtras();renderTrends();renderStories();renderParrilla();renderGoals();renderReferencias();
   }
 };
 
@@ -1532,6 +1804,7 @@ renderStories();
 renderHeat();
 renderParrilla();
 renderGoals();
+renderReferencias();
 </script>
 
 <script type="module">
