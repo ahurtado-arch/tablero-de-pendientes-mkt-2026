@@ -180,6 +180,15 @@ button{font-family:inherit;cursor:pointer;border:none;background:none}
 .rtags{font-size:11px;color:var(--steel);font-weight:500;line-height:1.6;word-break:break-word}
 .rtag-more{display:inline-block;font-size:10.5px;color:var(--muted);font-weight:600;margin-top:3px}
 .rtags-empty{color:var(--line)}
+.rreflink{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:600;color:var(--steel);text-decoration:none;margin-top:6px;cursor:pointer;max-width:100%}
+.rreflink svg{width:12px;height:12px;flex-shrink:0}
+.rreflink span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rreflink:hover{text-decoration:underline}
+.rreflink.rmuted{color:#B6C2CF;font-weight:500;text-decoration:none}
+.rreflink.rmuted:hover{color:var(--steel)}
+.reflink-in{width:100%;font-family:inherit;font-size:11px;color:var(--steel);border:1px solid transparent;border-radius:9px;padding:5px 9px;outline:none;background:transparent;margin-top:4px}
+.reflink-in:hover{background:#fff;border-color:var(--line)}
+.reflink-in:focus{background:#fff;border-color:var(--steel)}
 .rstate{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;padding:5px 11px;border-radius:20px}
 .rstate-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
 .rresp{display:flex;align-items:center;gap:8px;min-width:0}
@@ -1032,9 +1041,13 @@ function rowRead(p){
   const fc=fmtColor[p.fmt]||['var(--steel-soft)','var(--steel)'];
   const editing=(editCell===p.id);
   const tags=(p.h||'').split(/\s+/).filter(Boolean);
+  const linkIco='<svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M10 13a5 5 0 007.07 0l2.83-2.83a5 5 0 00-7.07-7.07L11.5 4.5"/><path d="M14 11a5 5 0 00-7.07 0L4.1 13.83a5 5 0 007.07 7.07L12.5 19.5"/></svg>';
+  const refRead=p.ref
+    ? `<a class="rreflink" href="${esc(p.ref)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" title="${esc(p.ref)}">${linkIco}<span>Ver referencia</span></a>`
+    : `<div class="rreflink rmuted" onclick="startEdit(${p.id},'ref')">${linkIco}<span>Agregar link de referencia…</span></div>`;
   const titleCell=editing
-    ? `<div class="rtitle-cell"><input class="titlepill" data-ef="${p.id}-t" value="${esc(p.t)}" oninput="setField(${p.id},'t',this.value)" placeholder="Título…"><textarea class="copypill" data-ef="${p.id}-c" oninput="setField(${p.id},'c',this.value);autoGrow(this)" placeholder="Escribe el copy…">${escT(p.c)}</textarea></div>`
-    : `<div class="rtitle-cell"><div class="rtitle" onclick="startEdit(${p.id},'t')">${escT(p.t)||"<span class='rmuted'>Sin título…</span>"}</div><div class="rcopy${p.c?'':' rmuted'}" onclick="startEdit(${p.id},'c')">${escT(p.c)||'Agregar copy…'}</div></div>`;
+    ? `<div class="rtitle-cell"><input class="titlepill" data-ef="${p.id}-t" value="${esc(p.t)}" oninput="setField(${p.id},'t',this.value)" placeholder="Título…"><textarea class="copypill" data-ef="${p.id}-c" oninput="setField(${p.id},'c',this.value);autoGrow(this)" placeholder="Escribe el copy…">${escT(p.c)}</textarea><input class="reflink-in" data-ef="${p.id}-ref" value="${esc(p.ref||'')}" oninput="setField(${p.id},'ref',this.value)" placeholder="🔗 Link de referencia (opcional)…"></div>`
+    : `<div class="rtitle-cell"><div class="rtitle" onclick="startEdit(${p.id},'t')">${escT(p.t)||"<span class='rmuted'>Sin título…</span>"}</div><div class="rcopy${p.c?'':' rmuted'}" onclick="startEdit(${p.id},'c')">${escT(p.c)||'Agregar copy…'}</div>${refRead}</div>`;
   const tagsCell=editing
     ? `<div class="htags-cell"><textarea class="tagspill" data-ef="${p.id}-h" oninput="setField(${p.id},'h',this.value);autoGrow(this)" placeholder="#Hashtags…">${escT(p.h)}</textarea></div>`
     : `<div class="htags-cell"><div class="rtags${tags.length?'':' rmuted'}" onclick="startEdit(${p.id},'h')">${tags.length?escT(tags.join(' ')):'#…'}</div></div>`;
@@ -1109,6 +1122,7 @@ function renderEditModal(){
       <div class="fld"><label>Título</label><input value="${esc(p.t)}" oninput="setField(${p.id},'t',this.value)"></div>
       <div class="fld"><label>Copy</label><textarea oninput="setField(${p.id},'c',this.value)">${escT(p.c)}</textarea></div>
       <div class="fld"><label>Hashtags</label><textarea style="min-height:60px" oninput="setField(${p.id},'h',this.value)">${escT(p.h)}</textarea></div>
+      <div class="fld"><label>Link de referencia</label><input value="${esc(p.ref||'')}" oninput="setField(${p.id},'ref',this.value)" placeholder="https://… (enlace de inspiración o referencia)"></div>
       <div class="fld-row">
         <div class="fld"><label>Estado</label><select onchange="setField(${p.id},'st',this.value)">${stList.map(o=>optn(o[0],o[1],o[0]===p.st)).join('')}</select></div>
         <div class="fld"><label>Responsable</label><select onchange="setField(${p.id},'r',this.value)">${respList.map(x=>optn(x,x,x===p.r)).join('')}</select></div>
@@ -1129,7 +1143,7 @@ function copyCell(id,btn){const f=findRow(id);if(!f)return;copyMini(f.r.t+'\n\n'
 function copyHash(id,btn){const f=findRow(id);if(!f)return;copyMini(f.r.h||'',btn);}
 function copyCopyTags(id,btn){const f=findRow(id);if(!f)return;const c=f.r.c||'';const h=f.r.h||'';copyMini((c+(h?'\n\n'+h:'')).trim(),btn);}
 function delRow(id){const f=findRow(id);if(!f)return;f.w.rows=f.w.rows.filter(x=>x.id!==id);renderParrilla();renderGoals();}
-function addPiece(wi){weeks[wi].rows.push({id:++rid,dia:"Lun",num:"",fmt:"Reel",pilar:"Producto (ventas)",t:"",c:"",h:"",red:["pend","pend","na"],st:"pendiente",r:"Pablo"});renderParrilla();renderGoals();}
+function addPiece(wi){weeks[wi].rows.push({id:++rid,dia:"Lun",num:"",fmt:"Reel",pilar:"Producto (ventas)",t:"",c:"",h:"",ref:"",red:["pend","pend","na"],st:"pendiente",r:"Pablo"});renderParrilla();renderGoals();}
 function parseWeekRange(str){
   const s=String(str||'');
   const nums=(s.match(/\d+/g)||[]).map(Number);
