@@ -615,6 +615,10 @@ select.cell-input{cursor:pointer}
 .ref-move{margin-left:auto;font-size:11px;font-weight:600;color:var(--steel);background:var(--steel-soft);border:1px solid #D6E5F2;border-radius:8px;padding:6px 10px;display:inline-flex;align-items:center;gap:5px;transition:.15s}
 .ref-move:hover{background:var(--steel);color:#fff;border-color:var(--steel)}
 .ref-move.done{background:#EFEAF8;color:#7A5CC0;border-color:#E0D6F4}
+.ref-del{margin-left:auto;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;color:var(--muted);border:1px solid var(--line);background:#fff;transition:.15s;flex-shrink:0}
+.ref-del:hover{background:var(--red-soft);color:var(--red);border-color:#F6D6D2}
+.ref-del svg{width:14px;height:14px}
+.ref-del + .ref-move{margin-left:8px}
 /* drawer lateral */
 .drawer-overlay{position:fixed;inset:0;background:rgba(22,38,62,.45);z-index:100;display:flex;justify-content:flex-end;animation:fade .2s ease}
 .drawer{background:#fff;width:100%;max-width:470px;height:100%;box-shadow:var(--shadow-lg);display:flex;flex-direction:column;animation:drawerIn .25s ease}
@@ -1644,6 +1648,7 @@ function refCard(r){
     <div class="ref-foot">
       <span class="ref-av">${inits(r.resp)}</span>
       <span class="ref-date">${refDateFmt(r.creada)}</span>
+      <button class="ref-del" onclick="event.stopPropagation();delRefCard(${r.id})" title="Eliminar referencia"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/></svg></button>
       ${moveBtn}
     </div>
   </div>`;
@@ -1677,6 +1682,7 @@ function addRefLink(id){
 function delRefLink(id,i){const r=findRef(id);if(!r)return;r.links.splice(i,1);renderRefDrawer();}
 function saveRef(id){const r=findRef(id);if(r&&!(r.titulo||'').trim())r.titulo='Idea sin título';closeRefDrawer();if(window.saveNow)window.saveNow();}
 function delRef(id){referencias=referencias.filter(r=>r.id!==id);closeRefDrawer();if(window.saveNow)window.saveNow();}
+function delRefCard(id){const r=findRef(id);if(!r)return;if(!confirm('¿Eliminar esta referencia?'+(r.titulo?' ("'+r.titulo+'")':'')))return;referencias=referencias.filter(x=>x.id!==id);renderReferencias();if(window.saveNow)window.saveNow();}
 function renderRefDrawer(){
   const host=document.getElementById('ref-drawer');if(!host)return;
   if(refDrawerId==null){host.innerHTML='';return;}
