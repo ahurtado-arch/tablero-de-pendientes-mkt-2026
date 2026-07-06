@@ -650,6 +650,62 @@ select.cell-input{cursor:pointer}
 .insp-x{color:var(--muted);width:22px;height:22px;display:grid;place-items:center;border-radius:6px;flex-shrink:0}
 .insp-x:hover{background:var(--red-soft);color:var(--red)}
 @media(max-width:1080px){.ref-kpis{grid-template-columns:repeat(2,1fr)}.drawer{max-width:100%}}
+
+/* ===== VISTA DE CALENDARIO (Parrilla) ===== */
+.cal-card{background:var(--white);border:1px solid var(--line);border-radius:16px;padding:18px 20px;margin-bottom:18px;box-shadow:var(--shadow)}
+.cal-head{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px}
+.cal-title{font-size:15px;font-weight:700;color:var(--navy)}
+.cal-seg{display:inline-flex;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:3px}
+.cal-seg button{display:inline-flex;align-items:center;gap:6px;padding:5px 13px;font-size:12.5px;font-weight:600;color:var(--muted);border-radius:8px;transition:.15s}
+.cal-seg button.on{background:var(--navy);color:#fff}
+.pmode-bar{display:flex;margin-bottom:16px}
+.cal-nav{display:flex;align-items:center;gap:8px;margin:0 auto}
+.cal-nav b{font-size:14px;font-weight:700;color:var(--ink);min-width:118px;text-align:center}
+.cal-navbtn{width:30px;height:30px;border-radius:9px;border:1px solid var(--line);display:grid;place-items:center;color:var(--muted);background:#fff;transition:.15s}
+.cal-navbtn:hover{background:var(--bg);color:var(--ink)}
+.cal-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.cal-grid{border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.cal-dow{display:grid;grid-template-columns:repeat(7,1fr);background:var(--steel-tint)}
+.cal-dow div{padding:8px 6px;text-align:center;font-size:10.5px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px}
+.cal-weeks{display:grid;grid-template-columns:repeat(7,1fr)}
+.cal-day{min-height:100px;border-top:1px solid var(--line);border-left:1px solid var(--line);padding:6px 6px 8px;display:flex;flex-direction:column;gap:3px;overflow:hidden}
+.cal-day:nth-child(7n+1){border-left:none}
+.cal-daynum{font-size:12px;font-weight:600;color:var(--ink);margin-bottom:2px}
+.cal-day.out{background:#FBFCFD}
+.cal-day.out .cal-daynum{color:#C2CCD8}
+.cal-day.today .cal-daynum{background:var(--navy);color:#fff;width:22px;height:22px;border-radius:7px;display:inline-grid;place-items:center}
+.cal-day.drop-over{background:var(--steel-soft);box-shadow:inset 0 0 0 2px var(--steel)}
+.cal-ev{display:flex;align-items:center;gap:6px;padding:3px 7px;border-radius:7px;font-size:11px;font-weight:500;color:var(--ink);cursor:pointer;white-space:nowrap;overflow:hidden;transition:filter .12s}
+.cal-ev:hover{filter:brightness(.96)}
+.cal-ev.dragging{opacity:.4}
+.cal-ev .evdot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.cal-ev .evtime{font-weight:700;color:var(--slate);flex-shrink:0}
+.cal-ev .evttl{overflow:hidden;text-overflow:ellipsis}
+.cal-ev .evnets{margin-left:auto;display:flex;gap:3px;flex-shrink:0}
+.evnet{font-size:7.5px;font-weight:800;min-width:15px;height:15px;padding:0 3px;border-radius:4px;display:grid;place-items:center;letter-spacing:.2px}
+.evnet.ig{background:#FCE7F1;color:#C13584}.evnet.fb{background:#E4EEFB;color:#1877F2}.evnet.lk{background:#E1EAF3;color:#0A66C2}
+.cal-more{font-size:10.5px;font-weight:700;color:var(--steel);cursor:pointer;padding:1px 4px;align-self:flex-start}
+.cal-more:hover{text-decoration:underline}
+.cal-pop{position:fixed;z-index:140;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow-lg);padding:13px 15px;font-size:12.5px;color:var(--ink);width:236px}
+.cal-pop b{font-weight:700}
+.cal-pop .cp-btns{display:flex;gap:8px;margin-top:11px;justify-content:flex-end}
+.cal-pop .cp-btns button{font-size:12px;font-weight:600;padding:6px 13px;border-radius:8px}
+.cp-cancel{background:var(--bg);color:var(--muted);border:1px solid var(--line)}
+.cp-ok{background:var(--navy);color:#fff}
+.cal-agenda{display:flex;flex-direction:column;gap:16px}
+.agenda-date{font-size:12px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.4px;margin-bottom:8px;padding-bottom:6px;border-bottom:1px solid var(--line)}
+.agenda-ev{display:flex;gap:11px;align-items:flex-start;padding:8px 4px;cursor:pointer;border-radius:8px}
+.agenda-ev:hover{background:var(--bg)}
+.agenda-ev .ag-dot{width:9px;height:9px;border-radius:50%;margin-top:5px;flex-shrink:0}
+.agenda-ev .ag-time{font-size:12px;font-weight:700;color:var(--slate);min-width:42px}
+.agenda-ev .ag-ttl{font-size:13px;font-weight:600;color:var(--ink)}
+.agenda-ev .ag-meta{font-size:11px;color:var(--muted);margin-top:2px}
+.cal-empty{color:var(--muted);font-size:13px;padding:22px 4px;text-align:center}
+.pubs-head{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.pubs-head h3{font-size:15px;font-weight:700;color:var(--navy)}
+.pubs-count{font-size:11.5px;font-weight:600;color:var(--slate);background:var(--bg);border:1px solid var(--line);border-radius:20px;padding:3px 11px}
+.pubs-actions{margin-left:auto;display:flex;gap:8px}
+@media(max-width:820px){.cal-nav{margin:0;order:3;width:100%;justify-content:center}.cal-right{width:100%}}
 </style>
 </head>
 <body>
@@ -693,7 +749,15 @@ select.cell-input{cursor:pointer}
 
     <!-- PARRILLA -->
     <section class="view active" id="parrilla">
-      <div class="goalbar">
+      <div class="pmode-bar">
+        <div class="cal-seg">
+          <button id="pmode-cal" class="on" onclick="setParrillaMode('cal')"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="14" height="14"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>Calendario</button>
+          <button id="pmode-list" onclick="setParrillaMode('list')"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="14" height="14"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>Lista</button>
+        </div>
+      </div>
+
+      <!-- Objetivos por pilar: se muestra solo en modo Lista; su logica se conserva para el reporte -->
+      <div class="goalbar" style="display:none">
         <div class="goalbar-head">
           <div class="gh-left"><b>Objetivos por pilar</b><span id="goal-summary"></span></div>
           <div class="gh-right">Posts proyectados<div class="stepper"><button onclick="stepGoal(-1)">−</button><input id="goal-total" type="number" value="20" min="1" oninput="renderGoals()"><button onclick="stepGoal(1)">+</button></div></div>
@@ -701,13 +765,16 @@ select.cell-input{cursor:pointer}
         <div class="goal-items" id="goal-items"></div>
       </div>
 
-      <div class="toolbar">
-        <div class="filter">Pilar <select><option>Todos</option><option>Producto (ventas)</option><option>Vida en el barrio</option><option>Diseño y obra</option><option>Historias</option></select></div>
-        <div class="filter">Estado <select><option>Todos</option><option>Pendiente</option><option>En proceso</option><option>Listo</option><option>Publicado</option><option>Retrasado</option></select></div>
-        <div class="filter">Responsable <select><option>Todos</option><option>Pablo</option><option>Johan</option><option>Ana Paula</option><option>Gabriela</option><option>Diego</option><option>Eduardo</option></select></div>
-        <div class="spacer"></div>
-        <button class="btn-ghost"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="15" height="15"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>Exportar</button>
-        <button class="btn-primary" onclick="addPiece(0)"><svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Nueva pieza</button>
+      <div class="cal-card" id="cal-card"></div>
+
+      <div class="pubs-head">
+        <h3>Todas las publicaciones</h3>
+        <span class="pubs-count" id="pubs-count">0 piezas</span>
+        <div class="pubs-actions">
+          <button class="btn-ghost"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="15" height="15"><path d="M22 3H2l8 9.5V19l4 2v-8.5z"/></svg>Filtrar</button>
+          <button class="btn-ghost"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="15" height="15"><path d="M3 6h18M6 12h12M10 18h4"/></svg>Ordenar</button>
+          <button class="btn-ghost"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" width="15" height="15"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>Exportar</button>
+        </div>
       </div>
 
       <div class="parrilla">
@@ -1077,16 +1144,19 @@ function styleSt(el){const c=stSoft[el.value]||['#fff','var(--ink)'];el.style.ba
 function styleResp(el){const c=respColor[el.value]||['#fff','var(--ink)'];el.style.backgroundColor=c[0];el.style.color=c[1];}
 function setRed(id,i,el){const f=findRow(id);if(f)f.r.red[i]=el.value;const c=redSoft[el.value]||['#fff','var(--ink)'];el.style.backgroundColor=c[0];el.style.color=c[1];}
 function setRedModal(id,i,v){const f=findRow(id);if(f)f.r.red[i]=v;renderEditModal();}
+function pilarMatch(r){return parrillaPilar==='Todos'||r.pilar===parrillaPilar;}
 function renderParrilla(){
-  if(!dataLoaded){const b=document.getElementById('parrilla-body');if(b)b.innerHTML='<div class="parrilla-loading">Cargando contenido…</div>';return;}
+  if(!dataLoaded){const b=document.getElementById('parrilla-body');if(b)b.innerHTML='<div class="parrilla-loading">Cargando contenido…</div>';const pc0=document.getElementById('pubs-count');if(pc0)pc0.textContent='…';if(typeof renderCalendar==='function')renderCalendar();return;}
   const c=document.querySelector('.parrilla');const sx=c?c.scrollLeft:0;
+  let total=0;
   document.getElementById('parrilla-body').innerHTML=weeks.map((w,wi)=>{
-    const cnt=w.rows.length;
+    const rows=(parrillaPilar==='Todos')?w.rows:w.rows.filter(pilarMatch);
+    total+=rows.length;const cnt=rows.length;
     let html=`<div class="week-band"><input class="wk-edit wk-label" value="${esc(w.label)}" title="Editar nombre de la semana" onchange="setWeekField(${wi},'label',this.value)"><span>·</span><input class="wk-edit wk-range" value="${esc(w.range)}" title="Editar fechas de la semana" onchange="setWeekField(${wi},'range',this.value)">${cnt?`<span class="week-count">${cnt} pieza${cnt===1?'':'s'}</span>`:''}<button class="wk-del" title="Eliminar semana" onclick="delWeek(${wi})">×</button></div>`;
-    if(w.rows.length===0){
-      html+=`<div class="add-row" onclick="addPiece(${wi})"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Sin contenido planificado · agregar pieza</div>`;
+    if(rows.length===0){
+      html+=`<div class="add-row" onclick="addPiece(${wi})"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>${parrillaPilar==='Todos'?'Sin contenido planificado · agregar pieza':'Sin piezas de este pilar en '+w.label.toLowerCase()}</div>`;
     }else{
-      html+=w.rows.map(rowHTML).join('');
+      html+=rows.map(rowHTML).join('');
       html+=`<div class="add-row" onclick="addPiece(${wi})"><svg fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Agregar pieza en ${w.label.toLowerCase()}</div>`;
     }
     return `<div class="week-group" ondragover="allowRowDrop(event,this)" ondragleave="leaveRowDrop(this)" ondrop="dropRow(event,${wi})">${html}</div>`;
@@ -1094,6 +1164,8 @@ function renderParrilla(){
   if(c)c.scrollLeft=sx;
   growAll();
   if(editCell&&focusF){const el=document.querySelector('#parrilla-body [data-ef="'+editCell+'-'+focusF+'"]');if(el){el.focus();try{const L=(el.value||'').length;el.setSelectionRange&&el.setSelectionRange(L,L);}catch(e){}}focusF=null;}
+  const pc=document.getElementById('pubs-count');if(pc)pc.textContent=total+(total===1?' pieza':' piezas');
+  if(typeof renderCalendar==='function')renderCalendar();
 }
 function toggleAssign(id,i){const f=findRow(id);if(!f)return;f.r.plat[i]=f.r.plat[i]?0:1;renderParrilla();}
 function setPub(id,i,v){const f=findRow(id);if(!f)return;f.r.pub[i]=v;}
@@ -1116,6 +1188,7 @@ function renderEditModal(){
       <div class="fld-row">
         <div class="fld"><label>Día</label><select onchange="setField(${p.id},'dia',this.value)">${dias.map(d=>optn(d,d,d===p.dia)).join('')}</select></div>
         <div class="fld"><label>Fecha</label><input value="${esc(p.num)}" oninput="setField(${p.id},'num',this.value)"></div>
+        <div class="fld"><label>Hora</label><input type="time" value="${esc(p.hora||'')}" onchange="setField(${p.id},'hora',this.value)"></div>
         <div class="fld"><label>Formato</label><select onchange="setField(${p.id},'fmt',this.value)">${fmtList.map(x=>optn(x,x,x===p.fmt)).join('')}</select></div>
       </div>
       <div class="fld"><label>Pilar</label><select onchange="setField(${p.id},'pilar',this.value)">${Object.keys(pColor).map(x=>optn(x,x,x===p.pilar)).join('')}</select></div>
@@ -1594,6 +1667,167 @@ function renderFechas(){
   el.innerHTML=`<div class="card">${fechas.map(f=>`<div class="date-row"><div class="date-chip"><b>${f.d}</b><small>${f.m}</small></div><div class="date-info"><b>${escT(f.name)}</b><small>Sugerido: ${f.pilar}</small></div><button class="tc-send ${f.sent?'sent':''}" onclick="sendFecha(${f.id})">${f.sent?'<svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M5 13l4 4L19 7"/></svg>En parrilla':'Enviar a parrilla'}</button></div>`).join('')}<div class="calc-note">Son sugerencias: confírmalas con tu calendario y agrega las de tus campañas. Al enviar una, se crea una pieza pendiente en la parrilla con su pilar.</div></div>`;
 }
 function sendFecha(id){const f=fechas.find(x=>x.id===id);if(!f||f.sent)return;weeks[2].rows.push({id:++rid,dia:f.m,num:f.d,fmt:'Diseño',pilar:f.pilar,t:f.name,c:'(Contenido de fecha clave — pendiente de desarrollar)',h:'',red:['pend','pend','na'],st:'pendiente',r:'Pablo'});f.sent=true;renderFechas();renderParrilla();renderGoals();}
+
+/* ====== VISTA DE CALENDARIO (Parrilla) ====== */
+let calView='mes',parrillaPilar='Todos',calExpandDay=null,calRefDay=null;
+let calDragId=null,calDropDay=null;
+const CAL_DOW=['LUN','MAR','MIÉ','JUE','VIE','SÁB','DOM'];
+const CAL_DIAS=['Lun','Mar','Mié','Jue','Vie','Sáb','Dom'];
+const CAL_DNAME=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+function calSameMonthToday(){const t=new Date();return t.getFullYear()===curY&&t.getMonth()===curM;}
+function monthEventMap(){
+  const dim=daysInMonth(curY,curM),map={};
+  weeks.forEach(w=>w.rows.forEach(r=>{
+    if(!pilarMatch(r))return;
+    const d=parseInt(r.num,10);
+    if(!(d>=1&&d<=dim))return;
+    (map[d]=map[d]||[]).push(r);
+  }));
+  Object.values(map).forEach(l=>l.sort((a,b)=>String(a.hora||'99').localeCompare(String(b.hora||'99'))));
+  return map;
+}
+function calNetsHTML(r){
+  const red=r.red||[],o=[];
+  if(red[1]&&red[1]!=='na')o.push('<span class="evnet ig">IG</span>');
+  if(red[0]&&red[0]!=='na')o.push('<span class="evnet fb">FB</span>');
+  if(red[2]&&red[2]!=='na')o.push('<span class="evnet lk">LK</span>');
+  return o.join('');
+}
+function calNetsText(r){
+  const red=r.red||[],o=[];
+  if(red[1]&&red[1]!=='na')o.push('Instagram');
+  if(red[0]&&red[0]!=='na')o.push('Facebook');
+  if(red[2]&&red[2]!=='na')o.push('LinkedIn');
+  return o.join(' · ')||'—';
+}
+function calTip(r){
+  return [`${r.t||'Sin título'}`,`Formato: ${r.fmt||'—'}`,`Pilar: ${r.pilar||'—'}`,`Estado: ${stMap[r.st]||r.st||'—'}`,`Responsable: ${r.r||'—'}`,`Fecha: ${r.dia||''} ${r.num||''} ${MESab[curM]}`,`Hora: ${r.hora||'—'}`,`Redes: ${calNetsText(r)}`].join('\n');
+}
+function calEvHTML(r){
+  const soft=pilarSoft[r.pilar]||['var(--bg)','var(--muted)'];
+  const time=r.hora?`<span class="evtime">${escT(r.hora)}</span>`:'';
+  return `<div class="cal-ev" draggable="true" style="background:${soft[0]}" title="${esc(calTip(r))}" onclick="openEdit(${r.id})" ondragstart="calDragStart(event,${r.id})" ondragend="calDragEnd(event)"><span class="evdot" style="background:${soft[1]}"></span>${time}<span class="evttl">${escT(r.t)||'Sin título'}</span><span class="evnets">${calNetsHTML(r)}</span></div>`;
+}
+function agendaEvHTML(r){
+  const soft=pilarSoft[r.pilar]||['var(--bg)','var(--muted)'];
+  return `<div class="agenda-ev" onclick="openEdit(${r.id})"><span class="ag-dot" style="background:${soft[1]}"></span><div><div style="display:flex;gap:9px;align-items:baseline">${r.hora?`<span class="ag-time">${escT(r.hora)}</span>`:''}<span class="ag-ttl">${escT(r.t)||'Sin título'}</span></div><div class="ag-meta">${escT(pilarShortMap[r.pilar]||r.pilar)} · ${calNetsText(r)}</div></div></div>`;
+}
+function calMonthHTML(){
+  const dim=daysInMonth(curY,curM);
+  const startOff=(new Date(curY,curM,1).getDay()+6)%7;
+  const cellsN=Math.ceil((startOff+dim)/7)*7;
+  const evMap=monthEventMap();const today=new Date();
+  let cells='';
+  for(let i=0;i<cellsN;i++){
+    const dayNum=i-startOff+1;
+    const inMonth=dayNum>=1&&dayNum<=dim;
+    const dObj=new Date(curY,curM,dayNum);
+    let inner='';
+    if(inMonth){
+      const evs=evMap[dayNum]||[];
+      const shown=(calExpandDay===dayNum)?evs:evs.slice(0,3);
+      inner=shown.map(calEvHTML).join('');
+      if(evs.length>3&&calExpandDay!==dayNum)inner+=`<div class="cal-more" onclick="expandCalDay(${dayNum})">+${evs.length-3} más</div>`;
+    }
+    const todayCls=(inMonth&&calSameMonthToday()&&dayNum===today.getDate())?' today':'';
+    cells+=`<div class="cal-day${inMonth?'':' out'}${todayCls}" ${inMonth?`ondragover="calDragOver(event,this)" ondragleave="calDragLeave(this)" ondrop="calDrop(event,${dayNum})"`:''}><div class="cal-daynum">${dObj.getDate()}</div>${inner}</div>`;
+  }
+  return `<div class="cal-grid"><div class="cal-dow">${CAL_DOW.map(d=>`<div>${d}</div>`).join('')}</div><div class="cal-weeks">${cells}</div></div>`;
+}
+function calWeekHTML(){
+  const dim=daysInMonth(curY,curM);
+  let ref=calRefDay||(calSameMonthToday()?new Date().getDate():1);
+  ref=Math.min(Math.max(1,ref),dim);
+  const off=(new Date(curY,curM,ref).getDay()+6)%7;
+  const monday=ref-off;const evMap=monthEventMap();
+  let cells='';
+  for(let i=0;i<7;i++){
+    const dayNum=monday+i;const inMonth=dayNum>=1&&dayNum<=dim;const dObj=new Date(curY,curM,dayNum);
+    const evs=inMonth?(evMap[dayNum]||[]):[];
+    cells+=`<div class="cal-day${inMonth?'':' out'}" style="min-height:190px" ${inMonth?`ondragover="calDragOver(event,this)" ondragleave="calDragLeave(this)" ondrop="calDrop(event,${dayNum})"`:''}><div class="cal-daynum">${dObj.getDate()}</div>${evs.map(calEvHTML).join('')}</div>`;
+  }
+  return `<div class="cal-grid"><div class="cal-dow">${CAL_DOW.map(d=>`<div>${d}</div>`).join('')}</div><div class="cal-weeks">${cells}</div></div>`;
+}
+function calDayHTML(){
+  const dim=daysInMonth(curY,curM);
+  let ref=calRefDay||(calSameMonthToday()?new Date().getDate():1);
+  ref=Math.min(Math.max(1,ref),dim);
+  const dObj=new Date(curY,curM,ref);const evs=monthEventMap()[ref]||[];
+  const body=evs.length?evs.map(agendaEvHTML).join(''):'<div class="cal-empty">Sin publicaciones este día.</div>';
+  return `<div style="display:flex;align-items:center;gap:10px;margin-bottom:14px"><button class="cal-navbtn" onclick="calStepDay(-1)">‹</button><b style="font-size:14px">${CAL_DNAME[dObj.getDay()]} ${ref} de ${MES[curM]}</b><button class="cal-navbtn" onclick="calStepDay(1)">›</button></div><div class="cal-agenda">${body}</div>`;
+}
+function calMonthAgendaHTML(){
+  const dim=daysInMonth(curY,curM),evMap=monthEventMap();
+  let out='';
+  for(let d=1;d<=dim;d++){
+    const evs=evMap[d];if(!evs||!evs.length)continue;
+    const dObj=new Date(curY,curM,d);
+    out+=`<div><div class="agenda-date">${CAL_DIAS[(dObj.getDay()+6)%7]} ${d} ${MESab[curM]}</div>${evs.map(agendaEvHTML).join('')}</div>`;
+  }
+  return `<div class="cal-agenda">${out||'<div class="cal-empty">Sin publicaciones este mes.</div>'}</div>`;
+}
+function renderCalendar(){
+  const host=document.getElementById('cal-card');if(!host)return;
+  const segLbl={mes:'Mes',semana:'Semana',dia:'Día'};
+  const pilarOpts=['Todos',...Object.keys(pColor)];
+  const header=`<div class="cal-head">
+    <div class="cal-title">Vista de calendario</div>
+    <div class="cal-seg">${['mes','semana','dia'].map(v=>`<button class="${calView===v?'on':''}" onclick="setCalView('${v}')">${segLbl[v]}</button>`).join('')}</div>
+    <div class="cal-nav"><button class="cal-navbtn" onclick="calStep(-1)" title="Mes anterior"><svg fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24" width="15" height="15"><path d="M15 18l-6-6 6-6"/></svg></button><b>${MES[curM]} ${curY}</b><button class="cal-navbtn" onclick="calStep(1)" title="Mes siguiente"><svg fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24" width="15" height="15"><path d="M9 18l6-6-6-6"/></svg></button></div>
+    <div class="cal-right">
+      <div class="filter">Pilar <select onchange="setParrillaPilar(this.value)">${pilarOpts.map(o=>`<option value="${esc(o)}" ${o===parrillaPilar?'selected':''}>${o==='Todos'?'Todos los pilares':escT(o)}</option>`).join('')}</select></div>
+      <button class="btn-primary" onclick="addPiece(0)"><svg fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>Nueva pieza</button>
+    </div>
+  </div>`;
+  let body;
+  const mobile=window.innerWidth<=760;
+  if(!dataLoaded)body='<div class="cal-empty">Cargando contenido…</div>';
+  else if(calView==='dia')body=calDayHTML();
+  else if(calView==='semana')body=calWeekHTML();
+  else body=mobile?calMonthAgendaHTML():calMonthHTML();
+  host.innerHTML=header+body;
+}
+let parrillaMode='cal';
+function setParrillaMode(m){
+  parrillaMode=m;
+  const cal=document.getElementById('cal-card');
+  const goal=document.querySelector('#parrilla .goalbar');
+  if(cal)cal.style.display=(m==='cal')?'':'none';
+  if(goal)goal.style.display=(m==='list')?'':'none';
+  const bc=document.getElementById('pmode-cal'),bl=document.getElementById('pmode-list');
+  if(bc)bc.classList.toggle('on',m==='cal');
+  if(bl)bl.classList.toggle('on',m==='list');
+  if(m==='list')renderGoals();else renderCalendar();
+}
+function setCalView(v){calView=v;calExpandDay=null;renderCalendar();}
+function setParrillaPilar(v){parrillaPilar=v;calExpandDay=null;renderParrilla();}
+function expandCalDay(d){calExpandDay=d;renderCalendar();}
+function calStep(dir){let m=curM+dir,y=curY;if(m<0){m=11;y--;}if(m>11){m=0;y++;}calExpandDay=null;calRefDay=null;switchToMonth(y,m);}
+function calStepDay(dir){const dim=daysInMonth(curY,curM);let ref=(calRefDay||(calSameMonthToday()?new Date().getDate():1))+dir;ref=Math.min(Math.max(1,ref),dim);calRefDay=ref;renderCalendar();}
+function calDragStart(e,id){calDragId=id;e.dataTransfer.effectAllowed='move';e.currentTarget.classList.add('dragging');e.stopPropagation();}
+function calDragEnd(e){if(e.currentTarget&&e.currentTarget.classList)e.currentTarget.classList.remove('dragging');}
+function calDragOver(e,cell){e.preventDefault();cell.classList.add('drop-over');}
+function calDragLeave(cell){cell.classList.remove('drop-over');}
+function calDrop(e,day){e.preventDefault();document.querySelectorAll('.cal-day.drop-over').forEach(c=>c.classList.remove('drop-over'));if(calDragId==null)return;const f=findRow(calDragId);if(!f){calDragId=null;return;}if(parseInt(f.r.num,10)===day){calDragId=null;return;}calDropDay=day;showCalConfirm(e.clientX,e.clientY,day);}
+function showCalConfirm(x,y,day){
+  closeCalPop();
+  const pop=document.createElement('div');pop.className='cal-pop';pop.id='cal-pop';
+  pop.innerHTML=`Mover publicación al <b>${day} de ${MES[curM]}</b><div class="cp-btns"><button class="cp-cancel" onclick="cancelCalMove()">Cancelar</button><button class="cp-ok" onclick="confirmCalMove()">Mover</button></div>`;
+  document.body.appendChild(pop);
+  pop.style.left=Math.max(8,Math.min(x,window.innerWidth-248))+'px';
+  pop.style.top=Math.max(8,Math.min(y,window.innerHeight-110))+'px';
+}
+function closeCalPop(){const p=document.getElementById('cal-pop');if(p)p.remove();}
+function cancelCalMove(){closeCalPop();calDragId=null;calDropDay=null;}
+function confirmCalMove(){
+  const f=findRow(calDragId);
+  if(f&&calDropDay!=null){f.r.num=String(calDropDay);f.r.dia=CAL_DIAS[(new Date(curY,curM,calDropDay).getDay()+6)%7];}
+  closeCalPop();calDragId=null;calDropDay=null;
+  renderParrilla();
+  if(window.saveNow)window.saveNow();
+}
+let calResizeT=null;
+window.addEventListener('resize',()=>{clearTimeout(calResizeT);calResizeT=setTimeout(renderCalendar,180);});
 
 /* ====== REFERENCIAS (banco de ideas de contenido) ====== */
 let refid=0;
